@@ -1,6 +1,6 @@
 {
-  "name": "健行公益 Dashboard",
-  "short_name": "健行公益 Dashboard",
+  "name": "中国矿业 Dashboard",
+  "short_name": "中国矿业 Dashboard",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",
