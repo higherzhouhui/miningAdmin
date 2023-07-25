@@ -86,6 +86,7 @@ const TableList: React.FC = () => {
       dataIndex: 'walletType',
       width: 120,
       hideInSearch: true,
+      fixed: 'left',
       valueEnum: {
         'annuity': {
           text: '养老金',
@@ -116,6 +117,18 @@ const TableList: React.FC = () => {
     {
       title: '最小提现金额',
       dataIndex: 'minWithdrawAmount',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '注册赠送',
+      dataIndex: 'regGive',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '签到赠送',
+      dataIndex: 'signGive',
       width: 100,
       hideInSearch: true,
     },
@@ -151,7 +164,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 120,
+      width: 100,
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
@@ -252,7 +265,21 @@ const TableList: React.FC = () => {
               onChange={(e) => handleChange(e.target.value, 'minWithdrawAmount')}
             />
           </Form.Item>
-          <Form.Item>
+          <Form.Item label="注册赠送">
+            <Input
+              type="number"
+              value={currentRow?.regGive || 0}
+              onChange={(e) => handleChange(e.target.value, 'regGive')}
+            />
+          </Form.Item>
+          <Form.Item label="签到赠送">
+            <Input
+              type="number"
+              value={currentRow?.signGive || 0}
+              onChange={(e) => handleChange(e.target.value, 'signGive')}
+            />
+          </Form.Item>
+          <Form.Item label="提现时间">
             <DatePicker.RangePicker
               value={currentRow?.withdrawTime}
               showTime
