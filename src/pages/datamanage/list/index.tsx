@@ -85,9 +85,11 @@ const TableList: React.FC = () => {
       tip: '唯一的 key',
       hideInTable: true,
     },
+    
     {
       title: '图标',
       dataIndex: 'image',
+      width: 150,
       hideInSearch: true,
       render: (_, record) => {
         return (
@@ -98,19 +100,29 @@ const TableList: React.FC = () => {
     {
       title: '邀请人数',
       dataIndex: 'inviteNum',
+      width: 150,
     },
     {
-      title: '奖励',
-      dataIndex: 'amount',
+      title: '补贴金',
+      dataIndex: 'subsidy',
+      width: 150,
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
+      title: '养老金',
+      dataIndex: 'annuity',
+      width: 150,
+    },
+    {
+      title: '黄金（克）',
+      dataIndex: 'gold',
+      width: 150,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
+      width: 150,
+      fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
         <a
@@ -289,7 +301,7 @@ const TableList: React.FC = () => {
       >
         <ProForm formRef={formRef} submitter={false}>
           <ProFormUploadButton
-            label="选择图片"
+            label="选择图标"
             max={1}
             name="image"
             fieldProps={{
@@ -302,8 +314,14 @@ const TableList: React.FC = () => {
           <Form.Item label="邀请人数">
             <Input type='number' value={currentRow?.inviteNum} onChange={(e) => handleChange(e.target.value, 'inviteNum')} placeholder='请输入邀请人数'/>
           </Form.Item>
-          <Form.Item label="奖励（元）">
-            <Input type='number' value={currentRow?.amount} onChange={(e) => handleChange(e.target.value, 'amount')} placeholder='请输入奖励'/>
+          <Form.Item label="补贴金">
+            <Input type='number' value={currentRow?.subsidy} onChange={(e) => handleChange(e.target.value, 'subsidy')} placeholder='请输入'/>
+          </Form.Item>
+          <Form.Item label="养老金">
+            <Input type='number' value={currentRow?.annuity} onChange={(e) => handleChange(e.target.value, 'annuity')} placeholder='请输入'/>
+          </Form.Item>
+          <Form.Item label="黄金（克）">
+            <Input type='number' value={currentRow?.gold} onChange={(e) => handleChange(e.target.value, 'gold')} placeholder='请输入'/>
           </Form.Item>
         </ProForm>
       </Modal>
