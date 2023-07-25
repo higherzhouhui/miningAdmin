@@ -410,7 +410,7 @@ const TableList: React.FC = () => {
               placeholder="请输入价格"
             />
           </Form.Item>
-          <Form.Item label="收益（天）">
+          <Form.Item label="每日收益">
             <Input
               type="number"
               value={currentRow?.dayEarnings}
