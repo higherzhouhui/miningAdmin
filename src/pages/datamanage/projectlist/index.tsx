@@ -9,7 +9,7 @@ import { addRule, removeRule, rule, sendMoney } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
 import WangEditor from '@/components/Editor';
-
+import styles from './style.less';
 /**
  * 删除节点
  *
@@ -48,16 +48,16 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-  const formRef = useRef<any>()
-  const [type, setType] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const [shiftLoading, setShiftLoading] = useState(true)
+  const formRef = useRef<any>();
+  const [type, setType] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [shiftLoading, setShiftLoading] = useState(true);
   const handleUpdateRecord = (record: TableListItem) => {
-    console.log(record)
+    console.log(record);
     setCurrentRow(record);
     handleModalVisible(true);
     formRef?.current?.resetFields();
-  }
+  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -92,21 +92,34 @@ const TableList: React.FC = () => {
       width: 120,
     },
     {
-      title: '数字人民币/工资',
-      dataIndex: 'chntSubsidy',
-      width: 120,
-    },
-    {
-      title: '详情',
-      dataIndex: 'showDetail',
-      hideInTable: type == 2 ? false : true,
-      width: 500,
-    },
-    {
-      title: '每日补贴',
+      title: '每日收益',
       dataIndex: 'dayEarnings',
-      hideInTable: type == 1 ? false : true,
-      width: 120,
+      width: 100,
+    },
+    {
+      title: '赠送上级',
+      dataIndex: 'supperAward',
+      width: 100,
+    },
+    {
+      title: '补贴金',
+      dataIndex: 'subsidy',
+      width: 100,
+    },
+    {
+      title: '养老金',
+      dataIndex: 'annuity',
+      width: 100,
+    },
+    {
+      title: '黄金',
+      dataIndex: 'gold',
+      width: 100,
+    },
+    {
+      title: '周期(年)',
+      dataIndex: 'period',
+      width: 100,
     },
     {
       title: '是否售罄',
@@ -121,24 +134,9 @@ const TableList: React.FC = () => {
         1: {
           text: '否',
           status: 'Success',
-        }
+        },
       },
     },
-    {
-      title: '类型',
-      dataIndex: 'insureType',
-      width: 120,
-      hideInSearch: true,
-      hideInTable: type == 3 ? false : true,
-      valueEnum: {
-        1: {
-          text: '保险',
-        },
-        2: {
-          text: '工资',
-        }
-      },
-    }, 
     {
       title: '创建时间',
       dataIndex: 'createTime',
@@ -148,14 +146,14 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 120,
+      width: 100,
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
         <a
           key="update"
           onClick={() => {
-            handleUpdateRecord(record)
+            handleUpdateRecord(record);
           }}
         >
           修改
@@ -184,7 +182,7 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
-      const res = await addRule({...currentRow, projectType: type});
+      const res = await addRule({ ...currentRow, projectType: type });
       handleModalVisible(false);
       hide();
       if (res.code === 200) {
@@ -203,23 +201,23 @@ const TableList: React.FC = () => {
     }
   };
   const handleSendMoney = () => {
-    const hide = message.loading('正在发放工资', 50)
-    setLoading(true)
-    sendMoney().then(res => {
-      setLoading(false)
-      hide()
+    const hide = message.loading('正在发放工资', 50);
+    setLoading(true);
+    sendMoney().then((res) => {
+      setLoading(false);
+      hide();
       if (res.code === 200) {
-        message.success('发放成功!')
+        message.success('发放成功!');
       } else {
-        message.error(res.message || res.msg)
+        message.error(res.message || res.msg);
       }
-    })
-  }
+    });
+  };
   const handleChange = (value: any, attar: string) => {
-    const newRow = Object.assign({}, currentRow)
-    newRow[attar] = value
-    setCurrentRow(newRow)
-  }
+    const newRow = Object.assign({}, currentRow);
+    newRow[attar] = value;
+    setCurrentRow(newRow);
+  };
   const Upload = {
     //数量
     maxCount: 1,
@@ -234,7 +232,11 @@ const TableList: React.FC = () => {
       // name，path，status是组件上传需要的格式需要自己去拼接
       request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
         .then((data: any) => {
-          const _response = { name: file.name, status: 'done', path: data.data.url + data.data.path };
+          const _response = {
+            name: file.name,
+            status: 'done',
+            path: data.data.url + data.data.path,
+          };
           handleChange(data.data.path, 'image');
           //请求成功后把file赋值上去
           onSuccess(_response, file);
@@ -245,10 +247,10 @@ const TableList: React.FC = () => {
 
   const onchangeType = (e: any) => {
     if (!shiftLoading) {
-      setType(e.target.value * 1)
-      actionRef?.current?.reloadAndRest?.()
+      setType(e.target.value * 1);
+      actionRef?.current?.reloadAndRest?.();
     }
-  }
+  };
   const removeHtmlTag = (content?: string) => {
     if (typeof content === 'string') {
       const reg = new RegExp('<[^>]*>', 'g');
@@ -260,11 +262,11 @@ const TableList: React.FC = () => {
   };
   return (
     <PageContainer>
-      <Radio.Group value={type} size="middle" onChange={(e) => onchangeType(e)} buttonStyle="solid">
+      {/* <Radio.Group value={type} size="middle" onChange={(e) => onchangeType(e)} buttonStyle="solid">
         <Radio.Button value={1}>爱心福利</Radio.Button>
         <Radio.Button value={2}>数贸股权</Radio.Button>
         <Radio.Button value={3}>数贸基金</Radio.Button>
-      </Radio.Group>
+      </Radio.Group> */}
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
@@ -282,21 +284,25 @@ const TableList: React.FC = () => {
             <PlusOutlined />
             新增
           </Button>,
-          type === 3 ? <Button type="link" key="defulot" onClick={() => handleSendMoney()} loading={loading}>
-            <AccountBookOutlined />
-          发放工资
-        </Button> : null,
+          type === 3 ? (
+            <Button type="link" key="defulot" onClick={() => handleSendMoney()} loading={loading}>
+              <AccountBookOutlined />
+              发放工资
+            </Button>
+          ) : null,
         ]}
         request={async (params: TableListPagination) => {
-          setShiftLoading(true)
+          setShiftLoading(true);
           const res: any = await rule({ ...params, pageNum: params.current });
-          setShiftLoading(false)
-          const list = res?.data?.list || []
+          setShiftLoading(false);
+          const list = res?.data?.list || [];
           list.map((item: any) => {
-            item.showDetail = removeHtmlTag(item.details)
-          })
-          const data = list.filter((item: any) => item.projectType == type)
-          data.sort((a: any,b: any) => {return a.sort - b.sort})
+            item.showDetail = removeHtmlTag(item.details);
+          });
+          const data = list.filter((item: any) => item.projectType == type);
+          data.sort((a: any, b: any) => {
+            return a.sort - b.sort;
+          });
           return {
             data: data,
             page: res?.data?.pageNum,
@@ -352,52 +358,125 @@ const TableList: React.FC = () => {
         onOk={() => handleOk()}
         onCancel={() => handleModalVisible(false)}
       >
-        <ProForm formRef={formRef} submitter={false} style={{height: '500px', overflow: 'auto', padding: '0 20px'}}>
+        <ProForm
+          formRef={formRef}
+          submitter={false}
+          style={{ height: '500px', overflow: 'auto', padding: '0 20px' }}
+        >
           <Form.Item label="排序（从小到大展示）">
-            <Input value={currentRow?.sort} onChange={(e) => handleChange(e.target.value, 'sort')}/>
+            <Input
+              value={currentRow?.sort}
+              onChange={(e) => handleChange(e.target.value, 'sort')}
+            />
           </Form.Item>
-          {
-            type === 3 ?  <Form.Item label="类型">
-            <Select value={currentRow?.insureType} onChange={(e) => handleChange(e, 'insureType')}>
-              <Select.Option value={1}>保险</Select.Option>
-              <Select.Option value={2}>工资</Select.Option>
-            </Select>
-          </Form.Item> : null
-          }
+          {type === 3 ? (
+            <Form.Item label="类型">
+              <Select
+                value={currentRow?.insureType}
+                onChange={(e) => handleChange(e, 'insureType')}
+              >
+                <Select.Option value={1}>保险</Select.Option>
+                <Select.Option value={2}>工资</Select.Option>
+              </Select>
+            </Form.Item>
+          ) : null}
           <Form.Item label="标题">
-            <Input value={currentRow?.title} onChange={(e) => handleChange(e.target.value, 'title')}/>
+            <Input
+              value={currentRow?.title}
+              onChange={(e) => handleChange(e.target.value, 'title')}
+            />
           </Form.Item>
           <ProFormUploadButton
-            label="选择图片"
+            label="选择封面"
             max={1}
             name="image"
             fieldProps={{
               ...Upload,
             }}
           />
+          {currentRow?.image ? <Image src={currentRow?.image} className={styles.cover} /> : null}
           <Form.Item label="">
-            <Input value={currentRow?.image} onChange={(e) => handleChange(e.target.value, 'image')} placeholder='请选择图片' />
+            <Input
+              value={currentRow?.image}
+              onChange={(e) => handleChange(e.target.value, 'image')}
+              placeholder="请选择图片"
+            />
           </Form.Item>
           <Form.Item label="价格">
-            <Input type='number' value={currentRow?.price} onChange={(e) => handleChange(e.target.value, 'price')} placeholder='请输入价格'/>
+            <Input
+              type="number"
+              value={currentRow?.price}
+              onChange={(e) => handleChange(e.target.value, 'price')}
+              placeholder="请输入价格"
+            />
           </Form.Item>
-          {
-            type == 1 ? <Form.Item label="每日补贴">
-            <Input type='number' value={currentRow?.dayEarnings} onChange={(e) => handleChange(e.target.value, 'dayEarnings')} placeholder='请输入每日补贴'/>
-          </Form.Item> : null
-          }
+          <Form.Item label="每日收益">
+            <Input
+              type="number"
+              value={currentRow?.dayEarnings}
+              onChange={(e) => handleChange(e.target.value, 'dayEarnings')}
+              placeholder="请输入每日收益"
+            />
+          </Form.Item>
+          <Form.Item label="赠送上级收益">
+            <Input
+              type="number"
+              value={currentRow?.supperAward}
+              onChange={(e) => handleChange(e.target.value, 'supperAward')}
+              placeholder="请输入"
+            />
+          </Form.Item>
+          <Form.Item label="补贴金">
+            <Input
+              type="number"
+              value={currentRow?.subsidy}
+              onChange={(e) => handleChange(e.target.value, 'subsidy')}
+              placeholder="请输入补贴金"
+            />
+          </Form.Item>
+          <Form.Item label="赠送养老金">
+            <Input
+              type="number"
+              value={currentRow?.annuity}
+              onChange={(e) => handleChange(e.target.value, 'annuity')}
+              placeholder="请输入养老金"
+            />
+          </Form.Item>
+          <Form.Item label="赠送黄金（克）">
+            <Input
+              type="number"
+              value={currentRow?.gold}
+              onChange={(e) => handleChange(e.target.value, 'gold')}
+              placeholder="请输入黄金"
+            />
+          </Form.Item>
+          <Form.Item label="周期（年）">
+            <Input
+              type="number"
+              value={currentRow?.period}
+              onChange={(e) => handleChange(e.target.value, 'period')}
+              placeholder="请输入周期"
+            />
+          </Form.Item>
           <Form.Item label="是否售罄">
-            <Radio.Group value={currentRow?.state} size="middle" onChange={(e) => handleChange(e.target.value, 'state')} buttonStyle="solid">
+            <Radio.Group
+              value={currentRow?.state}
+              size="middle"
+              onChange={(e) => handleChange(e.target.value, 'state')}
+              buttonStyle="solid"
+            >
               <Radio value={1}>否</Radio>
               <Radio value={0}>是</Radio>
             </Radio.Group>
           </Form.Item>
-          <Form.Item label={currentRow?.insureType === 2 ? "工资" : "赠送数字人民币"}>
-            <Input type='number' value={currentRow?.chntSubsidy} onChange={(e) => handleChange(e.target.value, 'chntSubsidy')} placeholder='请输入'/>
-          </Form.Item> 
-          {
-            type == 2 ? <Form.Item label='详情'><WangEditor description={currentRow?.details || ''} onChange={(e) => handleChange(e, 'details')} /></Form.Item> : null
-          }
+          {type == 2 ? (
+            <Form.Item label="详情">
+              <WangEditor
+                description={currentRow?.details || ''}
+                onChange={(e) => handleChange(e, 'details')}
+              />
+            </Form.Item>
+          ) : null}
         </ProForm>
       </Modal>
     </PageContainer>

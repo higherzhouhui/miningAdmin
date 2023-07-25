@@ -12,9 +12,6 @@ const TableList: React.FC = () => {
     {title: '推荐赠送金', key: 'recommend', vlaue: '', type: 'number'},
     {title: '注册赠送金', key: 'register', vlaue: '', type: 'number'},
     {title: '股权分红比例', key: 'equityBonus', value: '', type: 'number', after: '%'},
-    {title: '健享币每小时上涨价格最大值（元）', key: 'healthyCurrencyUpLimit', vlaue: '', type: 'number'},
-    {title: '健享币每小时上涨价格最小值（元）', key: 'healthyCurrencyDownLimit', vlaue: '', type: 'number'},
-
     {title: '兑换规则', key: 'exchange', value: '', hide: localStorage.getItem('hui') ? false : true },
     {title: 'id', key: 'id', hide: true, value: ''},
   ])

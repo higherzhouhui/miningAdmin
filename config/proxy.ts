@@ -9,21 +9,21 @@
 export default {
   dev: {
     '/admin-service/': {
-      target: 'http://api.jianxgy.top',
+      target: 'http://47.242.197.116:8000',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   test: {
     '/admin-service/': {
-      target: 'http://api.jianxgy.top',
+      target: 'http://47.242.197.116:8000',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   pre: {
     '/none/': {
-      target: 'http://api.jianxgy.top',
+      target: 'http://47.242.197.116:8000',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

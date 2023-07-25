@@ -158,12 +158,12 @@ export default defineConfig({
           component: './datamanage/list',
           access: 'adminRouteFilter',
         },
-        // {
-        //   name: 'datamanage-course',
-        //   path: '/datamanage/course',
-        //   component: './datamanage/course',
-        //   access: 'adminRouteFilter',
-        // },
+        {
+          name: 'datamanage-course',
+          path: '/datamanage/course',
+          component: './datamanage/course',
+          access: 'adminRouteFilter',
+        },
         {
           name: 'datamanage-video',
           path: '/datamanage/video',
@@ -188,12 +188,12 @@ export default defineConfig({
           component: './datamanage/microphygmia',
           access: 'adminRouteFilter',
         },
-        {
-          name: 'datamanage-microphygmiaDown',
-          path: '/datamanage/microphygmiaDown',
-          component: './datamanage/microphygmiaDown',
-          access: 'adminRouteFilter',
-        },
+        // {
+        //   name: 'datamanage-microphygmiaDown',
+        //   path: '/datamanage/microphygmiaDown',
+        //   component: './datamanage/microphygmiaDown',
+        //   access: 'adminRouteFilter',
+        // },
         {
           name: 'datamanage-qqGroup',
           path: '/datamanage/qqgroup',
@@ -206,18 +206,18 @@ export default defineConfig({
         //   component: './datamanage/guanfangqun',
         //   access: 'adminRouteFilter',
         // },
-        {
-          name: 'datamanage-baseinfo',
-          path: '/datamanage/baseinfo',
-          component: './datamanage/baseinfo',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-team',
-          path: '/datamanage/team',
-          component: './datamanage/team',
-          access: 'adminRouteFilter',
-        },
+        // {
+        //   name: 'datamanage-baseinfo',
+        //   path: '/datamanage/baseinfo',
+        //   component: './datamanage/baseinfo',
+        //   access: 'adminRouteFilter',
+        // },
+        // {
+        //   name: 'datamanage-team',
+        //   path: '/datamanage/team',
+        //   component: './datamanage/team',
+        //   access: 'adminRouteFilter',
+        // },
         {
           name: 'datamanage-version',
           path: '/datamanage/version',
@@ -249,6 +249,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
+          name: 'withdrawType',
+          path: '/financial/withdrawType',
+          component: './financial/withdrawType',
+          access: 'adminRouteFilter',
+        },
+        {
           name: 'bankAccount',
           path: '/financial/bankAccount',
           component: './financial/bankAccount',
@@ -268,30 +274,30 @@ export default defineConfig({
         },
       ],
     },
-    {
-      path: '/numbermoney',
-      icon: 'MoneyCollect',
-      name: 'numbermoney',
-      routes: [
-        {
-          path: '/numbermoney',
-          redirect: '/numbermoney/withdrawList',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'withdrawList',
-          path: '/numbermoney/withdrawList',
-          component: './numbermoney/withdrawList',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'baseinfo',
-          path: '/numbermoney/baseinfo',
-          component: './numbermoney/baseinfo',
-          access: 'adminRouteFilter',
-        }
-      ],
-    },
+    // {
+    //   path: '/numbermoney',
+    //   icon: 'MoneyCollect',
+    //   name: 'numbermoney',
+    //   routes: [
+    //     {
+    //       path: '/numbermoney',
+    //       redirect: '/numbermoney/withdrawList',
+    //       access: 'adminRouteFilter',
+    //     },
+    //     {
+    //       name: 'withdrawList',
+    //       path: '/numbermoney/withdrawList',
+    //       component: './numbermoney/withdrawList',
+    //       access: 'adminRouteFilter',
+    //     },
+    //     {
+    //       name: 'baseinfo',
+    //       path: '/numbermoney/baseinfo',
+    //       component: './numbermoney/baseinfo',
+    //       access: 'adminRouteFilter',
+    //     }
+    //   ],
+    // },
     {
       path: '/online',
       icon: 'Aliwangwang',

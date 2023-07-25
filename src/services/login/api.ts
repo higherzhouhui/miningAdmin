@@ -18,14 +18,14 @@ request.interceptors.request.use((url, options) => {
   options.timeout = 500000;
   // 本地访问需要做代理，否则会跨域；线上生成由于ng没有反向代理，就直连接口，而且是同一个域下的
   const { NODE_ENV } = process.env;
-  let baseUrl = 'http://api.jianxgy.top'
+  let baseUrl = 'http://47.242.197.116:8000'
   let before = '/admin-service'
   if (NODE_ENV === 'development') {
     baseUrl = ''
   }
   if (url.includes('upload-service')) {
     before = ''
-    baseUrl = 'http://api.jianxgy.top'
+    baseUrl = 'http://47.242.197.116:8000'
   }
 
   return {
