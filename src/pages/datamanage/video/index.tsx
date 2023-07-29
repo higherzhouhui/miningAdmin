@@ -5,17 +5,17 @@ import { updateRule, rule, uploadFile } from './service';
 import styles from './style.less';
 
 const TableList: React.FC = () => {
-  const [video, setVideo] = useState('')
+  const [video, setVideo] = useState('');
   const [loading, setLoading] = useState(false);
-  const [id, setId] = useState('')
+  const [id, setId] = useState('');
   const initData = () => {
     setLoading(true);
     rule().then((res) => {
       setLoading(false);
       if (res.code === 200) {
         const data = res.data || {};
-        setVideo(data.video)
-        setId(data.id)
+        setVideo(data.video);
+        setId(data.id);
       } else {
         message.error(res.msg || res.message);
       }
@@ -24,7 +24,7 @@ const TableList: React.FC = () => {
 
   const handleOk = async () => {
     const hide = message.loading(`正在更新`, 50);
-    const data = {video: video, id: id};
+    const data = { video: video, id: id };
     try {
       const res = await updateRule(data);
       hide();
@@ -58,7 +58,7 @@ const TableList: React.FC = () => {
       uploadFile(formData).then((res) => {
         hide();
         if (res.code === 200) {
-          setVideo(res.data)
+          setVideo(res.data.url + res.data.path);
         } else {
           message.error(res.msg || res.message);
         }
@@ -74,9 +74,11 @@ const TableList: React.FC = () => {
   return (
     <PageContainer>
       <div className={styles.form}>
-        <video width="480" height="360" controls src={video}/>
-        <Button type="ghost" style={{marginBottom: '20px'}} onClick={() => handleUploadFile()}>上传</Button>
-        <Input type='text' onChange={(e) => setVideo(e.target.value)} value={video}/>
+        <video width="480" height="360" controls src={video} />
+        <Button type="ghost" style={{ marginBottom: '20px' }} onClick={() => handleUploadFile()}>
+          上传
+        </Button>
+        <Input type="text" onChange={(e) => setVideo(e.target.value)} value={video} />
       </div>
       <div className={styles.submit}>
         <Button
