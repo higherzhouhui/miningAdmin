@@ -27,6 +27,7 @@ export default {
   'menu.datamanage.datamanage-bannerlist': '广告',
   'menu.datamanage.datamanage-newslist': '新闻',
   'menu.datamanage.datamanage-projectlist': '产品',
+  'menu.datamanage.datamanage-partner': '合伙人',
   'menu.datamanage.datamanage-upload': '上传文件',
   'menu.datamanage.datamanage-baseinfo': '签到推广注册奖励',
   'menu.datamanage.datamanage-course': '关于我们',

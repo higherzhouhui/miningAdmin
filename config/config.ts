@@ -159,6 +159,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
+          name: 'datamanage-partner',
+          path: '/datamanage/partner',
+          component: './datamanage/partner',
+          access: 'adminRouteFilter',
+        },
+        {
           name: 'datamanage-course',
           path: '/datamanage/course',
           component: './datamanage/course',
