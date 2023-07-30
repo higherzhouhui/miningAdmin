@@ -51,7 +51,7 @@
     "@ant-design/pro-descriptions": "^1.6.8",
     "@ant-design/pro-form": "^1.18.3",
     "@ant-design/pro-layout": "^6.15.3",
-    "@ant-design/pro-table": "^2.30.8",
+    "@ant-design/pro-table": "2.30.8",
     "@antv/data-set": "^0.11.0",
     "@antv/l7": "^2.3.7",
     "@antv/l7-maps": "^2.3.7",

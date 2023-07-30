@@ -88,23 +88,23 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       fixed: 'left',
       valueEnum: {
-        'annuity': {
+        annuity: {
           text: '养老金',
         },
-        'asset': {
+        asset: {
           text: '总资产',
         },
-        'balance': {
+        balance: {
           text: '余额',
         },
-        'gold': {
+        gold: {
           text: '黄金',
         },
-        'referrer': {
+        referrer: {
           text: '推荐奖',
         },
-        'subsidy': {
-          text: '补贴金',
+        subsidy: {
+          text: '挖矿金',
         },
       },
     },
@@ -205,12 +205,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="walletType"
         id="withdrawListIndex"
-        search={{
-          labelWidth: 90,
-          //隐藏展开、收起
-          collapsed: false,
-          collapseRender: () => false,
-        }}
+        search={false}
         pagination={{
           current: 1,
         }}

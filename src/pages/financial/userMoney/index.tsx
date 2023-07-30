@@ -47,25 +47,27 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-  const formRef = useRef<any>()
+  const formRef = useRef<any>();
   const handleUpdateRecord = (record: TableListItem, type: number) => {
     const hide = message.loading('正在操作中...');
     updateRule({
       id: record.id,
-      auditStatus: type
-    }).then((res: any) => {
-      hide();
-      if (res.code === 200) {
-        message.success('操作完成，即将刷新');
-        actionRef.current?.reloadAndRest?.();
-      }
-    }).catch(() => {
-      hide();
+      auditStatus: type,
     })
+      .then((res: any) => {
+        hide();
+        if (res.code === 200) {
+          message.success('操作完成，即将刷新');
+          actionRef.current?.reloadAndRest?.();
+        }
+      })
+      .catch(() => {
+        hide();
+      });
     // setCurrentRow(record);
     // handleModalVisible(true);
     // formRef?.current?.resetFields();
-  }
+  };
   const updateBankAccount = (row: any) => {
     setCurrentRow(Object.assign({}, row));
     handleModalVisible(true);
@@ -89,17 +91,23 @@ const TableList: React.FC = () => {
       dataIndex: 'type',
       hideInTable: true,
       valueEnum: {
-        'cash': {
-          text: '现金钱包',
+        gold: {
+          text: '黄金',
         },
-        'group': {
-          text: '团队绩效钱包',
+        referrer: {
+          text: '推荐金',
         },
-        'rmb': {
-          text: '数字人民币',
+        subsidy: {
+          text: '挖矿金',
         },
-        'currency': {
-          text: '货币兑换',
+        annuity: {
+          text: '养老金',
+        },
+        asset: {
+          text: '总资产',
+        },
+        balance: {
+          text: '余额',
         },
       },
     },
@@ -114,7 +122,7 @@ const TableList: React.FC = () => {
       dataIndex: 'typeStr',
       width: 120,
       hideInSearch: true,
-    }
+    },
   ];
 
   const handleOk = async () => {
@@ -139,10 +147,10 @@ const TableList: React.FC = () => {
     }
   };
   const handleChange = (value: any, attar: string) => {
-    const newRow = currentRow
-    newRow[attar] = value
-    setCurrentRow(Object.assign({}, newRow))
-  }
+    const newRow = currentRow;
+    newRow[attar] = value;
+    setCurrentRow(Object.assign({}, newRow));
+  };
   const export2Excel = (id: string, name: string) => {
     const exportFileContent = document.getElementById(id)!.cloneNode(true);
     const wb = XLSX.utils.table_to_book(exportFileContent, { sheet: 'sheet1' });
@@ -158,24 +166,28 @@ const TableList: React.FC = () => {
           labelWidth: 90,
           //隐藏展开、收起
           collapsed: false,
-          collapseRender:()=>false,
+          collapseRender: () => false,
         }}
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => export2Excel('userMoney', '钱包余额')}>
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => export2Excel('userMoney', '钱包余额')}
+          >
             <TableOutlined />
             导出Excel
           </Button>,
         ]}
         dateFormatter="string"
         pagination={{
-          current: 1
+          current: 1,
         }}
-        id='userMoney'
+        id="userMoney"
         scroll={{
           y: document?.body?.clientHeight - 390,
         }}
         request={async (params: any) => {
-          const res: any = await rule({...params, pageNum: params.current});
+          const res: any = await rule({ ...params, pageNum: params.current });
           return {
             data: res?.data?.list,
             page: res?.data?.pageNum,
@@ -198,13 +210,22 @@ const TableList: React.FC = () => {
       >
         <ProForm formRef={formRef} submitter={false}>
           <Form.Item label="姓名">
-            <Input value={currentRow?.name} onChange={(e) => handleChange(e.target.value, 'name')}/>
+            <Input
+              value={currentRow?.name}
+              onChange={(e) => handleChange(e.target.value, 'name')}
+            />
           </Form.Item>
           <Form.Item label="银行名称">
-            <Input value={currentRow?.bankName} onChange={(e) => handleChange(e.target.value, 'bankName')}/>
+            <Input
+              value={currentRow?.bankName}
+              onChange={(e) => handleChange(e.target.value, 'bankName')}
+            />
           </Form.Item>
           <Form.Item label="银行卡号">
-            <Input value={currentRow?.bankCode} onChange={(e) => handleChange(e.target.value, 'bankCode')}/>
+            <Input
+              value={currentRow?.bankCode}
+              onChange={(e) => handleChange(e.target.value, 'bankCode')}
+            />
           </Form.Item>
         </ProForm>
       </Modal>
