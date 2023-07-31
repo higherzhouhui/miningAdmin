@@ -13,6 +13,7 @@ export type TableListItem = {
   voucher: string;
   state: number;
   payType: number;
+  title: number;
 };
 
 export type TableListPagination = {
