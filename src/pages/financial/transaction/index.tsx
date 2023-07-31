@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Image } from 'antd';
+import { Button, Form, Input, message, Modal, Image, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { addRule, removeRule, rule, updateRule } from './service';
@@ -49,52 +49,62 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
-  const [showDetail, setShowDetail] = useState(false)
-  const formRef = useRef<any>()
-  const [loading,setLoading] = useState(false)
+  const [showDetail, setShowDetail] = useState(false);
+  const formRef = useRef<any>();
+  const [loading, setLoading] = useState(false);
   const handleUpdateRecord = (record: TableListItem, type: number) => {
     if (loading) {
-      return
+      return;
     }
-    setLoading(true)
+    setLoading(true);
     const hide = message.loading('正在操作中...', 50);
     updateRule({
       id: record.id,
-      auditStatus: type
-    }).then((res: any) => {
-      hide();
-      setLoading(false)
-      if (res.code === 200) {
-        setCurrentRow({})
-        setShowDetail(false)
-        message.success('操作完成，即将刷新');
-        actionRef.current?.reloadAndRest?.();
-      }
-    }).catch(() => {
-      hide();
+      auditStatus: type,
     })
+      .then((res: any) => {
+        hide();
+        setLoading(false);
+        if (res.code === 200) {
+          setCurrentRow({});
+          setShowDetail(false);
+          message.success('操作完成，即将刷新');
+          actionRef.current?.reloadAndRest?.();
+        }
+      })
+      .catch(() => {
+        hide();
+      });
     // setCurrentRow(record);
     // handleModalVisible(true);
     // formRef?.current?.resetFields();
-  }
+  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
       tip: '唯一的 key',
-      width: 180
+      width: 180,
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '交易单号',
       dataIndex: 'tradeNo',
-      width: 200
+      width: 200,
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
-      title: '购买项目',
+      title: '项目名称',
       dataIndex: 'title',
       hideInSearch: true,
-      width: 200
-    },{
+      width: 200,
+      render: (_, record) => {
+        return <Tag color="success">{record.title}</Tag>;
+      },
+    },
+    {
       title: '价格',
       dataIndex: 'price',
       hideInSearch: true,
@@ -109,12 +119,14 @@ const TableList: React.FC = () => {
         return (
           <Image src={record.image} width={120} height={120} style={{ objectFit: 'contain' }} />
         );
-      }
-    }, {
+      },
+    },
+    {
       title: '手机号',
       dataIndex: 'phone',
       width: 130,
-    }, {
+    },
+    {
       title: '状态',
       dataIndex: 'state',
       width: 100,
@@ -126,9 +138,9 @@ const TableList: React.FC = () => {
         1: {
           text: '已完成',
           status: 'Success',
-        }
+        },
       },
-    }, 
+    },
     {
       title: '支付凭证',
       dataIndex: 'voucher',
@@ -137,13 +149,19 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return (
           <>
-            {
-              record.payType === 3 ? <Image src={record.voucher} width={120} height={120} style={{ objectFit: 'contain' }} /> : null
-            }
+            {record.payType === 3 ? (
+              <Image
+                src={record.voucher}
+                width={120}
+                height={120}
+                style={{ objectFit: 'contain' }}
+              />
+            ) : null}
           </>
         );
-      }
-    }, {
+      },
+    },
+    {
       title: '支付方式',
       dataIndex: 'payType',
       width: 100,
@@ -159,6 +177,10 @@ const TableList: React.FC = () => {
         3: {
           text: '银行卡',
           status: 'Default',
+        },
+        4: {
+          text: '挖矿金',
+          status: 'Error',
         },
       },
     },
@@ -176,13 +198,17 @@ const TableList: React.FC = () => {
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
-        record.state == 0 && record.payType === 3 ? 
-        <a key="access" onClick={() => {
-          setCurrentRow(record)
-          setShowDetail(true)
-        }}>
-        审核
-        </a> : null
+        record.state == 0 && record.payType === 3 ? (
+          <a
+            key="access"
+            onClick={() => {
+              setCurrentRow(record);
+              setShowDetail(true);
+            }}
+          >
+            审核
+          </a>
+        ) : null,
       ],
     },
   ];
@@ -214,10 +240,10 @@ const TableList: React.FC = () => {
     }
   };
   const handleChange = (value: any, attar: string) => {
-    const newRow = currentRow
-    newRow[attar] = value
-    setCurrentRow(Object.assign({}, newRow))
-  }
+    const newRow = currentRow;
+    newRow[attar] = value;
+    setCurrentRow(Object.assign({}, newRow));
+  };
   const Upload = {
     //数量
     maxCount: 1,
@@ -232,7 +258,11 @@ const TableList: React.FC = () => {
       // name，path，status是组件上传需要的格式需要自己去拼接
       request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
         .then((data: any) => {
-          const _response = { name: file.name, status: 'done', path: data.data.url + data.data.path };
+          const _response = {
+            name: file.name,
+            status: 'done',
+            path: data.data.url + data.data.path,
+          };
           handleChange(data.data.path, 'icon');
           //请求成功后把file赋值上去
           onSuccess(_response, file);
@@ -253,17 +283,21 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="createTime"
         pagination={{
-          current: 1
+          current: 1,
         }}
         search={{
           labelWidth: 90,
           //隐藏展开、收起
           collapsed: false,
-          collapseRender:()=>false,
+          collapseRender: () => false,
         }}
-        id='transactionIndex'
+        id="transactionIndex"
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => export2Excel('transactionIndex', '订单列表')}>
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => export2Excel('transactionIndex', '订单列表')}
+          >
             <TableOutlined />
             导出Excel
           </Button>,
@@ -292,7 +326,7 @@ const TableList: React.FC = () => {
           //   item.status = status
           // })
           let data: any = [];
-          data = res?.data?.list
+          data = res?.data?.list;
           return {
             data: data,
             page: res?.data?.pageNum,
@@ -323,16 +357,24 @@ const TableList: React.FC = () => {
               ...Upload,
             }}
           />
-          {
-            currentRow?.icon ? <Form.Item label="">
-            <Input value={currentRow?.icon} readOnly />
-          </Form.Item> : null
-          }
+          {currentRow?.icon ? (
+            <Form.Item label="">
+              <Input value={currentRow?.icon} readOnly />
+            </Form.Item>
+          ) : null}
           <Form.Item label="邀请人数">
-            <Input type='number' value={currentRow?.inviteNum} onChange={(e) => handleChange(e.target.value, 'inviteNum')}/>
+            <Input
+              type="number"
+              value={currentRow?.inviteNum}
+              onChange={(e) => handleChange(e.target.value, 'inviteNum')}
+            />
           </Form.Item>
           <Form.Item label="奖励">
-            <Input type='number' value={currentRow?.amount} onChange={(e) => handleChange(e.target.value, 'amount')}/>
+            <Input
+              type="number"
+              value={currentRow?.amount}
+              onChange={(e) => handleChange(e.target.value, 'amount')}
+            />
           </Form.Item>
         </ProForm>
       </Modal>
@@ -341,7 +383,7 @@ const TableList: React.FC = () => {
         visible={showDetail}
         title={'审核'}
         onOk={() => handleUpdateRecord(currentRow, 1)}
-        okText='通过'
+        okText="通过"
         onCancel={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
