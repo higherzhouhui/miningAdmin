@@ -37,14 +37,14 @@ const TableList: React.FC = () => {
   };
 
   const handleRemove = async (userId: number) => {
-    const hide = message.loading('正在删除...')
-    const res = await removeRule({id: userId})
-    hide()
+    const hide = message.loading('正在删除...');
+    const res = await removeRule({ id: userId });
+    hide();
     if (res.code === 200) {
-      message.success('删除成功,正在刷新!')
-      actionRef?.current?.reloadAndRest?.()
+      message.success('删除成功,正在刷新!');
+      actionRef?.current?.reloadAndRest?.();
     }
-  }
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -65,7 +65,7 @@ const TableList: React.FC = () => {
     {
       title: '姓名',
       dataIndex: 'name',
-      width: 150,
+      width: 100,
       tooltip: '点击可查看该用户详情',
       render: (dom, entity) => {
         return (
@@ -84,22 +84,16 @@ const TableList: React.FC = () => {
     {
       title: '头像',
       dataIndex: 'avatar',
-      width: 130,
+      width: 110,
       hideInSearch: true,
       render: (_, record) => {
         return (
-          <>
-            {record.avatar ? (
-              <Image
-                src={record.avatar}
-                width={120}
-                height={120}
-                style={{ objectFit: 'contain' }}
-              />
-            ) : (
-              <div className={style.avatar}>{record.name || String(record.id).slice(0, 5)}</div>
-            )}
-          </>
+          <Image
+            src={record.avatar || '/logo.png'}
+            width={90}
+            height={90}
+            style={{ objectFit: 'contain' }}
+          />
         );
       },
     },
@@ -145,8 +139,20 @@ const TableList: React.FC = () => {
       width: 160,
     },
     {
+      title: '邀请码',
+      dataIndex: 'inviteCode',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '推荐人手机号',
       dataIndex: 'referrerMobilePhone',
+      width: 110,
+      hideInSearch: true,
+    },
+    {
+      title: '推荐人邀请码',
+      dataIndex: 'referrerInviteCode',
       width: 110,
       hideInSearch: true,
     },
@@ -168,7 +174,13 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '是否签到',
+      title: '会员级别',
+      dataIndex: 'userLevel',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '今日是否签到',
       dataIndex: 'signInStatus',
       width: 100,
       hideInSearch: true,
@@ -183,12 +195,6 @@ const TableList: React.FC = () => {
           </>
         );
       },
-    },
-    {
-      title: '邀请码',
-      dataIndex: 'inviteCode',
-      width: 100,
-      hideInSearch: true,
     },
     {
       title: '注册时间',
@@ -218,7 +224,11 @@ const TableList: React.FC = () => {
           <FormOutlined />
           资料
         </a>,
-        <a style={{ color: '#13e436' }} key="resetPassword" onClick={() => handleUpdateRecord(record, 'resetPassword')}>
+        <a
+          style={{ color: '#13e436' }}
+          key="resetPassword"
+          onClick={() => handleUpdateRecord(record, 'resetPassword')}
+        >
           <EditOutlined />
           密码
         </a>,
@@ -233,15 +243,15 @@ const TableList: React.FC = () => {
         <Popconfirm
           title="确认删除该会员?"
           onConfirm={async () => {
-            handleRemove(record.userId)
+            handleRemove(record.userId);
           }}
           key="access"
         >
-          <a key="access" style={{color: 'red'}}>
+          <a key="access" style={{ color: 'red' }}>
             <DeleteOutlined />
             删除
           </a>
-        </Popconfirm> 
+        </Popconfirm>,
       ],
     },
   ];
@@ -259,7 +269,7 @@ const TableList: React.FC = () => {
   };
   const buildTree = (data: any[], referrerId = 1) => {
     if (data.length === 1) {
-      return data
+      return data;
     }
     const result: any[] = [];
     for (let i = 0; i < data.length; i++) {
@@ -284,7 +294,7 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     let param: any = {
       id: currentRow?.userId,
-    }
+    };
     if (operationType === 'baseInfo') {
       if (!currentRow?.name || !currentRow?.idCard || !currentRow?.mobilePhone) {
         message.warning('请输入完整信息!');
@@ -296,7 +306,7 @@ const TableList: React.FC = () => {
         idCard: currentRow?.idCard,
         mobilePhone: currentRow?.mobilePhone,
         referrerInviteCode: currentRow?.referrerInviteCode,
-      }
+      };
     }
     if (operationType === 'resetPassword') {
       if (!currentRow?.newPassword) {
@@ -306,7 +316,7 @@ const TableList: React.FC = () => {
       param = {
         ...param,
         newPassword: currentRow?.newPassword,
-      }
+      };
     }
     // if (operationType === 'changeInvited') {
     //   if (!currentRow?.referrerInviteCode) {
@@ -359,7 +369,11 @@ const TableList: React.FC = () => {
         id="accountListIndex"
         headerTitle={`总会员：${total}`}
         toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => export2Excel('accountListIndex', '会员列表')}>
+          <Button
+            type="primary"
+            key="primary"
+            onClick={() => export2Excel('accountListIndex', '会员列表')}
+          >
             <TableOutlined />
             导出Excel
           </Button>,
@@ -371,10 +385,11 @@ const TableList: React.FC = () => {
           collapseRender: () => false,
         }}
         pagination={{
-          current: 1
+          current: 1,
+          pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1800,
+          x: 2000,
           y: document.body.clientHeight - 350,
         }}
         request={async (params: TableListPagination) => {
@@ -387,7 +402,7 @@ const TableList: React.FC = () => {
           //   item.registerType = registerType;
           // });
           let data: any = [];
-          data = res?.data?.list
+          data = res?.data?.list;
           setTotal(res?.data?.totalSize);
           return {
             data: data,
@@ -430,7 +445,7 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.referrerInviteCode}
                   onChange={(e) => handleChange(e.target.value, 'referrerInviteCode')}
-                  placeholder='请输入上级推荐码'
+                  placeholder="请输入上级推荐码"
                 />
               </Form.Item>
             </>
@@ -440,7 +455,7 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.newPassword}
                   onChange={(e) => handleChange(e.target.value, 'newPassword')}
-                  placeholder='请输入新密码'
+                  placeholder="请输入新密码"
                 />
               </Form.Item>
             </>
@@ -450,7 +465,7 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.referrerInviteCode}
                   onChange={(e) => handleChange(e.target.value, 'referrerInviteCode')}
-                  placeholder='请输入上级推荐码'
+                  placeholder="请输入上级推荐码"
                 />
               </Form.Item>
             </>

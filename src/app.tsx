@@ -6,7 +6,7 @@ import RightContent from '@/components/RightContent';
 import { currentUser as queryCurrentUser } from './services/login/api';
 import TagView from '@/components/TagView';
 
-import './global.less'
+import './global.less';
 const loginPath = '/user/login';
 
 /** 获取用户信息比较慢的时候会展示一个 loading */
@@ -25,7 +25,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     if (!localStorage.getItem('Access-Token')) {
       history.push(loginPath);
-      return undefined
+      return undefined;
     }
     try {
       const msg: any = await queryCurrentUser();
@@ -33,9 +33,9 @@ export async function getInitialState(): Promise<{
       if (msg.code === 200) {
         (msg?.data?.list || []).forEach((item: any) => {
           if (item.accountName === localStorage.getItem('accountName')) {
-            data = item
+            data = item;
           }
-        })
+        });
       }
       return data as any;
     } catch (error) {
@@ -78,7 +78,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       return (
         <>
           {initialState?.currentUser && location.pathname !== loginPath ? (
-            <TagView home="/online/list">{children}</TagView>
+            <TagView home="/home/list">{children}</TagView>
           ) : (
             children
           )}
