@@ -255,6 +255,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
+          name: 'partnerRecord',
+          path: '/financial/partnerRecord',
+          component: './financial/partnerRecord',
+          access: 'adminRouteFilter',
+        },
+        {
           name: 'withdrawType',
           path: '/financial/withdrawType',
           component: './financial/withdrawType',
