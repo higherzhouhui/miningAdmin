@@ -310,30 +310,30 @@ export default defineConfig({
     //     }
     //   ],
     // },
-    // {
-    //   path: '/online',
-    //   icon: 'Aliwangwang',
-    //   name: 'online',
-    //   routes: [
-    //     {
-    //       path: '/online',
-    //       redirect: '/online/list',
-    //       access: 'serviceRouteFilter',
-    //     },
-    //     {
-    //       name: 'online-list',
-    //       path: '/online/list',
-    //       component: './online/list',
-    //       access: 'serviceRouteFilter',
-    //     },
-    //     {
-    //       name: 'online-info',
-    //       path: '/online/info',
-    //       component: './online/info',
-    //       access: 'serviceRouteFilter',
-    //     },
-    //   ],
-    // },
+    {
+      path: '/online',
+      icon: 'Aliwangwang',
+      name: 'online',
+      routes: [
+        {
+          path: '/online',
+          redirect: '/online/list',
+          access: 'serviceRouteFilter',
+        },
+        {
+          name: 'online-list',
+          path: '/online/list',
+          component: './online/list',
+          access: 'serviceRouteFilter',
+        },
+        {
+          name: 'online-info',
+          path: '/online/info',
+          component: './online/info',
+          access: 'serviceRouteFilter',
+        },
+      ],
+    },
     {
       path: '/admins',
       icon: 'Setting',
