@@ -9,21 +9,21 @@
 export default {
   dev: {
     '/admin-service/': {
-      target: 'http://api.zgkc.xyz',
+      target: 'http://8.218.54.23',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   test: {
     '/admin-service/': {
-      target: 'http://api.zgkc.xyz',
+      target: 'http://8.218.54.23',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   pre: {
     '/none/': {
-      target: 'http://api.zgkc.xyz',
+      target: 'http://8.218.54.23',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

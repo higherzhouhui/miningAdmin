@@ -10,6 +10,8 @@ export type TableListItem = {
   serviceCharge: string;
   type: string;
   walletType: string;
+  withdrawStartTime: string;
+  withdrawEndTime: string;
 };
 
 export type TableListPagination = {

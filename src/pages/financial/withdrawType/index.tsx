@@ -2,10 +2,11 @@ import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Form, Input, message, Modal, DatePicker, Radio } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { removeRule, rule, updateRule } from './service';
 import ProForm from '@ant-design/pro-form';
+import moment from 'moment';
 
 /**
  * 删除节点
@@ -51,6 +52,16 @@ const TableList: React.FC = () => {
       return;
     }
     const hide = message.loading('正在操作中...', 50);
+    if (record.withdrawStartTime) {
+      record.withdrawStartTime = moment(record.withdrawStartTime).format('YYYY-MM-DD HH:mm:ss')
+    } else {
+      record.withdrawStartTime = ''
+    }
+    if (record.withdrawEndTime) {
+      record.withdrawEndTime = moment(record.withdrawEndTime).format('YYYY-MM-DD HH:mm:ss')
+    } else {
+      record.withdrawEndTime = ''
+    }
     setLoading(true);
     updateRule(record)
       .then((res: any) => {
@@ -188,16 +199,10 @@ const TableList: React.FC = () => {
   ];
 
   const handleChange = (value: any, attar: string) => {
-    const newRow = currentRow;
+    const newRow = JSON.parse(JSON.stringify(currentRow));
     newRow[attar] = value;
-    if (attar == 'withdrawTime') {
-      newRow.withdrawStartTime = value[0].format('YYYY-MM-DD HH:mm:ss');
-      newRow.withdrawEndTime = value[0].format('YYYY-MM-DD HH:mm:ss');
-    }
     setCurrentRow(Object.assign({}, newRow));
   };
-
-  useEffect(() => {}, []);
 
   return (
     <PageContainer>
@@ -224,7 +229,6 @@ const TableList: React.FC = () => {
               if (item.maxWithdrawAmount == 0) {
                 item.maxWithdrawAmountStr = '无限制';
               }
-              item.withdrawTime = [item.withdrawStartTime, item.withdrawEndTime];
             });
           }
           return {
@@ -274,14 +278,11 @@ const TableList: React.FC = () => {
               onChange={(e) => handleChange(e.target.value, 'signGive')}
             />
           </Form.Item>
-          <Form.Item label="提现时间">
-            <DatePicker.RangePicker
-              value={currentRow?.withdrawTime}
-              showTime
-              format="YYYY-MM-DD HH:mm:ss"
-              size="middle"
-              onChange={(e) => handleChange(e, 'withdrawTime')}
-            />
+          <Form.Item label="提现开始时间">
+            <DatePicker showTime value={currentRow?.withdrawStartTime ? moment(currentRow?.withdrawStartTime) : ''} onChange={(e) => handleChange(e, 'withdrawStartTime')} />
+          </Form.Item>
+          <Form.Item label="提现结束时间">
+            <DatePicker showTime value={currentRow?.withdrawEndTime ? moment(currentRow?.withdrawEndTime) : ''} onChange={(e) => handleChange(e, 'withdrawEndTime')} />
           </Form.Item>
           <Form.Item label="是否开启">
             <Radio.Group
