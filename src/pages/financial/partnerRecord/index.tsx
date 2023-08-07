@@ -107,7 +107,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       width: 110,
       render: (_, record) => {
-        return <Tag color="success">{record.title}</Tag>;
+        return <Tag color="success">{record.name}</Tag>;
       },
     },
     {
@@ -286,7 +286,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
-        rowKey="createTime"
+        rowKey="id"
         pagination={{
           current: 1,
         }}
