@@ -306,6 +306,8 @@ const TableList: React.FC = () => {
         idCard: currentRow?.idCard,
         mobilePhone: currentRow?.mobilePhone,
         referrerInviteCode: currentRow?.referrerInviteCode,
+        bankCode: currentRow?.bankCode,
+        bankName: currentRow?.bankName,
       };
     }
     if (operationType === 'resetPassword') {
@@ -328,7 +330,7 @@ const TableList: React.FC = () => {
     //     referrerInviteCode: currentRow?.referrerInviteCode,
     //   }
     // }
-    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`);
+    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
       const res = await addRule(param);
       handleModalVisible(false);
@@ -439,6 +441,18 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.idCard}
                   onChange={(e) => handleChange(e.target.value, 'idCard')}
+                />
+              </Form.Item>
+              <Form.Item label="所属银行">
+                <Input
+                  value={currentRow?.bankName}
+                  onChange={(e) => handleChange(e.target.value, 'bankName')}
+                />
+              </Form.Item>
+              <Form.Item label="银行卡号">
+                <Input
+                  value={currentRow?.bankCode}
+                  onChange={(e) => handleChange(e.target.value, 'bankCode')}
                 />
               </Form.Item>
               <Form.Item label="上级推荐码">
