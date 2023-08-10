@@ -140,6 +140,12 @@ const TableList: React.FC = () => {
       width: 120,
       hideInSearch: true,
     },
+    {
+      title: '操作时间',
+      dataIndex: 'createTime',
+      width: 120,
+      hideInSearch: true,
+    },
   ];
 
   const handleOk = async () => {

@@ -72,6 +72,12 @@ export default defineConfig({
           component: './account/list',
           access: 'adminRouteFilter',
         },
+        {
+          name: 'account-banklist',
+          path: '/account/banklist',
+          component: './account/banklist',
+          access: 'adminRouteFilter',
+        },
         // {
         //   name: 'account-treeList',
         //   path: '/account/treeList',

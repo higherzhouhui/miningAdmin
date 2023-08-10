@@ -140,11 +140,8 @@ const TableList: React.FC = () => {
         rowKey="id"
         search={false}
         dateFormatter="string"
-        pagination={{
-          pageSize: 10,
-        }}
+        pagination={false}
         scroll={{
-          x: 1400,
           y: document?.body?.clientHeight - 390,
         }}
         request={async () => {

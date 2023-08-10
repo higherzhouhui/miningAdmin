@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/withdraw/getPageList', {
+  }>('/admin/user-card/getUserCardList', {
     method: 'GET',
     params: {
       ...params,
@@ -30,44 +30,27 @@ export async function rule(
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/admin/withdraw/withdrawAudit', {
+  return request<TableListItem>('/api/rule', {
     data,
-    method: 'POST',
+    method: 'PUT',
     ...(options || {}),
   });
 }
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/withdraw/withdrawAudit', {
+  return request<Record<string, any>>('/admin/user-card/updateCard', {
     data,
-    method: 'POST',
+    method: 'PUT',
     ...(options || {}),
   });
 }
 
-/** 删除规则 POST /api/rule */
-export async function removeRule(data: { ids: number[], auditStatus: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/withdraw/withdrawAudit`, {
+/** 删除规则 DELETE /api/rule */
+export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
+  return request<Record<string, any>>(`/admin/user/delete/${data.id}`, {
     data,
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-
-
-/** 获取规则列表 GET /api/rule */
-export async function getConfig() {
-  return request<any>('/admin/config/getConfig', {
-    method: 'GET',
-  });
-}
-
-/** 新建规则 PUT /api/rule */
-export async function updateConfig(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>('/admin/config/updateConfig', {
-    data,
-    method: 'POST',
+    method: 'DELETE',
     ...(options || {}),
   });
 }

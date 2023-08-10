@@ -1,4 +1,4 @@
-import { PageContainer } from '@ant-design/pro-layout';
+import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Form, Input, message, Modal, Popconfirm, Switch, Tag } from 'antd';
@@ -20,25 +20,25 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
-  selectedRows.forEach(async (row) => {
-    try {
-      const res = await removeRule({
-        id: row.id,
-      });
-      hide();
-      if (res.code === 200) {
-        message.success('删除成功，即将刷新');
-        if (actionRef) {
-          actionRef.current?.reloadAndRest?.();
-        }
+  const ids: any[] = []
+  selectedRows.map(item => {
+    ids.push(item.id)
+  })
+  try {
+    const res = await removeRule({ids: ids, auditStatus: 2});
+    hide();
+    if (res.code === 200) {
+      message.success('删除成功，即将刷新');
+      if (actionRef) {
+        actionRef.current?.reloadAndRest?.();
       }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('删除失败，请重试');
-      return false;
     }
-  });
+    return true;
+  } catch (error) {
+    hide();
+    message.error('删除失败，请重试');
+    return false;
+  }
   return true;
 };
 
@@ -60,8 +60,8 @@ const TableList: React.FC = () => {
     }
     const hide = message.loading('正在操作中...', 50);
     setLoading(true);
-    updateRule({
-      id: record.id,
+    removeRule({
+      ids: [record.id],
       auditStatus: ctype,
     })
       .then((res: any) => {
@@ -108,8 +108,9 @@ const TableList: React.FC = () => {
     {
       title: '姓名',
       dataIndex: 'name',
-      width: 120,
+      width: 100,
       hideInSearch: true,
+      fixed: 'left'
     },
     {
       title: '金额',
@@ -152,12 +153,6 @@ const TableList: React.FC = () => {
           status: 'Error',
         },
       },
-    },
-    {
-      title: '手续费',
-      dataIndex: 'serviceCharge',
-      width: 80,
-      hideInSearch: true,
     },
     {
       title: '资金来源',
@@ -208,7 +203,7 @@ const TableList: React.FC = () => {
       render: (_, record) => [
         record.auditStatus == 0 ? (
           <a key="access" onClick={() => showDetailModal(record, 1)}>
-            审核
+            通过
           </a>
         ) : null,
         // eslint-disable-next-line react/jsx-key
@@ -321,16 +316,9 @@ const TableList: React.FC = () => {
         }}
         pagination={{
           current: 1,
+          pageSizeOptions: [100, 500, 1000, 2000]
         }}
         dateFormatter="string"
-        headerTitle={
-          <div>
-            现金钱包提现：
-            <span style={{ color: baseConfig?.cashWithdraw ? '#000' : 'blue' }}>关</span>
-            <Switch checked={baseConfig?.cashWithdraw} onChange={(e) => handleChangeSwitch(e)} />
-            <span style={{ color: baseConfig?.cashWithdraw ? 'blue' : '#000' }}>开</span>
-          </div>
-        }
         toolBarRender={() => [
           <Button
             type="primary"
@@ -366,12 +354,46 @@ const TableList: React.FC = () => {
           };
         }}
         columns={columns}
-        // rowSelection={{
-        //   onChange: (_, selectedRows) => {
-        //     setSelectedRows(selectedRows);
-        //   },
-        // }}
+        rowSelection={{
+          onChange: (_, selectedRows) => {
+            setSelectedRows(selectedRows);
+          },
+        }}
       />
+      {selectedRowsState?.length > 0 && (
+        <FooterToolbar
+          extra={
+            <div>
+              已选择{' '}
+              <a
+                style={{
+                  fontWeight: 600,
+                }}
+              >
+                {selectedRowsState.length}
+              </a>{' '}
+              项 &nbsp;&nbsp;
+            </div>
+          }
+        >
+          <Popconfirm
+            title="确认驳回？"
+            onConfirm={async () => {
+              await handleRemove(selectedRowsState);
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+            onCancel={() => {
+              setSelectedRows([]);
+              actionRef.current?.reloadAndRest?.();
+            }}
+          >
+            <Button style={{ width: '100px' }}>
+              {selectedRowsState.length > 1 ? '批量驳回' : '驳回'}
+            </Button>
+          </Popconfirm>
+        </FooterToolbar>
+      )}
       <Modal
         title={currentRow?.id ? '修改' : '新增'}
         visible={createModalVisible}
