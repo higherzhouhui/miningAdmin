@@ -41,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
   return request<Record<string, any>>('/admin/user-card/updateCard', {
     data,
-    method: 'PUT',
+    method: 'POST',
     ...(options || {}),
   });
 }
