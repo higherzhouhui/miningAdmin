@@ -142,6 +142,7 @@ const TableList: React.FC = () => {
       title: '支付凭证',
       dataIndex: 'voucher',
       hideInSearch: true,
+      hideInTable: true,
       width: 130,
       render: (_, record) => {
         return (
@@ -171,10 +172,10 @@ const TableList: React.FC = () => {
           text: '支付宝',
           status: 'Success',
         },
-        3: {
-          text: '银行卡',
-          status: 'Default',
-        },
+        // 3: {
+        //   text: '银行卡',
+        //   status: 'Default',
+        // },
       },
     },
     {
@@ -190,6 +191,7 @@ const TableList: React.FC = () => {
       width: 120,
       fixed: 'right',
       hideInDescriptions: true,
+      hideInTable: true,
       render: (_, record) => [
         record.state == 0 && record.payType === 3 ? (
           <a
@@ -215,33 +217,7 @@ const TableList: React.FC = () => {
       ],
     },
   ];
-  const addNewNotice = () => {
-    setCurrentRow(Object.assign({}, {}));
-    handleModalVisible(true);
-    formRef?.current?.resetFields();
-  };
 
-  const handleOk = async () => {
-    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`);
-    try {
-      const res = await addRule(currentRow);
-      handleModalVisible(false);
-      hide();
-      if (res.code === 200) {
-        message.success('操作成功，即将刷新');
-        if (actionRef) {
-          actionRef.current?.reloadAndRest?.();
-        }
-      } else {
-        message.error(res.msg);
-      }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败，请重试');
-      return false;
-    }
-  };
   const handleChange = (value: any, attar: string) => {
     const newRow = currentRow;
     newRow[attar] = value;
@@ -288,6 +264,7 @@ const TableList: React.FC = () => {
         pagination={{
           current: 1,
         }}
+        size='small'
         search={{
           labelWidth: 90,
           //隐藏展开、收起
@@ -308,7 +285,7 @@ const TableList: React.FC = () => {
         dateFormatter="string"
         scroll={{
           x: 1000,
-          y: document?.body?.clientHeight - 470,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: any) => {
           const res: any = await rule({ ...params, pageNum: params.current });

@@ -79,10 +79,10 @@ const TableList: React.FC = () => {
       title: '图片',
       dataIndex: 'image',
       hideInSearch: true,
-      width: 130,
+      width: 120,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={50} height={50} style={{ objectFit: 'contain' }} />
         );
       },
     },
@@ -275,6 +275,7 @@ const TableList: React.FC = () => {
         pagination={{
           pageSize: 20,
         }}
+        size='small'
         scroll={{
           x: 1400,
           y: document?.body?.clientHeight - 420,

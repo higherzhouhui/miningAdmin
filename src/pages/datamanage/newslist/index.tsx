@@ -97,9 +97,10 @@ const TableList: React.FC = () => {
       title: '封面',
       dataIndex: 'image',
       hideInSearch: true,
+      width: 120,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={100} height={100} style={{ objectFit: 'contain' }} />
         );
       },
     },

@@ -114,6 +114,7 @@ const TableList: React.FC = () => {
       dataIndex: 'avatar',
       width: 130,
       hideInSearch: true,
+      hideInTable: true,
       render: (_, record) => {
         return (
           <>
@@ -258,27 +259,7 @@ const TableList: React.FC = () => {
     }
     return childCount; // 返回总子节点数量
   }
-  const buildTree = (data: any[], referrerId=1) => {
-    const result: any[] = [];
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].referrerId === referrerId) {
-        const node = {
-          ...data[i],
-          children: buildTree(data, data[i].id),
-          totalChildren: 0,
-        };
-        if (node.children && node.children.length === 0) {
-          delete node.children; // 删除空的 children 属性
-        }
-        if (node.children) {
-          node.totalChildren = getChildrenCount(node)
-        }
-        result.push(node);
-      }
-    }
-    return result
-  }
- 
+
   const handleOk = async () => {
     let param: any = {
       id: currentRow?.id,
@@ -359,9 +340,10 @@ const TableList: React.FC = () => {
         headerTitle={element}
         search={false}
         pagination={false}
+        size='small'
         scroll={{
-          x: 1800,
-          y: document.body.clientHeight - 350
+          x: 1700,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({...params, pageNum: params.current, userId: userId[userId.length - 1]});
@@ -397,7 +379,7 @@ const TableList: React.FC = () => {
         onCancel={() => handleModalVisible(false)}
         width={500}
       >
-                <ProForm formRef={formRef} submitter={false}>
+        <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
               <Form.Item label="手机号码">

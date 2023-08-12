@@ -168,6 +168,7 @@ const TableList: React.FC = () => {
           collapsed: false,
           collapseRender: () => false,
         }}
+        size='small'
         toolBarRender={() => [
           <Button
             type="primary"
@@ -184,7 +185,7 @@ const TableList: React.FC = () => {
         }}
         id="userMoney"
         scroll={{
-          y: document?.body?.clientHeight - 390,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: any) => {
           const res: any = await rule({ ...params, pageNum: params.current });

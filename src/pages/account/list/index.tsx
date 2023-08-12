@@ -65,7 +65,8 @@ const TableList: React.FC = () => {
     {
       title: '姓名',
       dataIndex: 'name',
-      width: 100,
+      width: 80,
+      fixed: 'left',
       tooltip: '点击可查看该用户详情',
       render: (dom, entity) => {
         return (
@@ -86,6 +87,7 @@ const TableList: React.FC = () => {
       dataIndex: 'avatar',
       width: 110,
       hideInSearch: true,
+      hideInTable: true,
       render: (_, record) => {
         return (
           <Image
@@ -255,41 +257,6 @@ const TableList: React.FC = () => {
       ],
     },
   ];
-  const getChildrenCount = (node: any) => {
-    if (!node || !node.children) {
-      // 如果没有子节点，则直接返回
-      return 0;
-    }
-    let childCount = node.children.length; // 子节点数量初始化为直接子节点数量
-    for (let i = 0; i < childCount; i++) {
-      // 递归获取每个直接子节点的子节点数量
-      childCount += getChildrenCount(node.children[i]);
-    }
-    return childCount; // 返回总子节点数量
-  };
-  const buildTree = (data: any[], referrerId = 1) => {
-    if (data.length === 1) {
-      return data;
-    }
-    const result: any[] = [];
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].referrerId === referrerId) {
-        const node = {
-          ...data[i],
-          children: buildTree(data, data[i].id),
-          totalChildren: 0,
-        };
-        if (node.children && node.children.length === 0) {
-          delete node.children; // 删除空的 children 属性
-        }
-        if (node.children) {
-          node.totalChildren = getChildrenCount(node);
-        }
-        result.push(node);
-      }
-    }
-    return result;
-  };
 
   const handleOk = async () => {
     let param: any = {
@@ -378,6 +345,7 @@ const TableList: React.FC = () => {
             导出Excel
           </Button>,
         ]}
+        size='small'
         search={{
           labelWidth: 90,
           //隐藏展开、收起
@@ -390,7 +358,7 @@ const TableList: React.FC = () => {
         }}
         scroll={{
           x: 2000,
-          y: document.body.clientHeight - 350,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });

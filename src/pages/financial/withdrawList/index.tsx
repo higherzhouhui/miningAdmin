@@ -308,6 +308,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="createTime"
         id="withdrawListIndex"
+        size='small'
         search={{
           labelWidth: 90,
           //隐藏展开、收起
@@ -331,7 +332,7 @@ const TableList: React.FC = () => {
         ]}
         scroll={{
           x: 1400,
-          y: document?.body?.clientHeight - 390,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });

@@ -128,6 +128,8 @@ const TableList: React.FC = () => {
           const arr = [
             { title: '今日新增用户', num: data?.todayUserNum },
             { title: '今日销售额', num: data?.todayBuyProjectSumPrice || 0 },
+            { title: '今日消费用户', num: data?.todayBuyProjectNumUser || 0 },
+            { title: '今日新增消费用户', num: data?.newBuyProjectNumUser || 0 },
             { title: '在线用户', num: data?.onLineUser || 0 },
             { title: '用户总数', num: data?.sumUserNum },
             { title: '消费总用户', num: data?.buyProjectNumUser },
@@ -309,7 +311,6 @@ const TableList: React.FC = () => {
       </div>
       <Radio.Group
         defaultValue={7}
-        size="large"
         onChange={(e) => handleChangeRadio(e)}
         buttonStyle="solid"
       >
@@ -317,7 +318,7 @@ const TableList: React.FC = () => {
         <Radio.Button value={15}>近半月</Radio.Button>
         <Radio.Button value={30}>近一个月</Radio.Button>
       </Radio.Group>
-      <Button size="large" type="default" onClick={() => initData()}>
+      <Button type="default" onClick={() => initData()}>
         <RedoOutlined /> 刷新
       </Button>
       <div className={style.userChart}>

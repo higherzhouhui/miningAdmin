@@ -99,7 +99,7 @@ const TableList: React.FC = () => {
       title: '项目名称',
       dataIndex: 'title',
       hideInSearch: true,
-      width: 200,
+      width: 100,
       render: (_, record) => {
         return <Tag color="success">{record.title}</Tag>;
       },
@@ -114,10 +114,10 @@ const TableList: React.FC = () => {
       title: '项目图',
       dataIndex: 'voucher',
       hideInSearch: true,
-      width: 130,
+      width: 120,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={50} style={{ objectFit: 'contain' }} />
         );
       },
     },
@@ -139,26 +139,6 @@ const TableList: React.FC = () => {
           text: '已完成',
           status: 'Success',
         },
-      },
-    },
-    {
-      title: '支付凭证',
-      dataIndex: 'voucher',
-      hideInSearch: true,
-      width: 130,
-      render: (_, record) => {
-        return (
-          <>
-            {record.payType === 3 ? (
-              <Image
-                src={record.voucher}
-                width={120}
-                height={120}
-                style={{ objectFit: 'contain' }}
-              />
-            ) : null}
-          </>
-        );
       },
     },
     {
@@ -189,56 +169,9 @@ const TableList: React.FC = () => {
       dataIndex: 'createTime',
       width: 150,
       hideInSearch: true,
-    },
-    {
-      title: '操作',
-      dataIndex: 'option',
-      valueType: 'option',
-      width: 120,
-      fixed: 'right',
-      hideInDescriptions: true,
-      render: (_, record) => [
-        record.state == 0 && record.payType === 3 ? (
-          <a
-            key="access"
-            onClick={() => {
-              setCurrentRow(record);
-              setShowDetail(true);
-            }}
-          >
-            审核
-          </a>
-        ) : null,
-      ],
-    },
-  ];
-  const addNewNotice = () => {
-    setCurrentRow(Object.assign({}, {}));
-    handleModalVisible(true);
-    formRef?.current?.resetFields();
-  };
-
-  const handleOk = async () => {
-    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`);
-    try {
-      const res = await addRule(currentRow);
-      handleModalVisible(false);
-      hide();
-      if (res.code === 200) {
-        message.success('操作成功，即将刷新');
-        if (actionRef) {
-          actionRef.current?.reloadAndRest?.();
-        }
-      } else {
-        message.error(res.msg);
-      }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败，请重试');
-      return false;
     }
-  };
+  ];
+
   const handleChange = (value: any, attar: string) => {
     const newRow = currentRow;
     newRow[attar] = value;

@@ -85,18 +85,17 @@ const TableList: React.FC = () => {
       tip: '唯一的 key',
       hideInTable: true,
     },
-    
-    {
-      title: '图标',
-      dataIndex: 'image',
-      width: 150,
-      hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <Image src={record.icon} width={120} height={120} style={{ objectFit: 'contain' }} />
-        );
-      },
-    },
+    // {
+    //   title: '图标',
+    //   dataIndex: 'image',
+    //   width: 150,
+    //   hideInSearch: true,
+    //   render: (_, record) => {
+    //     return (
+    //       <Image src={record.icon} width={120} height={120} style={{ objectFit: 'contain' }} />
+    //     );
+    //   },
+    // },
     {
       title: '邀请人数',
       dataIndex: 'inviteNum',
@@ -300,7 +299,7 @@ const TableList: React.FC = () => {
         onCancel={() => handleModalVisible(false)}
       >
         <ProForm formRef={formRef} submitter={false}>
-          <ProFormUploadButton
+          {/* <ProFormUploadButton
             label="选择图标"
             max={1}
             name="image"
@@ -310,7 +309,7 @@ const TableList: React.FC = () => {
           />
           <Form.Item label="">
             <Input value={currentRow?.icon} onChange={(e) => handleChange(e.target.value, 'icon')} />
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="邀请人数">
             <Input type='number' value={currentRow?.inviteNum} onChange={(e) => handleChange(e.target.value, 'inviteNum')} placeholder='请输入邀请人数'/>
           </Form.Item>

@@ -93,11 +93,11 @@ const TableList: React.FC = () => {
     {
       title: '图标',
       dataIndex: 'image',
-      width: 150,
+      width: 120,
       hideInSearch: true,
       render: (_, record) => {
         return (
-          <Image src={record.icon} width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src={record.icon} width={80} style={{ objectFit: 'contain' }} />
         );
       },
     },

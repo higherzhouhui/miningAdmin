@@ -218,6 +218,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
+        size='small'
         toolBarRender={() => [
           <Button
             type="primary"
@@ -239,7 +240,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          y: document.body.clientHeight - 350,
+          y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });
