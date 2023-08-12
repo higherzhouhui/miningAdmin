@@ -97,9 +97,7 @@ const TableList: React.FC = () => {
     {
       title: '交易单号',
       dataIndex: 'tradeNo',
-      width: 200,
-      hideInTable: true,
-      hideInSearch: true,
+      width: 130,
     },
     {
       title: '项目名称',
