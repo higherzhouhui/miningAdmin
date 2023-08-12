@@ -5,7 +5,7 @@ import type { ITongji, TableListItem } from './data';
 import { rule } from './service';
 import style from './style.less';
 import * as XLSX from 'xlsx';
-import { RedoOutlined, TableOutlined } from '@ant-design/icons';
+import { RedoOutlined } from '@ant-design/icons';
 import MyChartBox from '@/components/Mychart';
 
 const TableList: React.FC = () => {
@@ -15,11 +15,14 @@ const TableList: React.FC = () => {
   const [tongji, setTongji] = useState<ITongji[]>([
       { title: '今日新增用户', num: 0 },
       { title: '今日销售额', num: 0 },
+      { title: '今日消费用户', num: 0 },
+      { title: '今日新增消费用户', num: 0 },
       { title: '在线用户', num: 0 },
       { title: '用户总数', num: 0 },
       { title: '消费总用户', num: 0 },
       { title: '出款总额', num: 0 },
       { title: '销售总额', num: 0 },
+      
   ]);
   const [options, setOptions] = useState({})
   const [useroptions, setUserOptions] = useState({})

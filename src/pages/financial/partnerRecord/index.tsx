@@ -1,16 +1,17 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Image, Tag } from 'antd';
+import { Button, Form, Input, message, Modal, Image, Tag, Table, Drawer } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule, updateRule } from './service';
+import { getOrderCount, removeRule, rule, updateRule } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
 import { TableOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import moment from 'moment';
 /**
  * 删除节点
  *
@@ -53,6 +54,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const formRef = useRef<any>();
   const [loading, setLoading] = useState(false);
+  const [tongji, setTongji] = useState<any>({})
   const handleUpdateRecord = (record: TableListItem) => {
     if (loading) {
       return;
@@ -95,9 +97,30 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '时间范围',
+      dataIndex: 'time',
+      width: 120,
+      valueType: 'dateRange',
+      hideInTable: true,
+      hideInDescriptions: true,
+    },
+    {
       title: '交易单号',
       dataIndex: 'tradeNo',
       width: 130,
+      render: (dom, entity) => {
+        return (
+          <div
+            style={{color: 'blue', textDecoration: 'underLine'}}
+            onClick={() => {
+              setCurrentRow(entity);
+              setShowDetail(true);
+            }}
+          >
+            {dom}
+          </div>
+        );
+      },
     },
     {
       title: '项目名称',
@@ -143,6 +166,7 @@ const TableList: React.FC = () => {
       dataIndex: 'voucher',
       hideInSearch: true,
       hideInTable: true,
+      hideInDescriptions: true,
       width: 130,
       render: (_, record) => {
         return (
@@ -183,6 +207,13 @@ const TableList: React.FC = () => {
       dataIndex: 'createTime',
       width: 150,
       hideInSearch: true,
+    },
+    {
+      title: '支付时间',
+      dataIndex: 'paymentTime',
+      width: 150,
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '操作',
@@ -263,10 +294,12 @@ const TableList: React.FC = () => {
         rowKey="id"
         pagination={{
           current: 1,
+          pageSizeOptions: [50, 200, 500, 1000, 2000]
         }}
         size='small'
         search={{
-          labelWidth: 90,
+          labelWidth: 70,
+          span: 8,
           //隐藏展开、收起
           collapsed: false,
           collapseRender: () => false,
@@ -285,10 +318,21 @@ const TableList: React.FC = () => {
         dateFormatter="string"
         scroll={{
           x: 1000,
-          y: Math.max(400, document?.body?.clientHeight - 490),
+          y: 400,
         }}
         request={async (params: any) => {
-          const res: any = await rule({ ...params, pageNum: params.current });
+          const requestParams = { ...params, pageNum: params.current }
+          if (requestParams.time && requestParams.time.length) {
+            requestParams.startDate = moment(requestParams.time[0]).format('YYYY-MM-DD HH:mm:ss')
+            requestParams.endDate = moment(requestParams.time[1]).format('YYYY-MM-DD HH:mm:ss')
+            delete requestParams.time
+          }
+          getOrderCount(requestParams).then(res => {
+            if (res.code === 200) {
+              setTongji(res.data)
+            }
+          })
+          const res: any = await rule(requestParams);
           // (res?.data?.list || []).map((item: any) => {
           //   let status = '审核中'
           //   if (item.state == 1) {
@@ -320,6 +364,31 @@ const TableList: React.FC = () => {
         //     setSelectedRows(selectedRows);
         //   },
         // }}
+        summary={() => <Table.Summary fixed>
+          <Table.Summary.Row>
+            <Table.Summary.Cell index={0}>合计</Table.Summary.Cell>
+            <Table.Summary.Cell index={1}>
+              <p style={{fontSize: '12px'}}>总订单</p>
+              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.orderNum}</p>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <p style={{fontSize: '12px'}}>已支付订单</p>
+              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.payOrderNum}</p>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <p style={{fontSize: '12px'}}>总金额</p>
+              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.sumOrderPrice}</p>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <p style={{fontSize: '12px'}}>已支付金额</p>
+              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.payOrderPrice}</p>
+            </Table.Summary.Cell>
+            <Table.Summary.Cell index={2}>
+              <p style={{fontSize: '12px'}}>平均单价</p>
+              <p style={{fontSize: '12px', color: 'red'}}>{Math.round((tongji?.payOrderPrice || 0) / (tongji?.payOrderNum || 1))}</p>
+            </Table.Summary.Cell>
+          </Table.Summary.Row>
+        </Table.Summary>}
       />
       <Modal
         title={currentRow?.id ? '修改' : '新增'}
@@ -358,13 +427,10 @@ const TableList: React.FC = () => {
           </Form.Item>
         </ProForm>
       </Modal>
-      <Modal
+      <Drawer
         width={600}
         visible={showDetail}
-        title={'审核'}
-        onOk={() => handleUpdateRecord(currentRow)}
-        okText={stype == 1 ? '通过' : '驳回'}
-        onCancel={() => {
+        onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
@@ -383,7 +449,7 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-      </Modal>
+      </Drawer>
     </PageContainer>
   );
 };
