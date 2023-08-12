@@ -3,15 +3,15 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Tag, message } from 'antd';
-import React, { useRef, useState } from 'react';
+import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, Tag, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, rule, removeRule } from './service';
+import { addRule, rule, removeRule, getPartnerProject, createOrderRequest } from './service';
 import ProForm from '@ant-design/pro-form';
 import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
-import { DeleteOutlined, EditOutlined, FormOutlined, TableOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, FormOutlined, PlusOutlined, TableOutlined } from '@ant-design/icons';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -21,10 +21,12 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
   const [operationType, setOperationType] = useState('baseInfo');
+  const [partnerList, setPartnerList] = useState([])
+  const [projectId, setprojectId] = useState('')
   const titleMap = {
     baseInfo: '修改基本资料',
     resetPassword: '修改密码',
-    changeInvited: '修改上级邀请码',
+    addNewProject: '添加项目',
   };
   const handleUpdateRecord = (record: TableListItem, type: string) => {
     setOperationType(type);
@@ -45,6 +47,17 @@ const TableList: React.FC = () => {
       actionRef?.current?.reloadAndRest?.();
     }
   };
+
+  useEffect(() => {
+    getPartnerProject().then(res => {
+      if (res.code === 200) {
+        const list = res.data.filter((item: any) => {
+          return item.price !== 0
+        })
+        setPartnerList(list)
+      }
+    })
+  }, [])
 
   const columns: ProColumns<any>[] = [
     {
@@ -214,7 +227,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 160,
+      width: 220,
       hideInDescriptions: true,
       fixed: 'right',
       render: (_, record) => [
@@ -234,14 +247,14 @@ const TableList: React.FC = () => {
           <EditOutlined />
           密码
         </a>,
-        // <a
-        //   style={{ color: '#e03e0d' }}
-        //   key="changeInvited"
-        //   onClick={() => handleUpdateRecord(record, 'changeInvited')}
-        // >
-        //   <PartitionOutlined />
-        //   上级推荐码
-        // </a>,
+        <a
+          style={{ color: '#cf2960' }}
+          key="addProject"
+          onClick={() => handleUpdateRecord(record, 'addNewProject')}
+        >
+          <PlusOutlined />
+          添加项目
+        </a>,
         <Popconfirm
           title="确认删除该会员?"
           onConfirm={async () => {
@@ -285,16 +298,19 @@ const TableList: React.FC = () => {
         newPassword: currentRow?.newPassword,
       };
     }
-    // if (operationType === 'changeInvited') {
-    //   if (!currentRow?.referrerInviteCode) {
-    //     message.warning('请输入新的上级推荐码!');
-    //     return;
-    //   }
-    //   param = {
-    //     ...param,
-    //     referrerInviteCode: currentRow?.referrerInviteCode,
-    //   }
-    // }
+    if (operationType === 'addNewProject') {
+      const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
+      createOrderRequest({id: projectId, phone: currentRow?.mobilePhone}).then((res: any) => {
+        hide()
+        if (res.code === 200) {
+          handleModalVisible(false);
+          message.success(`给用户${currentRow?.mobilePhone}用户添加项目成功`);
+          actionRef.current?.reloadAndRest?.();
+          
+        }
+      })
+      return
+    }
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
       const res = await addRule(param);
@@ -357,7 +373,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 2000,
+          x: 2100,
           y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
@@ -427,14 +443,22 @@ const TableList: React.FC = () => {
                 />
               </Form.Item>
             </>
-          ) : operationType === 'changeInvited' ? (
+          ) : operationType === 'addNewProject' ? (
             <>
-              <Form.Item label="上级推荐码">
+              <Form.Item label="手机号">
                 <Input
-                  value={currentRow?.referrerInviteCode}
-                  onChange={(e) => handleChange(e.target.value, 'referrerInviteCode')}
-                  placeholder="请输入上级推荐码"
+                  value={currentRow?.mobilePhone}
+                  readOnly
                 />
+              </Form.Item>
+              <Form.Item label="项目名">
+                <Select value={projectId} onChange={(e) => setprojectId(e)}>
+                  {
+                    partnerList.map((item: any) => {
+                      return <Select.Option key={item.id}>{item.name}</Select.Option>
+                    })
+                  }
+                </Select>
               </Form.Item>
             </>
           ) : null}

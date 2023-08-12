@@ -54,3 +54,21 @@ export async function removeRule(data: { id: number }, options?: { [key: string]
     ...(options || {}),
   });
 }
+
+
+/** 获取规则列表 GET /api/rule */
+export async function getPartnerProject() {
+  return request<any>('/admin/user_level/getProjectList', {
+    method: 'GET',
+    params: {pageNum: 1, pageSize: 20},
+  });
+}
+
+/** 创建订单 PUT /api/rule */
+export async function createOrderRequest(data: { [key: string]: any }, options?: { [key: string]: any }) {
+  return request<TableListItem>('/admin/order/createOrder', {
+    data,
+    method: 'POST',
+    ...(options || {}),
+  });
+}

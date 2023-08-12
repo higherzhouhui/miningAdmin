@@ -196,6 +196,10 @@ const TableList: React.FC = () => {
           text: '支付宝',
           status: 'Success',
         },
+        4: {
+          text: '系统操作',
+          status: 'warning',
+        },
         // 3: {
         //   text: '银行卡',
         //   status: 'Default',
