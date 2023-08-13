@@ -101,7 +101,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={120} height={120} style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={80}style={{ objectFit: 'contain' }} />
         );
       },
     },

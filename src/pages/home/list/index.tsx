@@ -15,11 +15,10 @@ const TableList: React.FC = () => {
   const [tongji, setTongji] = useState<ITongji[]>([
       { title: '今日新增用户', num: 0 },
       { title: '今日销售额', num: 0 },
-      { title: '今日消费用户', num: 0 },
+      { title: '消费总用户', num: 0 },
       { title: '今日新增消费用户', num: 0 },
       { title: '在线用户', num: 0 },
       { title: '用户总数', num: 0 },
-      { title: '消费总用户', num: 0 },
       { title: '出款总额', num: 0 },
       { title: '销售总额', num: 0 },
       
@@ -131,11 +130,10 @@ const TableList: React.FC = () => {
           const arr = [
             { title: '今日新增用户', num: data?.todayUserNum },
             { title: '今日销售额', num: data?.todayBuyProjectSumPrice || 0 },
-            { title: '今日消费用户', num: data?.todayBuyProjectNumUser || 0 },
+            { title: '消费总用户', num: data?.buyProjectNumUser },
             { title: '今日新增消费用户', num: data?.newBuyProjectNumUser || 0 },
             { title: '在线用户', num: data?.onLineUser || 0 },
             { title: '用户总数', num: data?.sumUserNum },
-            { title: '消费总用户', num: data?.buyProjectNumUser },
             { title: '出款总额', num: data?.withdrawSumPrice },
             { title: '销售总额', num: data?.buyProjectSumPrice },
           ];
