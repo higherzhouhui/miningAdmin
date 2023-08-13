@@ -35,6 +35,9 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
   const routeToChildren = (record: TableListItem) => {
+    if (!record.inviteNum) {
+      return
+    }
     localStorage.setItem('childrenObj', JSON.stringify({userId: record.userId, name: record.name}))
     history.push(`/account/children?userId=${record.userId}&name=${record.name}`);
   };

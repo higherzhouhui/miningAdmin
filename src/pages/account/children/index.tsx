@@ -84,6 +84,9 @@ const TableList: React.FC = () => {
   }, [])
 
   const handleNextLevel = (record: any) => {
+    if (!record.inviteNum) {
+      return
+    }
     const users = [...userId]
     const names = [...userName]
     users.push(record.userId)

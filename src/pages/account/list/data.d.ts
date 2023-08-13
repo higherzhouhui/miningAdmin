@@ -12,7 +12,9 @@ export type TableListItem = {
   mobilePhone: string;
   totalChildren?: number;
   userId?: string;
+  inviteNum: number;
 };
+
 
 export interface TableListPagination extends TableListItem{
   pageSize: number;
