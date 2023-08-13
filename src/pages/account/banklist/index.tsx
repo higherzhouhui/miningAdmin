@@ -56,10 +56,9 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '姓名',
-      dataIndex: 'name',
-      width: 100,
-      hideInSearch: true,
+      title: '手机号',
+      dataIndex: 'phone',
+      width: 110,
       tooltip: '点击可查看该用户详情',
       render: (dom, entity) => {
         return (
@@ -76,9 +75,10 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
-      width: 110,
+      title: '姓名',
+      dataIndex: 'name',
+      width: 100,
+      hideInSearch: true,
     },
     {
       title: '银行名称',

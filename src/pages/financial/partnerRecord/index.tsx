@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <div
-            style={{color: 'blue', textDecoration: 'underLine'}}
+            style={{color: 'blue', textDecoration: 'underLine', cursor: 'pointer'}}
             onClick={() => {
               setCurrentRow(entity);
               setShowDetail(true);

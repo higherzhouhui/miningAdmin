@@ -35,6 +35,7 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
   const routeToChildren = (record: TableListItem) => {
+    localStorage.setItem('childrenObj', JSON.stringify({userId: record.userId, name: record.name}))
     history.push(`/account/children?userId=${record.userId}&name=${record.name}`);
   };
 
@@ -76,9 +77,9 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '姓名',
-      dataIndex: 'name',
-      width: 80,
+      title: '手机号',
+      dataIndex: 'mobilePhone',
+      width: 100,
       fixed: 'left',
       tooltip: '点击可查看该用户详情',
       render: (dom, entity) => {
@@ -94,6 +95,11 @@ const TableList: React.FC = () => {
           </div>
         );
       },
+    },
+    {
+      title: '姓名',
+      dataIndex: 'name',
+      width: 80,
     },
     {
       title: '头像',
@@ -132,21 +138,16 @@ const TableList: React.FC = () => {
     {
       title: '下级会员',
       dataIndex: 'totalChildren',
-      width: 110,
+      width: 90,
       tooltip: '点击可查看下级会员',
       hideInSearch: true,
       render: (_, record) => {
         return (
           <div className={style.link} onClick={() => routeToChildren(record)}>
-            {record.totalChildren !== undefined ? record.totalChildren : '查看下级会员'}
+            {record.inviteNum}
           </div>
         );
       },
-    },
-    {
-      title: '手机号',
-      dataIndex: 'mobilePhone',
-      width: 110,
     },
     {
       title: '身份证号',

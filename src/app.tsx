@@ -66,7 +66,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
+      if (!initialState?.currentUser && !location.pathname.includes(loginPath)) {
         history.push(loginPath);
       }
     },
@@ -77,7 +77,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     childrenRender: (children) => {
       return (
         <>
-          {initialState?.currentUser && location.pathname !== loginPath ? (
+          {initialState?.currentUser && !location.pathname.includes(loginPath) ? (
             <TagView home="/home/list">{children}</TagView>
           ) : (
             children
