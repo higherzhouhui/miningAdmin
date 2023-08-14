@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Form, Input, message, Modal, Popconfirm, Switch, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule, updateRule, getConfig, updateConfig } from './service';
+import { addRule, removeRule, rule, getConfig, updateConfig } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
 import * as XLSX from 'xlsx';
@@ -222,31 +222,23 @@ const TableList: React.FC = () => {
   };
 
   const handleOk = async () => {
-    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`);
-    try {
-      const res = await addRule(currentRow);
-      handleModalVisible(false);
-      hide();
+    const hide = message.loading(`正在修改中...`, 50);
+    updateConfig(baseConfig).then((res) => {
+      hide()
       if (res.code === 200) {
-        message.success('操作成功，即将刷新');
-        if (actionRef) {
-          actionRef.current?.reloadAndRest?.();
-        }
+        message.success('修改成功！')
+        handleModalVisible(false)
       } else {
-        message.error(res.msg);
+        message.error(res?.message || res?.msg);
       }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('操作失败，请重试');
-      return false;
-    }
+    });
   };
   const handleChange = (value: any, attar: string) => {
     const newRow = currentRow;
     newRow[attar] = value;
     setCurrentRow(Object.assign({}, newRow));
   };
+
   const Upload = {
     //数量
     maxCount: 1,
@@ -293,10 +285,20 @@ const TableList: React.FC = () => {
   const getBaseConfig = () => {
     getConfig().then((res) => {
       if (res.code === 200) {
-        setBaseConfig({ id: res?.data?.id, cashWithdraw: res?.data?.cashWithdraw });
+        setBaseConfig({ id: res?.data?.id, payPrice: res?.data?.payPrice });
       }
     });
   };
+
+  const handleShowConfig = () => {
+    handleModalVisible(true)
+  }
+
+  const handleChangeConfig = (value: any, attar: string,) => {
+    const newRow = JSON.parse(JSON.stringify(baseConfig))
+    newRow[attar] = value;
+    setBaseConfig(newRow);
+  }
 
   useEffect(() => {
     getBaseConfig();
@@ -319,6 +321,7 @@ const TableList: React.FC = () => {
           current: 1,
           pageSizeOptions: [100, 500, 1000, 2000]
         }}
+        headerTitle={<Button type='primary' onClick={() => handleShowConfig()}>提现税配置</Button>}
         dateFormatter="string"
         toolBarRender={() => [
           <Button
@@ -396,37 +399,17 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
       <Modal
-        title={currentRow?.id ? '修改' : '新增'}
+        title='提现税配置'
         visible={createModalVisible}
         onOk={() => handleOk()}
         onCancel={() => handleModalVisible(false)}
       >
         <ProForm formRef={formRef} submitter={false}>
-          <ProFormUploadButton
-            label="选择图片"
-            max={1}
-            name="image"
-            fieldProps={{
-              ...Upload,
-            }}
-          />
-          {currentRow?.icon ? (
-            <Form.Item label="">
-              <Input value={currentRow?.icon} readOnly />
-            </Form.Item>
-          ) : null}
-          <Form.Item label="邀请人数">
+          <Form.Item label="税额">
             <Input
               type="number"
-              value={currentRow?.inviteNum}
-              onChange={(e) => handleChange(e.target.value, 'inviteNum')}
-            />
-          </Form.Item>
-          <Form.Item label="奖励">
-            <Input
-              type="number"
-              value={currentRow?.amount}
-              onChange={(e) => handleChange(e.target.value, 'amount')}
+              value={baseConfig?.payPrice}
+              onChange={(e) => handleChangeConfig(e.target.value, 'payPrice')}
             />
           </Form.Item>
         </ProForm>
