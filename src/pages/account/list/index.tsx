@@ -133,7 +133,6 @@ const TableList: React.FC = () => {
     {
       title: '已实名认证',
       dataIndex: 'authenticated',
-      hideInSearch: true,
       width: 120,
       valueEnum: {
         true: {
@@ -142,7 +141,7 @@ const TableList: React.FC = () => {
         },
         false: {
           text: '否',
-          status: 'errror',
+          status: 'error',
         },
       },
     },
