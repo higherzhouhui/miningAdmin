@@ -11,7 +11,13 @@ import ProForm from '@ant-design/pro-form';
 import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
-import { DeleteOutlined, EditOutlined, FormOutlined, PlusOutlined, TableOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  FormOutlined,
+  PlusOutlined,
+  TableOutlined,
+} from '@ant-design/icons';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -21,8 +27,8 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
   const [operationType, setOperationType] = useState('baseInfo');
-  const [partnerList, setPartnerList] = useState([])
-  const [projectId, setprojectId] = useState('')
+  const [partnerList, setPartnerList] = useState([]);
+  const [projectId, setprojectId] = useState('');
   const titleMap = {
     baseInfo: '修改基本资料',
     resetPassword: '修改密码',
@@ -36,9 +42,12 @@ const TableList: React.FC = () => {
   };
   const routeToChildren = (record: TableListItem) => {
     if (!record.inviteNum) {
-      return
+      return;
     }
-    localStorage.setItem('childrenObj', JSON.stringify({userId: record.userId, name: record.name}))
+    localStorage.setItem(
+      'childrenObj',
+      JSON.stringify({ userId: record.userId, name: record.name }),
+    );
     history.push(`/account/children?userId=${record.userId}&name=${record.name}`);
   };
 
@@ -53,15 +62,15 @@ const TableList: React.FC = () => {
   };
 
   useEffect(() => {
-    getPartnerProject().then(res => {
+    getPartnerProject().then((res) => {
       if (res.code === 200) {
         const list = res.data.filter((item: any) => {
-          return item.price !== 0
-        })
-        setPartnerList(list)
+          return item.price !== 0;
+        });
+        setPartnerList(list);
       }
-    })
-  }, [])
+    });
+  }, []);
 
   const columns: ProColumns<any>[] = [
     {
@@ -122,20 +131,19 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '是否实名认证',
+      title: '已实名认证',
       dataIndex: 'authenticated',
       hideInSearch: true,
       width: 120,
-      render: (_, record) => {
-        return (
-          <>
-            {record.authenticated ? (
-              <Tag color="#87d068">已实名</Tag>
-            ) : (
-              <Tag color="#f50">未实名</Tag>
-            )}
-          </>
-        );
+      valueEnum: {
+        true: {
+          text: '是',
+          status: 'success',
+        },
+        false: {
+          text: '否',
+          status: 'errror',
+        },
       },
     },
     {
@@ -304,16 +312,15 @@ const TableList: React.FC = () => {
     }
     if (operationType === 'addNewProject') {
       const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
-      createOrderRequest({id: projectId, phone: currentRow?.mobilePhone}).then((res: any) => {
-        hide()
+      createOrderRequest({ id: projectId, phone: currentRow?.mobilePhone }).then((res: any) => {
+        hide();
         if (res.code === 200) {
           handleModalVisible(false);
           message.success(`给用户${currentRow?.mobilePhone}用户添加项目成功`);
           actionRef.current?.reloadAndRest?.();
-          
         }
-      })
-      return
+      });
+      return;
     }
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
@@ -365,7 +372,7 @@ const TableList: React.FC = () => {
             导出Excel
           </Button>,
         ]}
-        size='small'
+        size="small"
         search={{
           labelWidth: 90,
           //隐藏展开、收起
@@ -450,18 +457,13 @@ const TableList: React.FC = () => {
           ) : operationType === 'addNewProject' ? (
             <>
               <Form.Item label="手机号">
-                <Input
-                  value={currentRow?.mobilePhone}
-                  readOnly
-                />
+                <Input value={currentRow?.mobilePhone} readOnly />
               </Form.Item>
               <Form.Item label="项目名">
                 <Select value={projectId} onChange={(e) => setprojectId(e)}>
-                  {
-                    partnerList.map((item: any) => {
-                      return <Select.Option key={item.id}>{item.name}</Select.Option>
-                    })
-                  }
+                  {partnerList.map((item: any) => {
+                    return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                  })}
                 </Select>
               </Form.Item>
             </>
