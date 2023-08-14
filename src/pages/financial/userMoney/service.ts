@@ -55,3 +55,15 @@ export async function removeRule(data: { id: number }, options?: { [key: string]
     ...(options || {}),
   });
 }
+
+/** 新建规则 POST /api/rule */
+export async function changeAmountRequest(
+  data: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
+  return request<Record<string, any>>('/admin/user-wallet/recharge', {
+    data,
+    method: 'POST',
+    ...(options || {}),
+  });
+}
