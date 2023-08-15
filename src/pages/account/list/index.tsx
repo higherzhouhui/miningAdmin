@@ -113,6 +113,7 @@ const TableList: React.FC = () => {
       dataIndex: 'name',
       width: 80,
     },
+
     {
       title: '头像',
       dataIndex: 'avatar',
@@ -128,6 +129,21 @@ const TableList: React.FC = () => {
             style={{ objectFit: 'contain' }}
           />
         );
+      },
+    },
+    {
+      title: '税费缴纳状态',
+      dataIndex: 'isPay',
+      width: 100,
+      valueEnum: {
+        false: {
+          text: '未支付',
+          status: 'error',
+        },
+        true: {
+          text: '已支付',
+          status: 'success',
+        },
       },
     },
     {
@@ -383,7 +399,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 2100,
+          x: 2200,
           y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
