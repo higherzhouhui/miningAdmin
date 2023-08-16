@@ -18,14 +18,14 @@ request.interceptors.request.use((url, options) => {
   options.timeout = 500000;
   // 本地访问需要做代理，否则会跨域；线上生成由于ng没有反向代理，就直连接口，而且是同一个域下的
   const { NODE_ENV } = process.env;
-  let baseUrl = 'http://8.218.54.23'
-  let before = '/admin-service'
+  let baseUrl = 'http://port.zgky.shop';
+  let before = '/admin-service';
   if (NODE_ENV === 'development') {
-    baseUrl = ''
+    baseUrl = '';
   }
   if (url.includes('upload-service')) {
-    before = ''
-    baseUrl = 'http://8.218.54.23'
+    before = '';
+    baseUrl = 'http://port.zgky.shop';
   }
 
   return {
@@ -42,7 +42,7 @@ request.interceptors.response.use(async (response, options) => {
   if (data.code !== 200) {
     message.error(data.message || data.msg);
     if (data.code === 401) {
-      location.href = '/user/login'
+      location.href = '/user/login';
       localStorage.removeItem('Access-Token');
       localStorage.removeItem('x-user-id');
     }
