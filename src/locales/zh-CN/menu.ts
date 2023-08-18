@@ -45,7 +45,7 @@ export default {
   'menu.financial': '财务管理',
   'menu.financial.withdrawList': '提现审核',
   'menu.financial.transaction': '挖矿记录',
-  'menu.financial.partnerRecord': '合伙人',
+  'menu.financial.partnerRecord': '订单',
   'menu.financial.withdrawType': '钱包类型',
   'menu.financial.bankAccount': '收款银行账户',
   'menu.financial.userAccountList': '交易记录',

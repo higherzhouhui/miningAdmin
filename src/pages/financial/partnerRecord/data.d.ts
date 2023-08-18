@@ -14,6 +14,7 @@ export type TableListItem = {
   state: number;
   payType: number;
   title: number;
+  orderType: number;
 };
 
 export type TableListPagination = {

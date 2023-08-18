@@ -54,7 +54,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const formRef = useRef<any>();
   const [loading, setLoading] = useState(false);
-  const [tongji, setTongji] = useState<any>({})
+  const [tongji, setTongji] = useState<any>({});
   const handleUpdateRecord = (record: TableListItem) => {
     if (loading) {
       return;
@@ -111,7 +111,7 @@ const TableList: React.FC = () => {
       render: (dom, entity) => {
         return (
           <div
-            style={{color: 'blue', textDecoration: 'underLine', cursor: 'pointer'}}
+            style={{ color: 'blue', textDecoration: 'underLine', cursor: 'pointer' }}
             onClick={() => {
               setCurrentRow(entity);
               setShowDetail(true);
@@ -128,7 +128,9 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       width: 110,
       render: (_, record) => {
-        return <Tag color="success">{record.name}</Tag>;
+        return (
+          <Tag color="success">{record.orderType == 1 ? `合伙人-${record.name}` : '纳税'}</Tag>
+        );
       },
     },
     {
@@ -141,6 +143,20 @@ const TableList: React.FC = () => {
       title: '手机号',
       dataIndex: 'phone',
       width: 130,
+    },
+    {
+      title: '订单类型',
+      dataIndex: 'orderType',
+      width: 130,
+      hideInTable: true,
+      valueEnum: {
+        1: {
+          text: '合伙人',
+        },
+        2: {
+          text: '纳税',
+        },
+      },
     },
     {
       title: '状态',
@@ -298,9 +314,9 @@ const TableList: React.FC = () => {
         rowKey="id"
         pagination={{
           current: 1,
-          pageSizeOptions: [50, 200, 500, 1000, 2000]
+          pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
-        size='small'
+        size="small"
         search={{
           labelWidth: 70,
           span: 8,
@@ -325,17 +341,17 @@ const TableList: React.FC = () => {
           y: 400,
         }}
         request={async (params: any) => {
-          const requestParams = { ...params, pageNum: params.current }
+          const requestParams = { ...params, pageNum: params.current };
           if (requestParams.time && requestParams.time.length) {
-            requestParams.startDate = moment(requestParams.time[0]).format('YYYY-MM-DD HH:mm:ss')
-            requestParams.endDate = moment(requestParams.time[1]).format('YYYY-MM-DD HH:mm:ss')
-            delete requestParams.time
+            requestParams.startDate = moment(requestParams.time[0]).format('YYYY-MM-DD HH:mm:ss');
+            requestParams.endDate = moment(requestParams.time[1]).format('YYYY-MM-DD HH:mm:ss');
+            delete requestParams.time;
           }
-          getOrderCount(requestParams).then(res => {
+          getOrderCount(requestParams).then((res) => {
             if (res.code === 200) {
-              setTongji(res.data)
+              setTongji(res.data);
             }
-          })
+          });
           const res: any = await rule(requestParams);
           // (res?.data?.list || []).map((item: any) => {
           //   let status = '审核中'
@@ -368,31 +384,35 @@ const TableList: React.FC = () => {
         //     setSelectedRows(selectedRows);
         //   },
         // }}
-        summary={() => <Table.Summary fixed>
-          <Table.Summary.Row>
-            <Table.Summary.Cell index={0}>合计</Table.Summary.Cell>
-            <Table.Summary.Cell index={1}>
-              <p style={{fontSize: '12px'}}>总订单</p>
-              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.orderNum}</p>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <p style={{fontSize: '12px'}}>已支付订单</p>
-              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.payOrderNum}</p>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <p style={{fontSize: '12px'}}>总金额</p>
-              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.sumOrderPrice}</p>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <p style={{fontSize: '12px'}}>已支付金额</p>
-              <p style={{fontSize: '12px', color: 'red'}}>{tongji?.payOrderPrice}</p>
-            </Table.Summary.Cell>
-            <Table.Summary.Cell index={2}>
-              <p style={{fontSize: '12px'}}>平均单价</p>
-              <p style={{fontSize: '12px', color: 'red'}}>{Math.round((tongji?.payOrderPrice || 0) / (tongji?.payOrderNum || 1))}</p>
-            </Table.Summary.Cell>
-          </Table.Summary.Row>
-        </Table.Summary>}
+        summary={() => (
+          <Table.Summary fixed>
+            <Table.Summary.Row>
+              <Table.Summary.Cell index={0}>合计</Table.Summary.Cell>
+              <Table.Summary.Cell index={1}>
+                <p style={{ fontSize: '12px' }}>总订单</p>
+                <p style={{ fontSize: '12px', color: 'red' }}>{tongji?.orderNum}</p>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>
+                <p style={{ fontSize: '12px' }}>已支付订单</p>
+                <p style={{ fontSize: '12px', color: 'red' }}>{tongji?.payOrderNum}</p>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>
+                <p style={{ fontSize: '12px' }}>总金额</p>
+                <p style={{ fontSize: '12px', color: 'red' }}>{tongji?.sumOrderPrice}</p>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>
+                <p style={{ fontSize: '12px' }}>已支付金额</p>
+                <p style={{ fontSize: '12px', color: 'red' }}>{tongji?.payOrderPrice}</p>
+              </Table.Summary.Cell>
+              <Table.Summary.Cell index={2}>
+                <p style={{ fontSize: '12px' }}>平均单价</p>
+                <p style={{ fontSize: '12px', color: 'red' }}>
+                  {Math.round((tongji?.payOrderPrice || 0) / (tongji?.payOrderNum || 1))}
+                </p>
+              </Table.Summary.Cell>
+            </Table.Summary.Row>
+          </Table.Summary>
+        )}
       />
       <Modal
         title={currentRow?.id ? '修改' : '新增'}

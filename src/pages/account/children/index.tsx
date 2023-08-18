@@ -8,7 +8,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { addRule, createOrderRequest, getPartnerProject, removeRule, rule } from './service';
 import ProForm from '@ant-design/pro-form';
-import style from './style.less'
+import style from './style.less';
 import { history, useLocation } from 'umi';
 import { isArray } from 'lodash';
 import Popconfirm from 'antd/es/popconfirm';
@@ -16,18 +16,18 @@ import { DeleteOutlined, EditOutlined, FormOutlined, PlusOutlined } from '@ant-d
 
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
-  const [showDetail, setShowDetail] = useState(false)
-  const [currentRow, setCurrentRow] = useState<any>()
-  const [total, setTotal] = useState(0)
+  const [showDetail, setShowDetail] = useState(false);
+  const [currentRow, setCurrentRow] = useState<any>();
+  const [total, setTotal] = useState(0);
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
-  const formRef = useRef<any>()
-  const location = useLocation()
-  const [userId, setUserId] = useState([''])
-  const [userName, setUserName] = useState([''])
+  const formRef = useRef<any>();
+  const location = useLocation();
+  const [userId, setUserId] = useState(['']);
+  const [userName, setUserName] = useState(['']);
   const [operationType, setOperationType] = useState('baseInfo');
-  const [partnerList, setPartnerList] = useState([])
-  const [projectId, setprojectId] = useState('')
+  const [partnerList, setPartnerList] = useState([]);
+  const [projectId, setprojectId] = useState('');
   const titleMap = {
     baseInfo: '修改基本资料',
     resetPassword: '修改密码',
@@ -40,26 +40,26 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
   const getUserId = () => {
-    let id = (location as any).query.userId
-    let name = (location as any).query.name
+    let id = (location as any).query.userId;
+    let name = (location as any).query.name;
     if (id && name) {
       if (typeof id === 'string') {
-        setUserId([id])
-        setUserName([name])
+        setUserId([id]);
+        setUserName([name]);
       } else if (isArray(id)) {
-        setUserId(id)
-        setUserName(name)
+        setUserId(id);
+        setUserName(name);
       }
     } else {
-      const obj = JSON.parse(localStorage.getItem('childrenObj') || '{}')
-      id = obj.userId
-      name = obj.name
-      setUserId([id])
-      setUserName([name])
+      const obj = JSON.parse(localStorage.getItem('childrenObj') || '{}');
+      id = obj.userId;
+      name = obj.name;
+      setUserId([id]);
+      setUserName([name]);
     }
 
     actionRef.current?.reloadAndRest?.();
-  }
+  };
 
   const handleRemove = async (myuserId: number) => {
     const hide = message.loading('正在删除...');
@@ -72,66 +72,41 @@ const TableList: React.FC = () => {
   };
 
   useEffect(() => {
-    getUserId()
-    getPartnerProject().then(res => {
+    getUserId();
+    getPartnerProject().then((res) => {
       if (res.code === 200) {
         const list = res.data.filter((item: any) => {
-          return item.price !== 0
-        })
-        setPartnerList(list)
+          return item.price !== 0;
+        });
+        setPartnerList(list);
       }
-    })
-  }, [])
+    });
+  }, []);
 
   const handleNextLevel = (record: any) => {
     if (!record.inviteNum) {
-      return
+      return;
     }
-    const users = [...userId]
-    const names = [...userName]
-    users.push(record.userId)
-    names.push(record.name)
-    setUserId(users)
-    setUserName(names)
+    const users = [...userId];
+    const names = [...userName];
+    users.push(record.userId);
+    names.push(record.name);
+    setUserId(users);
+    setUserName(names);
     setTimeout(() => {
       actionRef?.current?.reloadAndRest?.();
-    }, 100)
-  }
+    }, 100);
+  };
 
   const handlePreLevel = () => {
-    userId.pop()
-    userName.pop()
-    setUserId([...userId])
-    setUserName([...userName])
+    userId.pop();
+    userName.pop();
+    setUserId([...userId]);
+    setUserName([...userName]);
     setTimeout(() => {
       actionRef?.current?.reloadAndRest?.();
-    }, 100)
-  }
-
-  const routeToChildren = (id: string, name: string, type?: number) => {
-    if (type === userId.length - 1) {
-      return
-    }
-    if (type || type === 0) {
-      const ids = userId.splice(0, type + 1)
-      let path = location.pathname
-      if (ids.length > 1) {
-        ids.forEach((item, index) => {
-          if (index === 0) {
-            path += `?userId=${item}&name=${userName[index]}`
-          } else {
-            path += `&userId=${item}&name=${userName[index]}`
-          }
-        })
-      } else {
-        path += `?userId=${ids[0]}&name=${userName[0]}`
-      }
-      history.push(path)
-      return
-    } else {
-      history.push(`${location.pathname}${location.search}&userId=${id}&name=${name}`)
-    }
-  }
+    }, 100);
+  };
 
   const columns: ProColumns<any>[] = [
     {
@@ -337,7 +312,6 @@ const TableList: React.FC = () => {
       ],
     },
   ];
- 
 
   const handleOk = async () => {
     let param: any = {
@@ -368,16 +342,15 @@ const TableList: React.FC = () => {
     }
     if (operationType === 'addNewProject') {
       const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
-      createOrderRequest({id: projectId, phone: currentRow?.mobilePhone}).then((res: any) => {
-        hide()
+      createOrderRequest({ id: projectId, phone: currentRow?.mobilePhone }).then((res: any) => {
+        hide();
         if (res.code === 200) {
           handleModalVisible(false);
           message.success(`给用户${currentRow?.mobilePhone}用户添加项目成功`);
           actionRef.current?.reloadAndRest?.();
-          
         }
-      })
-      return
+      });
+      return;
     }
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
@@ -401,21 +374,34 @@ const TableList: React.FC = () => {
   };
 
   const handleChange = (value: any, attar: string) => {
-    const newRow = Object.assign({}, currentRow)
-    newRow[attar] = value
-    setCurrentRow(newRow)
-  }
+    const newRow = Object.assign({}, currentRow);
+    newRow[attar] = value;
+    setCurrentRow(newRow);
+  };
 
-  const element = <div>
-    {
-      userId.map((item, index) => {
-        return <><span key={item} className={style.link}>{userName[index] || userId[index]}</span><span>{userId.length - 1 === index ? `的下一级会员:${total}` : '—>'}</span></>
-      })
-    }
-  </div>
+  const element = (
+    <div>
+      {userId.map((item, index) => {
+        return (
+          <>
+            <span key={item} className={style.link}>
+              {userName[index] || userId[index]}
+            </span>
+            <span>{userId.length - 1 === index ? `的下一级会员:${total}` : '—>'}</span>
+          </>
+        );
+      })}
+    </div>
+  );
 
   return (
-    <PageContainer subTitle={<div className={style.link} onClick={() => history.push('/account/list')}>返回会员列表</div>}>
+    <PageContainer
+      subTitle={
+        <div className={style.link} onClick={() => history.push('/account/list')}>
+          返回会员列表
+        </div>
+      }
+    >
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="mobilePhone"
@@ -423,16 +409,20 @@ const TableList: React.FC = () => {
         headerTitle={element}
         search={false}
         pagination={false}
-        size='small'
+        size="small"
         scroll={{
           x: 2100,
           y: Math.max(400, document?.body?.clientHeight - 350),
         }}
         request={async (params: TableListPagination) => {
-          const res: any = await rule({...params, pageNum: params.current, userId: userId[userId.length - 1]});
-          let data: any = []
-          data = res?.data
-          setTotal(res?.data?.length)
+          const res: any = await rule({
+            ...params,
+            pageNum: params.current,
+            userId: userId[userId.length - 1],
+          });
+          let data: any = [];
+          data = res?.data;
+          setTotal(res?.data?.length);
           return {
             data: data,
             page: res?.data?.pageNum,
@@ -445,8 +435,8 @@ const TableList: React.FC = () => {
           <Button
             type="primary"
             key="primary"
-            size='small'
-            style={{display: userId.length > 1 ? 'block' : 'none'}}
+            size="small"
+            style={{ display: userId.length > 1 ? 'block' : 'none' }}
             onClick={() => handlePreLevel()}
           >
             返回上一级
@@ -485,7 +475,7 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.referrerInviteCode}
                   onChange={(e) => handleChange(e.target.value, 'referrerInviteCode')}
-                  placeholder='请输入上级推荐码'
+                  placeholder="请输入上级推荐码"
                 />
               </Form.Item>
             </>
@@ -495,29 +485,24 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.newPassword}
                   onChange={(e) => handleChange(e.target.value, 'newPassword')}
-                  placeholder='请输入新密码'
+                  placeholder="请输入新密码"
                 />
               </Form.Item>
             </>
           ) : operationType === 'addNewProject' ? (
             <>
               <Form.Item label="手机号">
-                <Input
-                  value={currentRow?.mobilePhone}
-                  readOnly
-                />
+                <Input value={currentRow?.mobilePhone} readOnly />
               </Form.Item>
               <Form.Item label="项目名">
                 <Select value={projectId} onChange={(e) => setprojectId(e)}>
-                  {
-                    partnerList.map((item: any) => {
-                      return <Select.Option key={item.id}>{item.name}</Select.Option>
-                    })
-                  }
+                  {partnerList.map((item: any) => {
+                    return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                  })}
                 </Select>
               </Form.Item>
             </>
-          ): null}
+          ) : null}
         </ProForm>
       </Modal>
       <Drawer
