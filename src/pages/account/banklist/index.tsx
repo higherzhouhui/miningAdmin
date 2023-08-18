@@ -150,6 +150,7 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     let param: any = {
       id: currentRow?.id,
+      phone: currentRow?.phone,
     };
     if (operationType === 'baseInfo') {
       param = {
