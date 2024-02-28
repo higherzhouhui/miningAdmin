@@ -9,21 +9,21 @@
 export default {
   dev: {
     '/admin-service/': {
-      target: 'http://port.zgky.shop',
+      target: 'https://3382ef8404.zicp.fun/',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   test: {
     '/admin-service/': {
-      target: 'http://port.zgky.shop',
+      target: 'https://3382ef8404.zicp.fun/',
       changeOrigin: true,
       pathRewrite: { '^admin-service': '' },
     },
   },
   pre: {
     '/none/': {
-      target: 'http://port.zgky.shop',
+      target: 'https://3382ef8404.zicp.fun/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
