@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/user/getPageList', {
+  }>('/user/getUserList', {
     method: 'GET',
     params: {
       ...params,
@@ -48,7 +48,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/user/delete/${data.id}`, {
+  return request<Record<string, any>>(`/user/remove/${data.id}`, {
     data,
     method: 'DELETE',
     ...(options || {}),

@@ -79,11 +79,16 @@ const TableList: React.FC = () => {
   const onChangeUrl = (e: any) => {
     setUrl(e.target.value);
   };
+  const [sort, setSort] = useState('');
+  const onChangeSort = (e: any) => {
+    setSort(e.target.value);
+  };
   const formRef = useRef<any>()
   const handleUpdateRecord = (record: TableListItem) => {
     setCurrentRow(record);
     setImage(record.image)
     setUrl(record.url)
+    setSort(record.sort)
     handleModalVisible(true);
     formRef?.current?.resetFields();
   }
@@ -93,7 +98,10 @@ const TableList: React.FC = () => {
       dataIndex: 'id',
       tip: '唯一的 key',
       hideInTable: true,
-
+    },
+    {
+      title: '排序',
+      dataIndex: 'sort',
     },
     {
       title: '图片',
@@ -101,7 +109,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={80}style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={80} style={{ objectFit: 'contain' }} />
         );
       },
     },
@@ -144,6 +152,7 @@ const TableList: React.FC = () => {
     setCurrentRow(undefined);
     setImage('')
     setUrl('')
+    setSort('')
     handleModalVisible(true);
     formRef?.current?.resetFields();
   };
@@ -155,6 +164,7 @@ const TableList: React.FC = () => {
         image: image,
         url: url,
         id: currentRow?.id,
+        sort: sort,
       });
       handleModalVisible(false);
       hide();
@@ -184,10 +194,10 @@ const TableList: React.FC = () => {
       formData.append('path', 'admin-banner');
       // /upload为图片上传的地址，后台只需要一个图片的path
       // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
         .then((data: any) => {
-          const _response = { name: file.name, status: 'done', path: data.data.url + data.data.path };
-          setImage(data.data.path);
+          const _response = { name: file.name, status: 'done', path: data.data.fileUrl };
+          setImage(data.data.fileUrl);
           //请求成功后把file赋值上去
           onSuccess(_response, file);
         })
@@ -268,6 +278,9 @@ const TableList: React.FC = () => {
         onCancel={() => handleModalVisible(false)}
       >
         <ProForm formRef={formRef} submitter={false}>
+          <Form.Item label="序号">
+            <Input value={sort} onChange={onChangeSort} placeholder='请输入排序号' />
+          </Form.Item>
           <ProFormUploadButton
             label="选择图片"
             max={1}
@@ -276,11 +289,14 @@ const TableList: React.FC = () => {
               ...Upload,
             }}
           />
+          {
+            image ? <Image src={image} style={{ width: '100px', objectFit: 'contain' }} /> : null
+          }
           <Form.Item label="">
-            <Input value={image} onChange={(e) => setImage(e.target.value)} placeholder='请上传图片'/>
+            <Input value={image} onChange={(e) => setImage(e.target.value)} placeholder='请上传图片' />
           </Form.Item>
           <Form.Item label="跳转地址(选填)">
-            <Input value={url} onChange={onChangeUrl} placeholder='请输入点击后跳转地址'/>
+            <Input value={url} onChange={onChangeUrl} placeholder='请输入点击后跳转地址' />
           </Form.Item>
         </ProForm>
       </Modal>

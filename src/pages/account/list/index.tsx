@@ -62,27 +62,18 @@ const TableList: React.FC = () => {
   };
 
   useEffect(() => {
-    getPartnerProject().then((res) => {
-      if (res.code === 200) {
-        const list = res.data.filter((item: any) => {
-          return item.price !== 0;
-        });
-        setPartnerList(list);
-      }
-    });
   }, []);
 
   const columns: ProColumns<any>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
-      tip: '点击可查看下级会员',
       width: 180,
       hideInSearch: true,
       hideInTable: true,
       render: (_, record) => {
         return (
-          <div className={style.link} onClick={() => routeToChildren(record)}>
+          <div>
             {record.id}
           </div>
         );
@@ -90,7 +81,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '手机号',
-      dataIndex: 'mobilePhone',
+      dataIndex: 'phone',
       width: 100,
       fixed: 'left',
       tooltip: '点击可查看该用户详情',
@@ -109,21 +100,22 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '姓名',
-      dataIndex: 'name',
+      title: '昵称',
+      dataIndex: 'nickname',
       width: 80,
+      hideInSearch: true,
     },
 
     {
       title: '头像',
-      dataIndex: 'avatar',
+      dataIndex: 'photo',
       width: 110,
       hideInSearch: true,
       hideInTable: true,
       render: (_, record) => {
         return (
           <Image
-            src={record.avatar || '/logo.png'}
+            src={record.photo || '/logo.png'}
             width={90}
             height={90}
             style={{ objectFit: 'contain' }}
@@ -132,107 +124,60 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '税费缴纳状态',
-      dataIndex: 'isPay',
-      width: 100,
-      valueEnum: {
-        false: {
-          text: '未支付',
-          status: 'error',
-        },
-        true: {
-          text: '已支付',
-          status: 'success',
-        },
-      },
-    },
-    {
-      title: '已实名认证',
-      dataIndex: 'authenticated',
-      width: 120,
-      valueEnum: {
-        true: {
-          text: '是',
-          status: 'success',
-        },
-        false: {
-          text: '否',
-          status: 'error',
-        },
-      },
-    },
-    {
-      title: '下级会员',
-      dataIndex: 'totalChildren',
-      width: 90,
-      tooltip: '点击可查看下级会员',
-      hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <div className={style.link} onClick={() => routeToChildren(record)}>
-            {record.inviteNum}
-          </div>
-        );
-      },
-    },
-    {
-      title: '身份证号',
-      dataIndex: 'idCard',
+      title: '微信openId',
+      dataIndex: 'openid',
       width: 160,
+      hideInSearch: true,
+    },
+    {
+      title: '推荐人ID',
+      dataIndex: 'referrerId',
+      width: 100,
+      hideInSearch: true,
     },
     {
       title: '邀请码',
-      dataIndex: 'inviteCode',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '推荐人手机号',
-      dataIndex: 'referrerMobilePhone',
+      dataIndex: 'invitCode',
       width: 110,
       hideInSearch: true,
     },
+ 
     {
-      title: '推荐人邀请码',
-      dataIndex: 'referrerInviteCode',
-      width: 110,
-      hideInSearch: true,
-    },
-    {
-      title: '注册类型',
-      dataIndex: 'registerType',
+      title: '角色',
+      dataIndex: 'role',
       width: 100,
       hideInSearch: true,
       render: (_, record) => {
         return (
           <>
-            {record.registerType == 1 ? (
-              <Tag color="warning">APP注册</Tag>
-            ) : (
-              <Tag color="success">链接注册</Tag>
-            )}
+            {record.role == 1 ? (
+              <Tag color="success">普通用户</Tag>
+            ) : record.role == 1 ? (
+              <Tag color="volcano">店长</Tag>
+            ) : 
+            <Tag color="orange">加盟商</Tag>}
           </>
         );
       },
     },
     {
-      title: '会员级别',
-      dataIndex: 'userLevel',
+      title: '会员有效期',
+      dataIndex: 'memberIndate',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '今日是否签到',
-      dataIndex: 'signInStatus',
+      title: '会员状态',
+      dataIndex: 'memberState',
       width: 100,
       hideInSearch: true,
       render: (_, record) => {
         return (
           <>
-            {record.signInStatus ? (
-              <Tag color="#87d068">已签到</Tag>
+            {record.memberState ? (
+              <Tag color="#87d068">可用</Tag>
             ) : (
-              <Tag color="#f50">未签到</Tag>
+              <Tag color="#f50">非会员</Tag>
             )}
           </>
         );
@@ -245,21 +190,15 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-      width: 150,
-      hideInSearch: true,
-    },
-    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 220,
+      width: 100,
       hideInDescriptions: true,
       fixed: 'right',
       render: (_, record) => [
         <a
-          style={{ color: '#4423da' }}
+          style={{ color: '#4423da', display: 'none' }}
           key="baseInfo"
           onClick={() => handleUpdateRecord(record, 'baseInfo')}
         >
@@ -267,7 +206,7 @@ const TableList: React.FC = () => {
           资料
         </a>,
         <a
-          style={{ color: '#13e436' }}
+          style={{ color: '#13e436', display: 'none' }}
           key="resetPassword"
           onClick={() => handleUpdateRecord(record, 'resetPassword')}
         >
@@ -275,7 +214,7 @@ const TableList: React.FC = () => {
           密码
         </a>,
         <a
-          style={{ color: '#cf2960' }}
+          style={{ color: '#cf2960', display: 'none' }}
           key="addProject"
           onClick={() => handleUpdateRecord(record, 'addNewProject')}
         >
@@ -399,7 +338,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 2200,
+          x: 1400,
           y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {
@@ -413,12 +352,12 @@ const TableList: React.FC = () => {
           // });
           let data: any = [];
           data = res?.data?.list;
-          setTotal(res?.data?.totalSize);
+          setTotal(res?.data?.total);
           return {
             data: data,
             page: res?.data?.pageNum,
             success: true,
-            total: res?.data?.totalSize,
+            total: res?.data?.total,
           };
         }}
         columns={columns}
@@ -494,9 +433,9 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.mobilePhone && (
+        {currentRow?.phone && (
           <ProDescriptions<API.RuleListItem>
-            column={2}
+            column={1}
             title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},

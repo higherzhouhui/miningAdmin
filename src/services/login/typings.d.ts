@@ -26,10 +26,11 @@ declare namespace API {
     nick_name: string;
     role: string;
     token: string;
-    accountName?: string;
+    username?: string;
     comment?: string;
     type?: number;
     comments?: string;
+    tokenValue?: string;
   };
 
   type LoginResult = {
@@ -76,7 +77,7 @@ declare namespace API {
     password?: string;
     autoLogin?: boolean;
     type?: string;
-    accountName?: string;
+    username?: string;
   };
 
   type ErrorResponse = {

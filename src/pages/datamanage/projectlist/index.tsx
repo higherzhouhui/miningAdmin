@@ -3,12 +3,11 @@ import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { Button, Form, Image, Input, message, Modal, Popconfirm, Radio, Select } from 'antd';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule, sendMoney } from './service';
+import { addRule, getProductDetail, getSelectCatList, removeRule, rule, sendMoney } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
-import WangEditor from '@/components/Editor';
 import styles from './style.less';
 /**
  * 删除节点
@@ -52,11 +51,22 @@ const TableList: React.FC = () => {
   const [type, setType] = useState(1);
   const [loading, setLoading] = useState(false);
   const [shiftLoading, setShiftLoading] = useState(true);
+  const [typeList, setTypeList] = useState([])
+  useEffect(() => {
+    getSelectCatList().then(res => {
+      setTypeList(res.data)
+    })
+  }, [])
   const handleUpdateRecord = (record: TableListItem) => {
-    console.log(record);
-    setCurrentRow(record);
-    handleModalVisible(true);
-    formRef?.current?.resetFields();
+    const hide = message.loading('')
+    getProductDetail(record.id).then(res => {
+      hide()
+      if (res.code === 200) {
+      setCurrentRow(res.data);
+      handleModalVisible(true);
+      formRef?.current?.resetFields();
+      }
+    })
   };
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -64,11 +74,7 @@ const TableList: React.FC = () => {
       dataIndex: 'id',
       tip: '唯一的 key',
       hideInTable: true,
-    },
-    {
-      title: '排序',
-      dataIndex: 'sort',
-      width: 60,
+      hideInSearch: true,
     },
     {
       title: '标题',
@@ -82,7 +88,7 @@ const TableList: React.FC = () => {
       width: 120,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={50} height={50} style={{ objectFit: 'contain' }} />
+          <Image src={record.image} width={80} style={{ objectFit: 'contain' }} />
         );
       },
     },
@@ -90,57 +96,72 @@ const TableList: React.FC = () => {
       title: '价格',
       dataIndex: 'price',
       width: 120,
+      hideInSearch: true,
     },
     {
-      title: '每日收益',
-      dataIndex: 'dayEarnings',
-      width: 100,
-    },
-    {
-      title: '赠送上级',
-      dataIndex: 'supperAward',
-      width: 100,
-    },
-    {
-      title: '补贴金',
-      dataIndex: 'subsidy',
-      width: 100,
-    },
-    {
-      title: '养老金',
-      dataIndex: 'annuity',
-      width: 100,
-    },
-    {
-      title: '黄金',
-      dataIndex: 'gold',
-      width: 100,
-    },
-    {
-      title: '周期(年)',
-      dataIndex: 'period',
-      width: 100,
-    },
-    {
-      title: '是否售罄',
-      dataIndex: 'state',
+      title: '会员价',
+      dataIndex: 'memberPrice',
       width: 120,
       hideInSearch: true,
-      valueEnum: {
-        0: {
-          text: '是',
-          status: 'Error',
-        },
-        1: {
-          text: '否',
-          status: 'Success',
-        },
-      },
     },
     {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      width: 150,
+      title: '库存',
+      dataIndex: 'stock',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '类型',
+      dataIndex: 'catTitle',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '是否上架',
+      dataIndex: 'putaway',
+      width: 120,
+      valueEnum: {
+        1: {
+          text: '已上架',
+          status: 'Success',
+        },
+        0: {
+          text: '未上架',
+          status: 'Error',
+        },
+      },
+      render: (_, record) => {
+        return (
+            <span>
+              {
+                record.putaway ? '已上架' : '未上架'
+              }
+            </span>
+        )
+      }
+    },
+    {
+      title: '分类',
+      dataIndex: 'type',
+      width: 120,
+      valueEnum: {
+        0: {
+          text: '普通商品',
+          status: 'Warn',
+        },
+        1: {
+          text: '热门',
+          status: 'Error',
+        },
+        2: {
+          text: '新品',
+          status: 'Success',
+        },
+        3: {
+          text: '推荐',
+          status: 'Danger',
+        },
+      },
     },
     {
       title: '操作',
@@ -182,7 +203,7 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
-      const res = await addRule({ ...currentRow, projectType: type });
+      const res = await addRule({ ...currentRow });
       handleModalVisible(false);
       hide();
       if (res.code === 200) {
@@ -230,35 +251,75 @@ const TableList: React.FC = () => {
       formData.append('path', 'admin-project');
       // /upload为图片上传的地址，后台只需要一个图片的path
       // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
         .then((data: any) => {
           const _response = {
             name: file.name,
             status: 'done',
-            path: data.data.url + data.data.path,
+            path: data.data.fileUrl,
           };
-          handleChange(data.data.path, 'image');
+          handleChange(data.data.fileUrl, 'image');
           //请求成功后把file赋值上去
           onSuccess(_response, file);
         })
         .catch(onError);
     },
   };
-
-  const onchangeType = (e: any) => {
-    if (!shiftLoading) {
-      setType(e.target.value * 1);
-      actionRef?.current?.reloadAndRest?.();
-    }
+  const UploaddetailImageList = {
+    //数量
+    maxCount: 1,
+    accept: 'image/*',
+    customRequest: (options: any) => {
+      const { onSuccess, onError, file } = options;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'images');
+      formData.append('path', 'admin-project');
+      // /upload为图片上传的地址，后台只需要一个图片的path
+      // name，path，status是组件上传需要的格式需要自己去拼接
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
+        .then((data: any) => {
+          const _response = {
+            name: file.name,
+            status: 'done',
+            path: data.data.fileUrl,
+          };
+          const murl = currentRow?.detailImageList || []
+          murl.push(data.data.fileUrl)
+          handleChange(murl, 'detailImageList');
+          //请求成功后把file赋值上去
+          onSuccess(_response, file);
+        })
+        .catch(onError);
+    },
   };
-  const removeHtmlTag = (content?: string) => {
-    if (typeof content === 'string') {
-      const reg = new RegExp('<[^>]*>', 'g');
-      let tStr = content.replace(reg, '');
-      tStr = tStr?.replace('&nbsp;', ''); // 过滤空格
-      return tStr;
-    }
-    return '';
+  const UploadmasterImageList = {
+    //数量
+    maxCount: 1,
+    accept: 'image/*',
+    customRequest: (options: any) => {
+      const { onSuccess, onError, file } = options;
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('type', 'images');
+      formData.append('path', 'admin-project');
+      // /upload为图片上传的地址，后台只需要一个图片的path
+      // name，path，status是组件上传需要的格式需要自己去拼接
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
+        .then((data: any) => {
+          const _response = {
+            name: file.name,
+            status: 'done',
+            path: data.data.fileUrl,
+          };
+          const murl = currentRow?.masterImageList || []
+          murl.push(data.data.fileUrl)
+          handleChange(murl, 'masterImageList');
+          //请求成功后把file赋值上去
+          onSuccess(_response, file);
+        })
+        .catch(onError);
+    },
   };
   return (
     <PageContainer>
@@ -270,14 +331,18 @@ const TableList: React.FC = () => {
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
-        search={false}
+        search={{
+          labelWidth: 90,
+          //隐藏展开、收起
+          collapsed: false,
+          collapseRender: () => false,
+        }}
         dateFormatter="string"
         pagination={{
           pageSize: 20,
         }}
         size='small'
         scroll={{
-          x: 1400,
           y: document?.body?.clientHeight - 420,
         }}
         toolBarRender={() => [
@@ -285,30 +350,17 @@ const TableList: React.FC = () => {
             <PlusOutlined />
             新增
           </Button>,
-          type === 3 ? (
-            <Button type="link" key="defulot" onClick={() => handleSendMoney()} loading={loading}>
-              <AccountBookOutlined />
-              发放工资
-            </Button>
-          ) : null,
         ]}
         request={async (params: TableListPagination) => {
           setShiftLoading(true);
           const res: any = await rule({ ...params, pageNum: params.current });
           setShiftLoading(false);
           const list = res?.data?.list || [];
-          list.map((item: any) => {
-            item.showDetail = removeHtmlTag(item.details);
-          });
-          const data = list.filter((item: any) => item.projectType == type);
-          data.sort((a: any, b: any) => {
-            return a.sort - b.sort;
-          });
           return {
-            data: data,
+            data: list,
             page: res?.data?.pageNum,
             success: true,
-            total: data.length,
+            total: res?.data?.total,
           };
         }}
         columns={columns}
@@ -364,28 +416,37 @@ const TableList: React.FC = () => {
           submitter={false}
           style={{ height: '500px', overflow: 'auto', padding: '0 20px' }}
         >
-          <Form.Item label="排序（从小到大展示）">
-            <Input
-              value={currentRow?.sort}
-              onChange={(e) => handleChange(e.target.value, 'sort')}
-            />
-          </Form.Item>
-          {type === 3 ? (
-            <Form.Item label="类型">
-              <Select
-                value={currentRow?.insureType}
-                onChange={(e) => handleChange(e, 'insureType')}
-              >
-                <Select.Option value={1}>保险</Select.Option>
-                <Select.Option value={2}>工资</Select.Option>
-              </Select>
-            </Form.Item>
-          ) : null}
           <Form.Item label="标题">
             <Input
               value={currentRow?.title}
+              placeholder='请输入标题'
               onChange={(e) => handleChange(e.target.value, 'title')}
             />
+          </Form.Item>
+          <Form.Item label="分类">
+            <Select
+              value={currentRow?.type}
+              placeholder='请选择商品分类'
+              onChange={(e) => handleChange(e, 'type')}
+            >
+              <Select.Option value={0}>普通商品</Select.Option>
+              <Select.Option value={1}>热门</Select.Option>
+              <Select.Option value={2}>新品</Select.Option>
+              <Select.Option value={3}>推荐</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item label="类型">
+            <Select
+              value={currentRow?.catId}
+              placeholder='请选择商品分类'
+              onChange={(e) => handleChange(e, 'catId')}
+            >
+              {
+                typeList.map((item: any) => {
+                  return <Select.Option value={item.id} key={item.id}>{item.title}</Select.Option>
+                })
+              }
+            </Select>
           </Form.Item>
           <ProFormUploadButton
             label="选择封面"
@@ -403,6 +464,45 @@ const TableList: React.FC = () => {
               placeholder="请选择图片"
             />
           </Form.Item>
+
+          <ProFormUploadButton
+            label="选择产品主图"
+            max={1}
+            name="masterImageList"
+            fieldProps={{
+              ...UploadmasterImageList,
+            }}
+          />
+          {currentRow?.masterImageList ? currentRow?.masterImageList.map((item: any) => {
+            return <Image key={item} src={item} className={styles.cover} />
+          }) : null}
+          <Form.Item label="">
+            <Input.TextArea
+              autoSize={{ minRows: 2, maxRows: 6 }}
+              value={currentRow?.masterImageList}
+              onChange={(e) => handleChange(e.target.value, 'masterImageList')}
+              placeholder="请选择选择产品主图"
+            />
+          </Form.Item>
+          <ProFormUploadButton
+            label="产品详情图"
+            max={1}
+            name="detailImageList"
+            fieldProps={{
+              ...UploaddetailImageList,
+            }}
+          />
+          {currentRow?.detailImageList ? currentRow?.detailImageList.map((item: any) => {
+            return <Image key={item} src={item} className={styles.cover} />
+          }) : null}
+          <Form.Item label="">
+            <Input.TextArea
+              autoSize={{ minRows: 2, maxRows: 6 }}
+              value={currentRow?.detailImageList}
+              onChange={(e) => handleChange(e.target.value, 'detailImageList')}
+              placeholder="请选择产品详情图"
+            />
+          </Form.Item>
           <Form.Item label="价格">
             <Input
               type="number"
@@ -411,73 +511,33 @@ const TableList: React.FC = () => {
               placeholder="请输入价格"
             />
           </Form.Item>
-          <Form.Item label="每日收益">
+          <Form.Item label="会员价">
             <Input
               type="number"
-              value={currentRow?.dayEarnings}
-              onChange={(e) => handleChange(e.target.value, 'dayEarnings')}
-              placeholder="请输入每日收益"
+              value={currentRow?.memberPrice}
+              onChange={(e) => handleChange(e.target.value, 'memberPrice')}
+              placeholder="请输入会员价格"
             />
           </Form.Item>
-          <Form.Item label="赠送上级收益">
+          <Form.Item label="库存">
             <Input
               type="number"
-              value={currentRow?.supperAward}
-              onChange={(e) => handleChange(e.target.value, 'supperAward')}
-              placeholder="请输入"
+              value={currentRow?.stock}
+              onChange={(e) => handleChange(e.target.value, 'stock')}
+              placeholder="请输入库存"
             />
           </Form.Item>
-          <Form.Item label="补贴金">
-            <Input
-              type="number"
-              value={currentRow?.subsidy}
-              onChange={(e) => handleChange(e.target.value, 'subsidy')}
-              placeholder="请输入补贴金"
-            />
-          </Form.Item>
-          <Form.Item label="赠送养老金">
-            <Input
-              type="number"
-              value={currentRow?.annuity}
-              onChange={(e) => handleChange(e.target.value, 'annuity')}
-              placeholder="请输入养老金"
-            />
-          </Form.Item>
-          <Form.Item label="赠送黄金（克）">
-            <Input
-              type="number"
-              value={currentRow?.gold}
-              onChange={(e) => handleChange(e.target.value, 'gold')}
-              placeholder="请输入黄金"
-            />
-          </Form.Item>
-          <Form.Item label="周期（年）">
-            <Input
-              type="number"
-              value={currentRow?.period}
-              onChange={(e) => handleChange(e.target.value, 'period')}
-              placeholder="请输入周期"
-            />
-          </Form.Item>
-          <Form.Item label="是否售罄">
+          <Form.Item label="是否上架">
             <Radio.Group
-              value={currentRow?.state}
+              value={currentRow?.putaway}
               size="middle"
-              onChange={(e) => handleChange(e.target.value, 'state')}
+              onChange={(e) => handleChange(e.target.value, 'putaway')}
               buttonStyle="solid"
             >
-              <Radio value={1}>否</Radio>
-              <Radio value={0}>是</Radio>
+              <Radio value={true}>上架</Radio>
+              <Radio value={false}>下架</Radio>
             </Radio.Group>
           </Form.Item>
-          {type == 2 ? (
-            <Form.Item label="详情">
-              <WangEditor
-                description={currentRow?.details || ''}
-                onChange={(e) => handleChange(e, 'details')}
-              />
-            </Form.Item>
-          ) : null}
         </ProForm>
       </Modal>
     </PageContainer>

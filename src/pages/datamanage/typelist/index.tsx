@@ -4,7 +4,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Image, Input, message, Modal, Popconfirm } from 'antd';
+import { Button, Drawer, Form, Image, Input, message, Modal, Popconfirm, Select, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { FormValueType } from './components/UpdateForm';
 import UpdateForm from './components/UpdateForm';
@@ -89,35 +89,30 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
+      title: '排序',
+      dataIndex: 'sort',
+    },
+    {
       title: '标题',
       dataIndex: 'title',
       className: 'fullClass',
     },
     {
-      title: '封面',
-      dataIndex: 'image',
+      title: '图标',
+      dataIndex: 'icon',
       hideInSearch: true,
-      width: 120,
       render: (_, record) => {
         return (
-          <Image src={record.image} width={100} height={100} style={{ objectFit: 'contain' }} />
+          <Image src={record.icon} width={100} height={80} style={{ objectFit: 'contain' }} />
         );
       },
     },
     {
-      title: '内容',
-      dataIndex: 'removeTagContent',
-      className: 'textAreaClass'
-    },
-    {
-      title: '发布方',
-      dataIndex: 'publisher',
-      className: 'fullClass'
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      className: 'fullClass'
+      title: '展示位置',
+      hideInSearch: true,
+      render: (_, record) => {
+        return <Tag color={record.type ? 'red' : 'green'}>{record.type == 1 ? '首页' : '产品'}</Tag>
+        },
     },
     {
       title: '操作',
@@ -201,10 +196,10 @@ const TableList: React.FC = () => {
       formData.append('path', 'admin-news');
       // /upload为图片上传的地址，后台只需要一个图片的path
       // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
         .then((data: any) => {
-          const _response = { name: file.name, status: 'done', path: data.data.url + data.data.path };
-          handleChange(data.data.path, 'image')
+          const _response = { name: file.name, status: 'done', path: data.data.fileUrl };
+          handleChange(data.data.fileUrl, 'icon')
           //请求成功后把file赋值上去
           onSuccess(_response, file);
         })
@@ -221,9 +216,6 @@ const TableList: React.FC = () => {
         dateFormatter="string"
         pagination={{
           pageSize: 10,
-        }}
-        scroll={{
-          x: 1500,
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => addNewNotice()}>
@@ -288,29 +280,38 @@ const TableList: React.FC = () => {
         title={currentRow?.id ? '修改' : '新增'}
         visible={createModalVisible}
         onOk={() => handleOk()}
-        width={'80%'}
         onCancel={() => handleModalVisible(false)}
       >
-        <ProForm formRef={formRef} style={{height: '650px', overflow: 'auto'}} submitter={false}>
+        <ProForm formRef={formRef} submitter={false}>
+          <Form.Item label='序号'>
+            <Input value={currentRow?.sort} onChange={(e) => handleChange(e.target.value, 'sort')} placeholder='请输入排序号' type="number" />
+          </Form.Item>
+          <Form.Item label='标题'>
+            <Input value={currentRow?.title} onChange={(e) => handleChange(e.target.value, 'title')} placeholder='请输入标题' />
+          </Form.Item>
           <ProFormUploadButton
-            label="选择封面"
+            label="选择图标"
             max={1}
             name="image"
             fieldProps={{
               ...Upload,
             }}
           />
+          {
+            currentRow?.icon ? <Image src={currentRow?.icon} style={{ width: '100px', objectFit: 'contain' }} /> : null
+          }
           <Form.Item label=''>
-            <Input value={currentRow.image} onChange={(e) => handleChange(e.target.value, 'image')} placeholder='请选择封面'/>
-          </Form.Item> 
-          <Form.Item label='标题'>
-            <Input value={currentRow?.title} onChange={(e) => handleChange(e.target.value, 'title')} placeholder='请输入标题'/>
+            <Input value={currentRow.icon} onChange={(e) => handleChange(e.target.value, 'icon')} placeholder='选择图标' />
           </Form.Item>
-          <Form.Item label='来源'>
-          <Input value={currentRow?.publisher} onChange={(e) => handleChange(e.target.value, 'publisher')} placeholder='请输入来源'/>
-          </Form.Item>
-          <Form.Item label='内容'>
-            <WangEditor onChange={(e) => handleChange(e, 'content')} description={currentRow?.content}/>
+          <Form.Item label='展示位置'>
+            <Select
+              value={currentRow?.type}
+              placeholder='请选择展示位置'
+              onChange={(e) => handleChange(e, 'type')}
+            >
+              <Select.Option value={0}>产品分类</Select.Option>
+              <Select.Option value={1}>首页分类</Select.Option>
+            </Select>
           </Form.Item>
         </ProForm>
       </Modal>

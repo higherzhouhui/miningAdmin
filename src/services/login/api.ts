@@ -6,27 +6,33 @@ import request from 'umi-request';
 request.interceptors.request.use((url, options) => {
   let token = null;
   if (typeof window !== 'undefined') {
-    token = localStorage.getItem('Access-Token');
+    token = localStorage.getItem('Authorization');
   }
   if (null === token) {
     token = 'test';
   }
   options.headers = {
     ...options.headers,
-    'Access-Token': token,
+    'Authorization': `Bearer ${token}`,
   };
   options.timeout = 500000;
   // 本地访问需要做代理，否则会跨域；线上生成由于ng没有反向代理，就直连接口，而且是同一个域下的
   const { NODE_ENV } = process.env;
-  let baseUrl = 'https://3382ef8404.zicp.fun/';
-  let before = '/admin-service';
+  let baseUrl = 'https://3382ef8404.zicp.fun';
+  let uploadBaseurl = 'https://338v828404.goho.co';
+  let before = '/api';
   if (NODE_ENV === 'development') {
     baseUrl = '';
+    if (url.includes('uploadImage')) {
+      before = '/uploadImage';
+    }
+  } else {
+    before = ''
+    if (url.includes('uploadImage')) {
+      baseUrl = uploadBaseurl
+    }
   }
-  if (url.includes('upload-service')) {
-    before = '';
-    baseUrl = 'https://3382ef8404.zicp.fun/';
-  }
+
 
   return {
     url: `${baseUrl}${before}${url}`,
@@ -43,7 +49,7 @@ request.interceptors.response.use(async (response, options) => {
     message.error(data.message || data.msg);
     if (data.code === 401) {
       location.href = '/user/login';
-      localStorage.removeItem('Access-Token');
+      localStorage.removeItem('Authorization');
       localStorage.removeItem('x-user-id');
     }
   }
@@ -58,12 +64,12 @@ export async function currentUser(options?: { [key: string]: any }) {
   // const { initialState } = useModel('@@initialState');
   return request<{
     data: API.CurrentUser;
-  }>(`/admin/administer/getPageList?pageNum=1&pageSize=20`, {
+  }>(`/admin/getAdminList?pageNum=1&pageSize=20`, {
     method: 'GET',
     ...(options || {}),
   });
   // return new Promise(rosolve => {
-  //   rosolve({accountName: localStorage.getItem('accountName')})
+  //   rosolve({username: localStorage.getItem('username')})
   // })
 }
 
@@ -77,12 +83,12 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/admin/administer/login', {
+  return request<API.LoginResult>('/admin/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    params: body,
+    data: body,
     ...(options || {}),
   });
 }

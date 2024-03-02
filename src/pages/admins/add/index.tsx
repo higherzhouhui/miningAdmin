@@ -65,7 +65,7 @@ const AddAccount: FC = () => {
     console.log(values);
     const param = {
       password: values.password,
-      accountName: values.accountName,
+      username: values.username,
       comments: values.comments
     };
     const hide = message.loading('正在创建新用户...', 50);
@@ -78,7 +78,7 @@ const AddAccount: FC = () => {
           history.push({
             pathname: '/admins/addaccount-result',
             state: {
-              username: param.accountName,
+              username: param.username,
             },
           });
         }
@@ -142,10 +142,10 @@ const AddAccount: FC = () => {
               账号<i>*</i>
             </p>
             <FormItem
-              name="accountName"
+              name="username"
               className={
-                form.getFieldValue('accountName') &&
-                form.getFieldValue('accountName').length > 0 &&
+                form.getFieldValue('username') &&
+                form.getFieldValue('username').length > 0 &&
                 styles.password
               }
               rules={[
@@ -224,7 +224,7 @@ const AddAccount: FC = () => {
             >
               <Input type="password" placeholder="确认密码" />
             </FormItem>
-            <p>
+            {/* <p>
               备注
             </p>
             <FormItem
@@ -242,7 +242,7 @@ const AddAccount: FC = () => {
               ]}
             >
               <Input type="text" placeholder="请输入备注（客服账号请备注service）" />
-            </FormItem>
+            </FormItem> */}
             <FormItem>
               <Button
                 size="large"

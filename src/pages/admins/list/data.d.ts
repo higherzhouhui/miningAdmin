@@ -4,6 +4,7 @@ export type TableListItem = {
   user_name: number;
   status: number;
   disable: boolean;
+  photo: string;
 };
 
 export type TableListPagination = {

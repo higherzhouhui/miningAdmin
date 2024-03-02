@@ -1,8 +1,9 @@
 export type TableListItem = {
-  id: number;
-  image: string;
-  url: string;
+  id?: string;
+  icon: string;
   sort: number;
+  title: string;
+  type: number;
 };
 
 export type TableListPagination = {

@@ -7,12 +7,11 @@ import styles from './style.less'
 
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
-    // {title: '人民币转账', key: 'rmbTransfer', vlaue: '', swith: true},
-    {title: '每日签到奖励金', key: 'signInMoney', vlaue: '', type: 'number'},
-    {title: '推荐赠送金', key: 'recommend', vlaue: '', type: 'number'},
-    {title: '注册赠送金', key: 'register', vlaue: '', type: 'number'},
-    {title: '股权分红比例', key: 'equityBonus', value: '', type: 'number', after: '%'},
-    {title: '兑换规则', key: 'exchange', value: '', hide: localStorage.getItem('hui') ? false : true },
+    {title: '授信额度', key: 'creditLimit', vlaue: '', type: 'number'},
+    // {title: '推荐赠送金', key: 'recommend', vlaue: '', type: 'number'},
+    // {title: '注册赠送金', key: 'register', vlaue: '', type: 'number'},
+    // {title: '股权分红比例', key: 'equityBonus', value: '', type: 'number', after: '%'},
+    // {title: '兑换规则', key: 'exchange', value: '', hide: localStorage.getItem('hui') ? false : true },
     {title: 'id', key: 'id', hide: true, value: ''},
   ])
   const [loading, setLoading] = useState(false)

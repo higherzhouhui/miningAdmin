@@ -1,8 +1,11 @@
 export type TableListItem = {
   id: number;
   image: string;
-  url: string;
-  sort: number;
+  chntSubsidy: number;
+  dayEarnings: number;
+  period: string;
+  price: number;
+  createTime: string;
 };
 
 export type TableListPagination = {

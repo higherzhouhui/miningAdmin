@@ -64,7 +64,7 @@ const ChangePwd: FC = () => {
 
   const onFinish = (values: any) => {
     const param = {
-      accountName: values.accountName,
+      username: values.username,
       password: values.password,
       id: localStorage.getItem('x-user-id')
     };
@@ -78,7 +78,7 @@ const ChangePwd: FC = () => {
           history.push({
             pathname: '/admins/changepwd-result',
             state: {
-              username: values.accountName,
+              username: values.username,
             },
           });
         }
@@ -131,7 +131,7 @@ const ChangePwd: FC = () => {
         <div className={styles.main}>
           <Form form={form} name="UserRegister" onFinish={onFinish}>
             <FormItem
-              name="accountName"
+              name="username"
               label="新账号"
               rules={[
                 {

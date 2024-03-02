@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/administer/getPageList', {
+  }>('/admin/getAdminList', {
     method: 'GET',
     params: {
       ...params,
@@ -47,18 +47,18 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 }
 /** 新建规则 POST /api/rule */
 export async function administerUpdate(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>('/admin/administer/update', {
+  return request<any>('/admin/saveOrUpdate', {
     data,
-    method: 'PUT',
+    method: 'POST',
     ...(options || {}),
   });
 }
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: string }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/administer/${data.id}`, {
+  return request<Record<string, any>>(`/admin/remove/${data.id}`, {
     data,
-    method: 'DELETE',
+    method: 'POST',
     ...(options || {}),
   });
 }

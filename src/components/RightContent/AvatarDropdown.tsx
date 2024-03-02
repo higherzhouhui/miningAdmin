@@ -27,7 +27,7 @@ const loginOut = async () => {
       }),
     });
   }
-  localStorage.removeItem('Access-Token');
+  localStorage.removeItem('Authorization');
   localStorage.removeItem('x-user-id');
 };
 
@@ -100,7 +100,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
           src={currentUser.avatar || '/logo.png'}
           alt="avatar"
         />
-        <span className={`${styles.name} anticon`}>{currentUser.accountName}</span>
+        <span className={`${styles.name} anticon`}>{currentUser.username}</span>
       </span>
     </HeaderDropdown>
   );

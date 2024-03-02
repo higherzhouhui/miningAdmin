@@ -2,7 +2,7 @@
   "name": "ant-design-pro",
   "version": "5.0.0",
   "private": true,
-  "description": "中国矿业，为大众谋福利，为家人们提供更好的生活",
+  "description": "校e达,轻松、便捷、高效",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 umi build",
     "build": "umi build",

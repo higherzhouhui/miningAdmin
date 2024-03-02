@@ -37,7 +37,7 @@ export async function removeRule(data: { id: number }, options?: { [key: string]
 }
 
 export async function uploadFile(data: any) {
-  return request('/upload-service/upload/uploadImage', {
+  return request('/api/v1/common/uploadImage', {
     method: 'POST',
     data,
   });

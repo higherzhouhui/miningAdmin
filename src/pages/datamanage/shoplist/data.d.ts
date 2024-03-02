@@ -1,9 +1,15 @@
 export type TableListItem = {
-  id?: string;
-  image: string;
-  content: string;
-  title: string;
-  publisher: string;
+  id: number;
+  auditStatus: number; //0.审核中 1审核通过 2.审核未通过
+  amount: number;
+  bankCode: string;
+  bankName: string;
+  createTime: string;
+  name: string;
+  phone: string;
+  serviceCharge: string;
+  type: string;
+  reason?: string;
 };
 
 export type TableListPagination = {

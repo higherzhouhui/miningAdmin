@@ -215,7 +215,7 @@ const TableList: React.FC = () => {
       formData.append('path', 'admin-widthdraw');
       // /upload为图片上传的地址，后台只需要一个图片的path
       // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/upload-service/upload/uploadImage', { method: 'POST', data: formData })
+      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
         .then((data) => {
           const _response = { name: file.name, status: 'done', path: data.data.url + data.data.path };
           handleChange(data.data.path, 'icon');

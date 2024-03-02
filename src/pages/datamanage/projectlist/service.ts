@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/project/getProjectList', {
+  }>('/product/getProductList', {
     method: 'GET',
     params: {
       ...params,
@@ -39,7 +39,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/project/saveOrUpdate', {
+  return request<Record<string, any>>('/product/saveOrUpdate', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -48,7 +48,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/project/delete/${data.id}`, {
+  return request<Record<string, any>>(`/product/remove/${data.id}`, {
     data,
     method: 'DELETE',
     ...(options || {}),
@@ -60,3 +60,15 @@ export async function sendMoney() {
     method: 'POST',
   });
 }
+
+export async function getSelectCatList() {
+  return request<Record<string, any>>(`/productCat/getSelectCatList`, {
+    method: 'GET',
+  });
+}
+export async function getProductDetail(id) {
+  return request<Record<string, any>>(`/product/getProductDetail?id=${id}`, {
+    method: 'GET',
+  });
+}
+

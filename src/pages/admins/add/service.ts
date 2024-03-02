@@ -6,13 +6,13 @@ export interface StateType {
 }
 
 export interface UserRegisterData {
-  accountName: string;
+  username: string;
   password: string;
   comments?: string;
 }
 
 export async function fakeChangePwd(params: UserRegisterData) {
-  return request('/admin/administer/create', {
+  return request('/admin/saveOrUpdate', {
     method: 'POST',
     data: params,
   });

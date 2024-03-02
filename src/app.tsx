@@ -23,7 +23,7 @@ export async function getInitialState(): Promise<{
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
   const fetchUserInfo = async () => {
-    if (!localStorage.getItem('Access-Token')) {
+    if (!localStorage.getItem('Authorization')) {
       history.push(loginPath);
       return undefined;
     }
@@ -32,7 +32,7 @@ export async function getInitialState(): Promise<{
       let data;
       if (msg.code === 200) {
         (msg?.data?.list || []).forEach((item: any) => {
-          if (item.accountName === localStorage.getItem('accountName')) {
+          if (item.username === localStorage.getItem('username')) {
             data = item;
           }
         });

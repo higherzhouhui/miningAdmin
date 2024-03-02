@@ -2,7 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Switch } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm, Switch, Image } from 'antd';
 import React, { useRef, useState } from 'react';
 import { Link } from 'umi';
 import type { TableListItem, TableListPagination } from './data';
@@ -79,7 +79,11 @@ const AccountList: React.FC = () => {
     },
     {
       title: '账号',
-      dataIndex: 'accountName',
+      dataIndex: 'username',
+    },
+    {
+      title: '昵称',
+      dataIndex: 'name',
     },
     {
       title: '状态',
@@ -90,22 +94,7 @@ const AccountList: React.FC = () => {
         );
       },
     },
-    {
-      title: '类型',
-      dataIndex: 'type',
-    },
-    {
-      title: '备注',
-      dataIndex: 'comments',
-    },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-    },
-    {
-      title: '更新时间',
-      dataIndex: 'updateTime',
-    },
+
     {
       title: '操作',
       dataIndex: 'option',
@@ -161,21 +150,11 @@ const AccountList: React.FC = () => {
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ pageNum: params.current, pageSize: params.pageSize });
-          (res?.data?.list || []).map((item:any) => {
+          (res?.data?.list || []).map((item: any) => {
             let disable = '启用'
-            if (item.disable) {
+            if (!item.state) {
               disable = '禁用'
             }
-            let type = '普通管理员'
-            if (item.type == 1) {
-              type = '超级管理员'
-            }
-            let delFlag = '否'
-            if (item.delFlag == 1) {
-              delFlag = '是'
-            }
-            item.delFlag = delFlag
-            item.type = type
             item.disable = disable
           })
           return {
@@ -200,10 +179,10 @@ const AccountList: React.FC = () => {
         }}
         onOk={async () => {
           if (formRef && formRef.current) {
-            const accountName = formRef?.current?.getFieldValue('accountName');
+            const username = formRef?.current?.getFieldValue('username');
             const password = formRef?.current?.getFieldValue('password');
             const comment = formRef?.current?.getFieldValue('comment');
-            const value = { accountName, password, comment };
+            const value = { username, password, comment };
             const success = await handleUpdate(value, currentRow);
 
             if (success) {
@@ -223,7 +202,7 @@ const AccountList: React.FC = () => {
           initialValues={{ ...currentRow  }}
         >
           <FormItem
-            name="accountName"
+            name="username"
             label="账号"
             labelCol={{ span: 4 }}
             rules={[
@@ -246,13 +225,13 @@ const AccountList: React.FC = () => {
           >
             <Input type="password" placeholder="请输密码" />
           </FormItem>
-          <FormItem
+          {/* <FormItem
             name="comments"
             label="备注"
             labelCol={{ span: 4 }}
           >
             <Input type="text" placeholder="请输入备注" />
-          </FormItem>
+          </FormItem> */}
         </Form>
       </Modal>
     </PageContainer>

@@ -5,7 +5,7 @@ export type TableListItem = {
   dayEarnings: number;
   period: string;
   price: number;
-  createTime: string;
+  putaway: string;
   insureType: number;
 };
 

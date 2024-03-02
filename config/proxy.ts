@@ -8,22 +8,27 @@
  */
 export default {
   dev: {
-    '/admin-service/': {
-      target: 'https://3382ef8404.zicp.fun/',
+    '/api/': {
+      target: 'https://3382ef8404.zicp.fun',
       changeOrigin: true,
-      pathRewrite: { '^admin-service': '' },
+      pathRewrite: { '^/api': '' },
+    },
+    '/uploadImage/': {
+      target: 'https://338v828404.goho.co',
+      changeOrigin: true,
+      pathRewrite: { '^/uploadImage': '' },
     },
   },
   test: {
-    '/admin-service/': {
-      target: 'https://3382ef8404.zicp.fun/',
+    '/api/': {
+      target: 'https://3382ef8404.zicp.fun',
       changeOrigin: true,
-      pathRewrite: { '^admin-service': '' },
+      pathRewrite: { '^/api': '' },
     },
   },
   pre: {
     '/none/': {
-      target: 'https://3382ef8404.zicp.fun/',
+      target: 'https://3382ef8404.zicp.fun',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },

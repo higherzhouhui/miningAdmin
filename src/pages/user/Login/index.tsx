@@ -43,13 +43,13 @@ const Login: React.FC = () => {
       // 登录
       const { userName, password } = values;
       const msg = await login({
-        accountName: userName,
+        username: userName,
         password,
       });
       if (msg.code === 200) {
-        localStorage.setItem('Access-Token', msg.data?.token || '');
+        localStorage.setItem('Authorization', msg.data?.tokenValue || '');
         localStorage.setItem('x-user-id', msg.data?.id + '' || '');
-        localStorage.setItem('accountName', userName || '');
+        localStorage.setItem('username', userName || '');
         const defaultLoginSuccessMessage = intl.formatMessage({
           id: 'pages.login.success',
           defaultMessage: '登录成功！',
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.png" />}
-          title="中国矿业"
+          title="校e达"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,

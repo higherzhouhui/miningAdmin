@@ -7,7 +7,7 @@ export interface StateType {
 
 export interface UserRegisterParams {
   password: string;
-  accountName: string;
+  username: string;
 }
 
 export async function fakeChangePwd(params: UserRegisterParams) {

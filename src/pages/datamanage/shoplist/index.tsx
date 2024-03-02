@@ -1,10 +1,10 @@
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Switch, Tag } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm, Image, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule, getConfig, updateConfig } from './service';
+import { addRule, removeRule, rule, getConfig, updateConfig, updateRule } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
 import * as XLSX from 'xlsx';
@@ -20,26 +20,24 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
   const hide = message.loading('正在删除');
   if (!selectedRows) return true;
-  const ids: any[] = []
-  selectedRows.map(item => {
-    ids.push(item.id)
-  })
-  try {
-    const res = await removeRule({ids: ids, auditStatus: 2});
-    hide();
-    if (res.code === 200) {
-      message.success('删除成功，即将刷新');
-      if (actionRef) {
-        actionRef.current?.reloadAndRest?.();
+  selectedRows.map(async (item) => {
+    try {
+      const res = await removeRule({ id: item.id });
+      hide();
+      if (res.code === 200) {
+        message.success('删除成功，即将刷新');
+        if (actionRef) {
+          actionRef.current?.reloadAndRest?.();
+        }
       }
+      return true;
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+      return false;
     }
-    return true;
-  } catch (error) {
-    hide();
-    message.error('删除失败，请重试');
-    return false;
-  }
-  return true;
+  });
+  return false;
 };
 
 const TableList: React.FC = () => {
@@ -60,9 +58,10 @@ const TableList: React.FC = () => {
     }
     const hide = message.loading('正在操作中...', 50);
     setLoading(true);
-    removeRule({
-      ids: [record.id],
-      auditStatus: ctype,
+    updateRule({
+      id: record.id,
+      state: ctype,
+      reason: record.reason,
     })
       .then((res: any) => {
         hide();
@@ -86,16 +85,6 @@ const TableList: React.FC = () => {
     setShowDetail(true);
     setType(t);
   };
-  const getTagType = (mtype: string) => {
-    const colorMap = {
-      黄金: 'success',
-      推荐金: 'error',
-      挖矿金: 'warning',
-      养老金: 'processing',
-      余额: '#2db7f5',
-    };
-    return colorMap[mtype];
-  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -106,38 +95,41 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '姓名',
-      dataIndex: 'name',
-      width: 100,
-      hideInSearch: true,
-      fixed: 'left'
-    },
-    {
-      title: '金额',
-      dataIndex: 'amount',
+      title: '学校名称',
+      dataIndex: 'schoolTitle',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
+      title: '用户ID',
+      dataIndex: 'userId',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '推荐人ID',
+      dataIndex: 'referrerId',
+      hideInSearch: true,
       width: 150,
     },
     {
-      title: '银行名称',
-      dataIndex: 'bankName',
-      width: 200,
+      title: '店铺名称',
+      dataIndex: 'title',
+      width: 100,
       hideInSearch: true,
     },
     {
-      title: '银行卡号',
-      dataIndex: 'bankCode',
-      width: 180,
+      title: '店铺logo',
+      dataIndex: 'Logo',
+      width: 100,
       hideInSearch: true,
+      render: (_, record: any) => {
+        return <Image src={record.logo} style={{ width: '80px', objectFit: 'contain' }} />;
+      },
     },
     {
       title: '状态',
-      dataIndex: 'auditStatus',
+      dataIndex: 'state',
       width: 120,
       valueEnum: {
         0: {
@@ -155,36 +147,32 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '资金来源',
+      title: '店铺类型',
       dataIndex: 'type',
-      hideInTable: true,
       valueEnum: {
-        gold: {
-          text: '黄金',
+        1: {
+          text: '商店',
         },
-        referrer: {
-          text: '推荐金',
-        },
-        subsidy: {
-          text: '挖矿金',
-        },
-        annuity: {
-          text: '养老金',
-        },
-        asset: {
-          text: '总资产',
-        },
-        balance: {
-          text: '余额',
+        2: {
+          text: '加盟商',
         },
       },
     },
     {
-      title: '资金来源',
+      title: '申请人手机号',
+      dataIndex: 'phone',
       width: 150,
       hideInSearch: true,
-      render: (_, record) => {
-        return <Tag color={getTagType(record.type)}>{record.type}</Tag>;
+    },
+    {
+      title: '申请营业地址',
+      dataIndex: 'phone',
+      width: 150,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        return (
+          <span>{`${record.province}/${record.city}/${record.region}${record.detailAddress}`}</span>
+        );
       },
     },
     {
@@ -197,21 +185,32 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 120,
+      width: 150,
       fixed: 'right',
       hideInDescriptions: true,
-      render: (_, record) => [
-        record.auditStatus == 0 ? (
+      render: (_, record: any) => [
+        record.state == 0 ? (
           <a key="access" onClick={() => showDetailModal(record, 1)}>
             通过
           </a>
         ) : null,
-        // eslint-disable-next-line react/jsx-key
-        record.auditStatus == 0 ? (
+        record.state == 0 ? (
           <a style={{ color: 'red' }} key="delete" onClick={() => showDetailModal(record, 2)}>
             驳回
           </a>
         ) : null,
+
+        <Popconfirm
+          key="bohui"
+          title="确认删除？"
+          onConfirm={async () => {
+            await handleRemove([record]);
+            setSelectedRows([]);
+            actionRef.current?.reloadAndRest?.();
+          }}
+        >
+          <a style={{ color: '#f9c' }}>删除</a>
+        </Popconfirm>,
       ],
     },
   ];
@@ -224,10 +223,10 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     const hide = message.loading(`正在修改中...`, 50);
     updateConfig(baseConfig).then((res) => {
-      hide()
+      hide();
       if (res.code === 200) {
-        message.success('修改成功！')
-        handleModalVisible(false)
+        message.success('修改成功！');
+        handleModalVisible(false);
       } else {
         message.error(res?.message || res?.msg);
       }
@@ -282,23 +281,17 @@ const TableList: React.FC = () => {
     });
   };
 
-  const getBaseConfig = () => {
-    getConfig().then((res) => {
-      if (res.code === 200) {
-        setBaseConfig({ id: res?.data?.id, payPrice: res?.data?.payPrice });
-      }
-    });
-  };
+  const getBaseConfig = () => {};
 
   const handleShowConfig = () => {
-    handleModalVisible(true)
-  }
+    handleModalVisible(true);
+  };
 
-  const handleChangeConfig = (value: any, attar: string,) => {
-    const newRow = JSON.parse(JSON.stringify(baseConfig))
+  const handleChangeConfig = (value: any, attar: string) => {
+    const newRow = JSON.parse(JSON.stringify(baseConfig));
     newRow[attar] = value;
     setBaseConfig(newRow);
-  }
+  };
 
   useEffect(() => {
     getBaseConfig();
@@ -310,7 +303,7 @@ const TableList: React.FC = () => {
         actionRef={actionRef}
         rowKey="createTime"
         id="withdrawListIndex"
-        size='small'
+        size="small"
         search={{
           labelWidth: 90,
           //隐藏展开、收起
@@ -319,9 +312,8 @@ const TableList: React.FC = () => {
         }}
         pagination={{
           current: 1,
-          pageSizeOptions: [100, 500, 1000, 2000]
+          pageSizeOptions: [100, 500, 1000, 2000],
         }}
-        headerTitle={<Button type='primary' onClick={() => handleShowConfig()}>提现税配置</Button>}
         dateFormatter="string"
         toolBarRender={() => [
           <Button
@@ -381,7 +373,7 @@ const TableList: React.FC = () => {
           }
         >
           <Popconfirm
-            title="确认驳回？"
+            title="确认删除？"
             onConfirm={async () => {
               await handleRemove(selectedRowsState);
               setSelectedRows([]);
@@ -393,13 +385,13 @@ const TableList: React.FC = () => {
             }}
           >
             <Button style={{ width: '100px' }}>
-              {selectedRowsState.length > 1 ? '批量驳回' : '驳回'}
+              {selectedRowsState.length > 1 ? '批量删除' : '删除'}
             </Button>
           </Popconfirm>
         </FooterToolbar>
       )}
       <Modal
-        title='提现税配置'
+        title="提现税配置"
         visible={createModalVisible}
         onOk={() => handleOk()}
         onCancel={() => handleModalVisible(false)}
@@ -439,6 +431,13 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
+        <Form.Item label="驳回理由">
+          <Input
+            value={currentRow?.reason}
+            onChange={(e) => handleChange(e.target.value, 'reason')}
+            placeholder="请输入驳回理由"
+          />
+        </Form.Item>
       </Modal>
     </PageContainer>
   );
