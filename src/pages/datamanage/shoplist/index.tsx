@@ -85,6 +85,7 @@ const TableList: React.FC = () => {
     setShowDetail(true);
     setType(t);
   };
+  
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -431,13 +432,15 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-        <Form.Item label="驳回理由">
+        {
+          type == 2 ?  <Form.Item label="驳回理由">
           <Input
             value={currentRow?.reason}
             onChange={(e) => handleChange(e.target.value, 'reason')}
             placeholder="请输入驳回理由"
           />
-        </Form.Item>
+        </Form.Item> : null
+        }
       </Modal>
     </PageContainer>
   );

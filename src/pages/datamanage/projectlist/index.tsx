@@ -52,13 +52,11 @@ const TableList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [shiftLoading, setShiftLoading] = useState(true);
   const [typeList, setTypeList] = useState([])
-  useEffect(() => {
+  const handleUpdateRecord = (record: TableListItem) => {
+    const hide = message.loading('')
     getSelectCatList().then(res => {
       setTypeList(res.data)
     })
-  }, [])
-  const handleUpdateRecord = (record: TableListItem) => {
-    const hide = message.loading('')
     getProductDetail(record.id).then(res => {
       hide()
       if (res.code === 200) {
@@ -195,9 +193,15 @@ const TableList: React.FC = () => {
     },
   ];
   const addNewNotice = () => {
-    setCurrentRow(Object.assign({}, {}));
-    handleModalVisible(true);
-    formRef?.current?.resetFields();
+    const hide = message.loading('')
+    getSelectCatList().then(res => {
+      hide()
+      setTypeList(res.data)
+      setCurrentRow(Object.assign({}, {}));
+      handleModalVisible(true);
+      formRef?.current?.resetFields();
+    })
+
   };
 
   const handleOk = async () => {
