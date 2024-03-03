@@ -201,7 +201,6 @@ const TableList: React.FC = () => {
       handleModalVisible(true);
       formRef?.current?.resetFields();
     })
-
   };
 
   const handleOk = async () => {
