@@ -4,7 +4,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Form, Input, message, Modal,Drawer, Popconfirm } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { getOrderDetail, removeRule, rule, updateRule } from './service';
+import { getOrderDetail, removeRule, rule, sendGoods, updateRule } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { TableOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
@@ -27,6 +27,30 @@ const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
       hide();
       if (res.code === 200) {
         message.success('删除成功，即将刷新');
+        if (actionRef) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      }
+      return true;
+    } catch (error) {
+      hide();
+      message.error('删除失败，请重试');
+      return false;
+    }
+  });
+  return true;
+};
+
+
+const handleSent = async (selectedRows: TableListItem[], actionRef?: any) => {
+  const hide = message.loading('正在删除');
+  if (!selectedRows) return true;
+  selectedRows.forEach(async (row) => {
+    try {
+      const res = await sendGoods(row.id);
+      hide();
+      if (res.code === 200) {
+        message.success('发货成功，即将刷新');
         if (actionRef) {
           actionRef.current?.reloadAndRest?.();
         }
@@ -118,6 +142,8 @@ const TableList: React.FC = () => {
       title: '用户手机号',
       dataIndex: 'phone',
       width: 100,
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '订单价格',
@@ -186,6 +212,9 @@ const TableList: React.FC = () => {
         1: {
           text: '产品订单',
         },
+        3: {
+          text: '商户进货订单',
+        },
       },
     },
     {
@@ -228,21 +257,32 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 60,
+      width: 90,
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record) => [
-        <Popconfirm
-        title="确认删除？"
+        record.orderType == 3 && record.state == 1 ? <Popconfirm
+        title="确认发货？"
         onConfirm={async () => {
-          await handleRemove([record], actionRef);
+          await handleSent([record], actionRef);
         }}
-        key="delete"
+        key="fahuo"
       >
-        <a style={{ color: 'red' }} key="delete">
-          删除
+        <a style={{ color: 'blue' }} key="delete">
+          发货
         </a>
-      </Popconfirm>,
+      </Popconfirm> : null,
+      <Popconfirm
+      title="确认删除？"
+      onConfirm={async () => {
+        await handleRemove([record], actionRef);
+      }}
+      key="delete"
+    >
+      <a style={{ color: 'red' }} key="delete">
+        删除
+      </a>
+    </Popconfirm>,
       ],
     },
   ];
@@ -314,10 +354,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         dateFormatter="string"
-        scroll={{
-          x: 1000,
-          y: 400,
-        }}
+      
         request={async (params: any) => {
           const requestParams = { ...params, pageNum: params.current };
           const res: any = await rule(requestParams);

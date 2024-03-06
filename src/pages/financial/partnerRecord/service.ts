@@ -64,9 +64,9 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 }
 
 /** 新建规则 POST /api/rule */
-export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/withdraw/withdrawAudit', {
-    data,
+export async function sendGoods(orderId: number, options?: { [key: string]: any }) {
+  return request<Record<string, any>>(`/order/sendOut/${orderId}`, {
+    data: {},
     method: 'POST',
     ...(options || {}),
   });

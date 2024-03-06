@@ -64,11 +64,16 @@ const TableList: React.FC = () => {
       title: '用户ID',
       dataIndex: 'userId',
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '手机号',
       dataIndex: 'phone',
       hideInSearch: true,
+    },
+    {
+      title: '时长（天）',
+      dataIndex: 'day',
     },
     {
       title: '激活码',
@@ -77,13 +82,13 @@ const TableList: React.FC = () => {
     },
     {
       title: '是否使用',
-      dataIndex: 'putaway',
+      dataIndex: 'state',
       valueEnum: {
-        1: {
+        true: {
           text: '已使用',
           status: 'Error',
         },
-        0: {
+        false: {
           text: '未使用',
           status: 'Success',
         },

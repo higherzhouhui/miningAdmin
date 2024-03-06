@@ -135,6 +135,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
+          name: 'datamanage-scholllist',
+          path: '/datamanage/scholllist',
+          component: './datamanage/scholllist',
+          access: 'adminRouteFilter',
+        },
+        {
           name: 'datamanage-typelist',
           path: '/datamanage/typelist',
           component: './datamanage/typelist',

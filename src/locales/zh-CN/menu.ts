@@ -25,6 +25,7 @@ export default {
   'menu.datamanage.datamanage-tuiguang': '推广（邀请）奖励',
   'menu.datamanage.datamanage-noticelist': '公告',
   'menu.datamanage.datamanage-bannerlist': '轮播图',
+  'menu.datamanage.datamanage-scholllist': '学校',
   'menu.datamanage.datamanage-typelist': '分类',
   'menu.datamanage.datamanage-projectlist': '产品',
   'menu.datamanage.datamanage-shoplist': '店铺/加盟商',
