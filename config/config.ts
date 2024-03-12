@@ -36,7 +36,7 @@ export default defineConfig({
   routes: [
     {
       path: '/',
-      redirect: '/home/list',
+      redirect: '/account/list',
     },
     {
       path: '/home',

@@ -78,7 +78,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       return (
         <>
           {initialState?.currentUser && !location.pathname.includes(loginPath) ? (
-            <TagView home="/home/list">{children}</TagView>
+            <TagView home="/account/list">{children}</TagView>
           ) : (
             children
           )}
