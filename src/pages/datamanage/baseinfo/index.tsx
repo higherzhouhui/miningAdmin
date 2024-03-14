@@ -8,9 +8,11 @@ import styles from './style.less'
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
     {title: '授信额度', key: 'creditLimit', vlaue: '', type: 'number'},
-    // {title: '推荐赠送金', key: 'recommend', vlaue: '', type: 'number'},
+    {title: '最小进货金额', key: 'orderLimit', vlaue: '', type: 'number'},
     // {title: '注册赠送金', key: 'register', vlaue: '', type: 'number'},
-    // {title: '股权分红比例', key: 'equityBonus', value: '', type: 'number', after: '%'},
+    {title: '邀请奖励', key: 'inviteAward', value: '', type: 'number'},
+    {title: '店铺比例', key: 'merchantAward', value: '', type: 'number'},
+    // {title: '店铺比例', key: 'merchantAward', value: '', type: 'number', after: '%'},
     // {title: '兑换规则', key: 'exchange', value: '', hide: localStorage.getItem('hui') ? false : true },
     {title: 'id', key: 'id', hide: true, value: ''},
   ])

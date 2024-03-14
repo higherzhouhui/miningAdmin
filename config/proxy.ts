@@ -8,13 +8,13 @@
  */
 export default {
   dev: {
-    '/api/': {
-      target: 'https://3382ef8404.zicp.fun',
+    '/api1/': {
+      target: 'https://api.xiaoeda.cn/admin',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },
-    '/uploadImage/': {
-      target: 'https://338v828404.goho.co',
+    '/uploadImage1/': {
+      target: 'https://api.xiaoeda.cn',
       changeOrigin: true,
       pathRewrite: { '^/uploadImage': '' },
     },

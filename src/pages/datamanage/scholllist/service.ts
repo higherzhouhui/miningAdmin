@@ -48,7 +48,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
   return request<Record<string, any>>(`/school/remove/${data.id}`, {
     data,
-    method: 'DELETE',
+    method: 'POST',
     ...(options || {}),
   });
 }

@@ -152,8 +152,8 @@ const TableList: React.FC = () => {
           <>
             {record.role == 1 ? (
               <Tag color="success">普通用户</Tag>
-            ) : record.role == 1 ? (
-              <Tag color="volcano">店长</Tag>
+            ) : record.role == 2 ? (
+              <Tag color="volcano">商铺</Tag>
             ) : 
             <Tag color="orange">加盟商</Tag>}
           </>
