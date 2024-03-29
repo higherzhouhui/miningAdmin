@@ -10,6 +10,7 @@ import { TableOutlined } from '@ant-design/icons';
 import * as XLSX from 'xlsx';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import styles from  './style.less'
 /**
  * 删除节点
  *
@@ -128,8 +129,11 @@ const TableList: React.FC = () => {
         return (
           <div
             style={{ color: 'blue', textDecoration: 'underLine', cursor: 'pointer' }}
-            onClick={() => {
-              setCurrentRow(entity);
+            onClick={async() => {
+              setLoading(true)
+              const res: any = await getOrderDetail({id: entity.id})
+              setCurrentRow(res.data);
+              setLoading(false)
               setShowDetail(true);
             }}
           >
@@ -137,13 +141,6 @@ const TableList: React.FC = () => {
           </div>
         );
       },
-    },
-    {
-      title: '用户手机号',
-      dataIndex: 'phone',
-      width: 100,
-      hideInTable: true,
-      hideInSearch: true,
     },
     {
       title: '订单价格',
@@ -251,6 +248,29 @@ const TableList: React.FC = () => {
       hideInTable: true,
       render: (_, record: any) => {
         return <span>{`${record.receiverProvince}/${record.receiverCity}/${record.receiverRegion}${record.receiverDetailAddress}`}</span>
+      }
+    },
+    {
+      title: '商品列表',
+      dataIndex: 'receiverName',
+      width: 150,
+      hideInSearch: true,
+      hideInTable: true,
+      render: (_, record: any) => {
+        return  record.orderProductList ? <div className={styles.listWrapper}>
+          {
+            record.orderProductList.map((item: any) => {
+              return <div key={item.id} className={styles.list}>
+                <div className={styles.left}>
+                  <img src={item.image} />
+                  <div>{item.title}</div>
+                </div>
+                <div className={styles.price}>价格{item.price}</div>
+                <div>数量{item.num}</div>
+              </div>
+            })
+          }
+        </div> : null
       }
     },
     {
