@@ -32,7 +32,7 @@ export default {
   'menu.datamanage.datamanage-upload': '上传文件',
   'menu.datamanage.datamanage-baseinfo': '系统参数配置',
   'menu.datamanage.datamanage-course': '关于我们',
-  'menu.datamanage.datamanage-codelist': '激活码',
+  'menu.datamanage.datamanage-codelist': '会员激活码',
   'menu.datamanage.datamanage-video': '首页视频',
   'menu.datamanage.datamanage-blogs': '新手帮助',
   'menu.datamanage.datamanage-equityCert': '国家授权',
