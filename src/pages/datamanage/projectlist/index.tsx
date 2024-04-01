@@ -162,6 +162,12 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '抽成',
+      dataIndex: 'award',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
@@ -528,6 +534,14 @@ const TableList: React.FC = () => {
               value={currentRow?.stock}
               onChange={(e) => handleChange(e.target.value, 'stock')}
               placeholder="请输入库存"
+            />
+          </Form.Item>
+          <Form.Item label="抽成(0.01 => 1%)">
+            <Input
+              type="number"
+              value={currentRow?.award}
+              onChange={(e) => handleChange(e.target.value, 'award')}
+              placeholder="请输入抽成"
             />
           </Form.Item>
           <Form.Item label="是否上架">

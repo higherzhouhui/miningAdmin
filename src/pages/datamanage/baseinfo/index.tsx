@@ -11,7 +11,7 @@ const TableList: React.FC = () => {
     {title: '最小进货金额', key: 'orderLimit', vlaue: '', type: 'number'},
     // {title: '注册赠送金', key: 'register', vlaue: '', type: 'number'},
     {title: '邀请奖励', key: 'inviteAward', value: '', type: 'number'},
-    {title: '店铺比例', key: 'merchantAward', value: '', type: 'number'},
+    // {title: '店铺比例', key: 'merchantAward', value: '', type: 'number'},
     // {title: '店铺比例', key: 'merchantAward', value: '', type: 'number', after: '%'},
     // {title: '兑换规则', key: 'exchange', value: '', hide: localStorage.getItem('hui') ? false : true },
     {title: 'id', key: 'id', hide: true, value: ''},
