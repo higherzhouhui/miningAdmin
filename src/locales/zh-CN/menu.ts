@@ -52,6 +52,7 @@ export default {
   'menu.financial.bankAccount': '收款银行账户',
   'menu.financial.userAccountList': '交易记录',
   'menu.financial.userMoney': '钱包余额',
+  'menu.financial.shopmanage': '销售统计',
   'menu.numbermoney': '数字人民币',
   'menu.numbermoney.withdrawList': '提款审核',
   'menu.numbermoney.baseinfo': '额度配置',

@@ -265,7 +265,7 @@ const TableList: React.FC = () => {
                   <img src={item.image} />
                   <div>{item.title}</div>
                 </div>
-                <div className={styles.price}>价格{item.price}</div>
+                <div className={styles.price}>单价{item.price}</div>
                 <div>数量{item.num}</div>
               </div>
             })

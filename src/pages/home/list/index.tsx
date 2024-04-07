@@ -13,15 +13,12 @@ const TableList: React.FC = () => {
   const [dataSource, setDataSource] = useState<TableListItem | any>({});
   const [loading, setLoading] = useState(1);
   const [tongji, setTongji] = useState<ITongji[]>([
-      { title: '今日新增用户', num: 0 },
-      { title: '今日销售额', num: 0 },
-      { title: '消费总用户', num: 0 },
-      { title: '今日新增消费用户', num: 0 },
-      { title: '在线用户', num: 0 },
-      { title: '用户总数', num: 0 },
-      { title: '出款总额', num: 0 },
-      { title: '销售总额', num: 0 },
-      
+    { title: '今日销售额', num: 0 },
+    { title: '今日消费用户', num: 0 },
+    { title: '消费总用户', num: 0 },
+    { title: '总用户', num: 0 },
+    { title: '销售总额', num: 0 },
+
   ]);
   const [options, setOptions] = useState({})
   const [useroptions, setUserOptions] = useState({})
@@ -128,21 +125,18 @@ const TableList: React.FC = () => {
         if (res.code === 200) {
           const data = res.data;
           const arr = [
-            { title: '今日新增用户', num: data?.todayUserNum },
-            { title: '今日销售额', num: data?.todayBuyProjectSumPrice || 0 },
-            { title: '消费总用户', num: data?.buyProjectNumUser },
-            { title: '今日新增消费用户', num: data?.newBuyProjectNumUser || 0 },
-            { title: '在线用户', num: data?.onLineUser || 0 },
-            { title: '用户总数', num: data?.sumUserNum },
-            { title: '出款总额', num: data?.withdrawSumPrice },
-            { title: '销售总额', num: data?.buyProjectSumPrice },
+            { title: '今日销售额', num: data?.todayOrderPrice || 0 },
+            { title: '今日消费用户', num: data?.todayOrderUserNum },
+            { title: '消费总用户', num: data?.orderUserNum },
+            { title: '总用户', num: data?.sumUserNum || 0 },
+            { title: '销售总额', num: data?.totalOrderPrice },
           ];
           setTongji(arr);
-         
+
           try {
             const allObj: any = {
               xAxis: [],
-              legendData: [ '日销售量', '日销售额', '日出款额'],
+              legendData: ['日销售量', '日销售额', '日出款额'],
               yAxis: [[], [], []],
               user: [],
             };
@@ -151,11 +145,11 @@ const TableList: React.FC = () => {
               allObj.xAxis.push(item.date.replace('2023-', ''))
               allObj.user.push(item.num)
             });
-         
+
             (data?.buyProjectNumList || []).map((item: any) => {
               item.num = parseInt(item.num);
               allObj.yAxis[0].push(item.num)
-  
+
             });
             (data?.buyProjectPriceList || []).map((item: any) => {
               item.num = parseInt(item.num);
@@ -310,7 +304,7 @@ const TableList: React.FC = () => {
           );
         })}
       </div>
-      <Radio.Group
+      {/* <Radio.Group
         defaultValue={7}
         onChange={(e) => handleChangeRadio(e)}
         buttonStyle="solid"
@@ -323,11 +317,11 @@ const TableList: React.FC = () => {
         <RedoOutlined /> 刷新
       </Button>
       <div className={style.userChart}>
-        <MyChartBox id="homeUserChart" loading={loading} options={useroptions}/>
+        <MyChartBox id="homeUserChart" loading={loading} options={useroptions} />
       </div>
       <div className={style.moneyChart}>
-        <MyChartBox id="homeMoneyChart" loading={loading} options={options}/>
-      </div>
+        <MyChartBox id="homeMoneyChart" loading={loading} options={options} />
+      </div> */}
 
       {/* <div className={style.main}>
         <div className={style.item} ref={itemRef}>

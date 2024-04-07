@@ -267,6 +267,12 @@ export default defineConfig({
           component: './financial/partnerRecord',
           access: 'adminRouteFilter',
         },
+        {
+          name: 'shopmanage',
+          path: '/financial/shopmanage',
+          component: './financial/shopmanange',
+          access: 'adminRouteFilter',
+        },
         // {
         //   name: 'withdrawType',
         //   path: '/financial/withdrawType',

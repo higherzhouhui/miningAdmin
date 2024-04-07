@@ -100,13 +100,6 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '昵称',
-      dataIndex: 'nickname',
-      width: 80,
-      hideInSearch: true,
-    },
-
-    {
       title: '头像',
       dataIndex: 'photo',
       width: 110,
