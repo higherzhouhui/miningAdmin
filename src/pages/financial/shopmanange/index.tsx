@@ -12,7 +12,7 @@ const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
-  const [showDetail, setShowDetail] = useState(false);
+  const [query, setQuery] = useState<any>({});
   useEffect(() => {
     // getOrderDetail({id: '24022714061103012'})
   }, [])
@@ -75,10 +75,22 @@ const TableList: React.FC = () => {
     },
   ];
 
+  const staticWithUrl = (obj: any, url: string) => {
+    let nUrl = url
+    Object.keys(obj).map((item: any) => {
+      if (obj[item] && !nUrl.includes('?')) {
+        nUrl += `?${item}=${obj[item]}`
+      } else if (obj[item]) {
+        nUrl += `&${item}=${obj[item]}`
+      }
+    })
+    return nUrl
+  }
 
   const export2Excel = (id: string, name: string) => {
     // window.open('/api/turnover/excelTurnover')
-    location.href = '/api/turnover/excelTurnover'
+    const href = staticWithUrl(query, '/api/turnover/excelTurnover')
+    location.href = href
   };
 
   return (
@@ -118,6 +130,7 @@ const TableList: React.FC = () => {
               delete params.date
           }
           const requestParams = { ...params, pageNum: params.current };
+          setQuery(requestParams)
           const res: any = await rule(requestParams);
           let data: any = [];
           data = res?.data?.list;

@@ -77,6 +77,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const formRef = useRef<any>();
   const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState<any>({})
   useEffect(() => {
     // getOrderDetail({id: '24022714061103012'})
   }, [])
@@ -125,6 +126,7 @@ const TableList: React.FC = () => {
       title: '交易单号',
       dataIndex: 'orderNo',
       width: 150,
+      hideInSearch: true,
       render: (dom, entity) => {
         return (
           <div
@@ -195,7 +197,14 @@ const TableList: React.FC = () => {
           text: '微信支付',
           status: 'Success',
         },
-      
+        2: {
+          text: '余额',
+          status: 'Info',
+        },
+        3: {
+          text: '信用额度',
+          status: 'Error',
+        },
       },
     },
     {
@@ -235,10 +244,11 @@ const TableList: React.FC = () => {
     },
     {
       title: '收货人电话',
-      dataIndex: 'receiverPhone',
+      dataIndex: 'phone',
       width: 150,
-      hideInSearch: true,
-      hideInTable: true,
+      render: (_, record: any) => {
+        return <span>{`${record.receiverPhone}`}</span>
+      }
     },
     {
       title: '收货地址',
@@ -339,7 +349,22 @@ const TableList: React.FC = () => {
     },
   };
 
+  const staticWithUrl = (obj: any, url: string) => {
+    let nUrl = url
+    Object.keys(obj).map((item: any) => {
+      if (obj[item] && !nUrl.includes('?')) {
+        nUrl += `?${item}=${obj[item]}`
+      } else if (obj[item]) {
+        nUrl += `&${item}=${obj[item]}`
+      }
+    })
+    return nUrl
+  }
+
   const export2Excel = (id: string, name: string) => {
+    const href = staticWithUrl(query, '/api/order/excelOrder')
+    location.href = href
+    return
     const exportFileContent = document.getElementById(id)!.cloneNode(true);
     const wb = XLSX.utils.table_to_book(exportFileContent, { sheet: 'sheet1' });
     XLSX.writeFile(wb, `${name}.xlsx`);
@@ -377,6 +402,7 @@ const TableList: React.FC = () => {
       
         request={async (params: any) => {
           const requestParams = { ...params, pageNum: params.current };
+          setQuery(requestParams)
           const res: any = await rule(requestParams);
           let data: any = [];
           data = res?.data?.list;
