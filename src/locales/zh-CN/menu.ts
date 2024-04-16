@@ -29,6 +29,7 @@ export default {
   'menu.datamanage.datamanage-typelist': '分类',
   'menu.datamanage.datamanage-projectlist': '产品',
   'menu.datamanage.datamanage-shoplist': '店铺/加盟商',
+  'menu.datamanage.datamanage-shopdetail': '商铺详情',
   'menu.datamanage.datamanage-upload': '上传文件',
   'menu.datamanage.datamanage-baseinfo': '系统参数配置',
   'menu.datamanage.datamanage-course': '关于我们',

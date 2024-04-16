@@ -1,18 +1,15 @@
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Image } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm, Image, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { removeRule, rule, updateConfig, updateRule } from './service';
-import ProForm from '@ant-design/pro-form';
-import { request } from 'umi';
+import { removeRule, rule, updateRule } from './service';
 import * as XLSX from 'xlsx';
 import { TableOutlined } from '@ant-design/icons';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { history } from 'umi';
-
+import { useLocation } from 'umi';
 /**
  * 删除节点
  *
@@ -44,7 +41,6 @@ const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
 
 const TableList: React.FC = () => {
   /** 新建窗口的弹窗 */
-  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   /** 分布更新窗口的弹窗 */
   const actionRef = useRef<ActionType>();
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
@@ -53,7 +49,8 @@ const TableList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [type, setType] = useState(1);
   const formRef = useRef<any>();
-  const [baseConfig, setBaseConfig] = useState<any>({});
+  const [myParams, setMyparams] = useState<any>({})
+  const localMy = useLocation()
   const handleUpdateRecord = (record: TableListItem, ctype: number) => {
     if (loading) {
       return;
@@ -62,8 +59,7 @@ const TableList: React.FC = () => {
     setLoading(true);
     updateRule({
       id: record.id,
-      state: ctype,
-      reason: record.reason,
+      stock: record.modifyStock,
     })
       .then((res: any) => {
         hide();
@@ -83,22 +79,11 @@ const TableList: React.FC = () => {
     // formRef?.current?.resetFields();
   };
   const showDetailModal = (row: any, t: number) => {
-    setCurrentRow(row);
+    setCurrentRow(JSON.parse(JSON.stringify(row)));
     setShowDetail(true);
     setType(t);
   };
   
-  const handleShowProductList = (record: TableListItem) => {
-    if (record.state == 1) {
-      const url = `/datamanage/shopdetail?merchantId=${record.id}&title=${record.title}`
-      localStorage.setItem('shopdetail', JSON.stringify({
-        merchantId: record.id,
-        title: record.title
-      }))
-      history.push(url)
-    }
-  }
-
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -109,130 +94,59 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '店铺名称',
+      title: '商品名称',
       dataIndex: 'title',
       width: 100,
       hideInSearch: true,
-      render: (_, record: any) => {
-        return (
-          <span style={{color: 'blue', cursor: 'pointer', textDecoration: 'underline'}} onClick={() => handleShowProductList(record)}>{record.title}</span>
-        );
-      },
     },
     {
-      title: '店铺logo',
+      title: '商品图',
       dataIndex: 'Logo',
       width: 100,
       hideInSearch: true,
       render: (_, record: any) => {
-        return <Image src={record.logo} style={{ width: '80px', objectFit: 'contain' }} />;
+        return <Image src={record.image} style={{ width: '80px', objectFit: 'contain' }} />;
       },
     },
     {
-      title: '学校名称',
-      dataIndex: 'schoolTitle',
+      title: '价格',
+      dataIndex: 'price',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '用户ID',
-      dataIndex: 'userId',
+      title: '会员价',
+      dataIndex: 'memberPrice',
       width: 100,
       hideInSearch: true,
     },
-    {
-      title: '推荐人ID',
-      dataIndex: 'referrerId',
-      hideInSearch: true,
-      hideInTable: true,
-      width: 100,
-    },
-
+  
     {
       title: '状态',
-      dataIndex: 'state',
+      dataIndex: 'putaway',
       width: 120,
-      valueEnum: {
-        0: {
-          text: '审核中',
-          status: 'Processing',
-        },
-        1: {
-          text: '已完成',
-          status: 'Success',
-        },
-        2: {
-          text: '驳回',
-          status: 'Error',
-        },
-      },
-    },
-    {
-      title: '店铺类型',
-      dataIndex: 'type',
-      width: 100,
-      valueEnum: {
-        1: {
-          text: '商店',
-        },
-        2: {
-          text: '加盟商',
-        },
-      },
-    },
-    {
-      title: '申请人手机号',
-      dataIndex: 'phone',
-      width: 150,
-      hideInSearch: true,
-    },
-    {
-      title: '申请营业地址',
-      dataIndex: 'phone',
-      width: 150,
       hideInSearch: true,
       render: (_, record: any) => {
-        return (
-          <span>{`${record.province}/${record.city}/${record.region}${record.detailAddress}`}</span>
-        );
+        return <span>{record.putaway ? <Tag color='success'>已上架</Tag> : <Tag color='error'>未上架</Tag>}</span>;
       },
     },
     {
-      title: '申请时间',
-      dataIndex: 'createTime',
-      width: 150,
+      title: '库存',
+      dataIndex: 'stock',
       hideInSearch: true,
+      width: 100,
     },
     {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 150,
+      width: 80,
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record: any) => [
-        record.state == 0 ? (
-          <a key="access" onClick={() => showDetailModal(record, 1)}>
-            通过
-          </a>
-        ) : null,
-        record.state == 0 ? (
-          <a style={{ color: 'red' }} key="delete" onClick={() => showDetailModal(record, 2)}>
-            驳回
-          </a>
-        ) : null,
-
-        <Popconfirm
-          key="bohui"
-          title="确认删除？"
-          onConfirm={async () => {
-            await handleRemove([record]);
-            setSelectedRows([]);
-            actionRef.current?.reloadAndRest?.();
-          }}
-        >
-          <a style={{ color: 'red' }}>删除</a>
-        </Popconfirm>,
+      <a style={{ color: 'blue' }} key="delete" onClick={() => showDetailModal(record, 2)}>
+        修改
+      </a>
       ],
     },
   ];
@@ -242,50 +156,13 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
 
-  const handleOk = async () => {
-    const hide = message.loading(`正在修改中...`, 50);
-    updateConfig(baseConfig).then((res) => {
-      hide();
-      if (res.code === 200) {
-        message.success('修改成功！');
-        handleModalVisible(false);
-      } else {
-        message.error(res?.message || res?.msg);
-      }
-    });
-  };
+
   const handleChange = (value: any, attar: string) => {
     const newRow = currentRow;
     newRow[attar] = value;
     setCurrentRow(Object.assign({}, newRow));
   };
 
-  const Upload = {
-    //数量
-    maxCount: 1,
-    accept: 'image/*',
-    customRequest: (options: any) => {
-      const { onSuccess, onError, file } = options;
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'images');
-      formData.append('path', 'admin-withdraw');
-      // /upload为图片上传的地址，后台只需要一个图片的path
-      // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
-        .then((data) => {
-          const _response = {
-            name: file.name,
-            status: 'done',
-            path: data.data.url + data.data.path,
-          };
-          handleChange(data.data.path, 'icon');
-          //请求成功后把file赋值上去
-          onSuccess(_response, file);
-        })
-        .catch(onError);
-    },
-  };
 
   const export2Excel = (id: string, name: string) => {
     const exportFileContent = document.getElementById(id)!.cloneNode(true);
@@ -293,75 +170,62 @@ const TableList: React.FC = () => {
     XLSX.writeFile(wb, `${name}.xlsx`);
   };
 
-  const handleChangeSwitch = (flag: boolean) => {
-    updateConfig({ ...baseConfig, cashWithdraw: flag }).then((res) => {
-      if (res.code === 200) {
-        setBaseConfig({ ...baseConfig, cashWithdraw: flag });
-      } else {
-        message.error(res?.message || res?.msg);
-      }
-    });
-  };
 
-  const getBaseConfig = () => {};
-
-  const handleShowConfig = () => {
-    handleModalVisible(true);
-  };
-
-  const handleChangeConfig = (value: any, attar: string) => {
-    const newRow = JSON.parse(JSON.stringify(baseConfig));
-    newRow[attar] = value;
-    setBaseConfig(newRow);
-  };
+  const getParams = (url: string) => {
+    const urlObject = new URL(url);
+    const params = {};
+    for (const [key, value] of urlObject.searchParams.entries()) {
+      params[key] = value;
+    }
+    console.log(params)
+    return params;
+  }
 
   useEffect(() => {
-    getBaseConfig();
-  }, []);
+    const newObj = localStorage.getItem('shopdetail')
+    if (newObj) {
+      const obj = JSON.parse(newObj)
+      let reFresh = false
+      if (myParams.merchantId && obj.merchantId && obj.merchantId != myParams.merchantId) {
+        reFresh = true
+      }
+      setMyparams(obj)
+      if (reFresh) {
+        actionRef.current?.reloadAndRest?.();
+      }
+    }
+}, [localMy.key]);
 
   return (
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
-        rowKey="createTime"
+        rowKey="id"
+        headerTitle={`名称：${myParams.title}`}
         id="withdrawListIndex"
         size="small"
-        search={{
-          labelWidth: 90,
-          //隐藏展开、收起
-          collapsed: false,
-          collapseRender: () => false,
-        }}
+        search={false}
         pagination={{
           current: 1,
           pageSizeOptions: [100, 500, 1000, 2000],
         }}
         dateFormatter="string"
+
         toolBarRender={() => [
           <Button
             type="primary"
             key="primary"
-            onClick={() => export2Excel('withdrawListIndex', '店铺列表')}
+            onClick={() => export2Excel('withdrawListIndex', '店铺详情')}
           >
             <TableOutlined />
             导出Excel
           </Button>,
         ]}
         scroll={{
-          x: 1400,
-          y: Math.max(400, document?.body?.clientHeight - 490),
+          y: Math.max(400, document?.body?.clientHeight - 390),
         }}
         request={async (params: TableListPagination) => {
-          const res: any = await rule({ ...params, pageNum: params.current });
-          // (res?.data?.list || []).map((item: any) => {
-          //   let status = '审核中'
-          //   if (item.auditStatus == 1) {
-          //     status = '通过'
-          //   } else if (item.auditStatus == 2) {
-          //     status = '驳回'
-          //   }
-          //   item.status = status
-          // })
+          const res: any = await rule({ pageSize: 10, pageNum: params.current, merchantId: myParams.merchantId });
           let data: any = [];
           data = res?.data?.list;
           return {
@@ -413,27 +277,11 @@ const TableList: React.FC = () => {
         </FooterToolbar>
       )}
       <Modal
-        title="提现税配置"
-        visible={createModalVisible}
-        onOk={() => handleOk()}
-        onCancel={() => handleModalVisible(false)}
-      >
-        <ProForm formRef={formRef} submitter={false}>
-          <Form.Item label="税额">
-            <Input
-              type="number"
-              value={baseConfig?.payPrice}
-              onChange={(e) => handleChangeConfig(e.target.value, 'payPrice')}
-            />
-          </Form.Item>
-        </ProForm>
-      </Modal>
-      <Modal
         width={600}
         visible={showDetail}
         title={'详情'}
         onOk={() => handleUpdateRecord(currentRow, type)}
-        okText={type === 1 ? '通过' : '驳回'}
+        okText={type === 1 ? '通过' : '确认'}
         onCancel={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
@@ -454,11 +302,12 @@ const TableList: React.FC = () => {
           />
         )}
         {
-          type == 2 ?  <Form.Item label="驳回理由">
+          type == 2 ?  <Form.Item label="修改库存">
           <Input
-            value={currentRow?.reason}
-            onChange={(e) => handleChange(e.target.value, 'reason')}
-            placeholder="请输入驳回理由"
+            value={currentRow?.modifyStock}
+            onChange={(e) => handleChange(e.target.value, 'modifyStock')}
+            placeholder="请输入库存"
+            type='number'
           />
         </Form.Item> : null
         }

@@ -66,11 +66,14 @@ const TableList: React.FC = () => {
       dataIndex: 'platformEarnings',
       width: 80,
       hideInSearch: true,
+      render: (_, record: any) => {
+        return <span style={{color: 'red'}}>{record.platformEarnings}</span>
+      }
     },
     {
       title: '日期',
       dataIndex: 'createTime',
-      width: 150,
+      width: 100,
       hideInSearch: true,
     },
   ];

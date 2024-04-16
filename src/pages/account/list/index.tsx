@@ -127,6 +127,7 @@ const TableList: React.FC = () => {
       dataIndex: 'referrerId',
       width: 100,
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '邀请码',
@@ -190,30 +191,7 @@ const TableList: React.FC = () => {
       hideInDescriptions: true,
       fixed: 'right',
       render: (_, record) => [
-        <a
-          style={{ color: '#4423da', display: 'none' }}
-          key="baseInfo"
-          onClick={() => handleUpdateRecord(record, 'baseInfo')}
-        >
-          <FormOutlined />
-          资料
-        </a>,
-        <a
-          style={{ color: '#13e436', display: 'none' }}
-          key="resetPassword"
-          onClick={() => handleUpdateRecord(record, 'resetPassword')}
-        >
-          <EditOutlined />
-          密码
-        </a>,
-        <a
-          style={{ color: '#cf2960', display: 'none' }}
-          key="addProject"
-          onClick={() => handleUpdateRecord(record, 'addNewProject')}
-        >
-          <PlusOutlined />
-          添加项目
-        </a>,
+       
         <Popconfirm
           title="确认删除该会员?"
           onConfirm={async () => {
@@ -305,7 +283,7 @@ const TableList: React.FC = () => {
     <PageContainer>
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
-        rowKey="userId"
+        rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
         headerTitle={`总会员：${total}`}
@@ -331,7 +309,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1400,
+          x: 1100,
           y: Math.max(400, document?.body?.clientHeight - 490),
         }}
         request={async (params: TableListPagination) => {

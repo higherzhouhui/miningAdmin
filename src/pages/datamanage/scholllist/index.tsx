@@ -125,18 +125,22 @@ const TableList: React.FC = () => {
     {
       title: '学校',
       dataIndex: 'title',
+      width: 120,
     },
     {
       title: '省份',
       dataIndex: 'province',
+      width: 120,
     },
     {
       title: '城市',
       dataIndex: 'city',
+      width: 120,
     },
     {
       title: '区',
       dataIndex: 'region',
+      width: 120,
     },
     {
       title: '操作',

@@ -91,16 +91,19 @@ const TableList: React.FC = () => {
     {
       title: '排序',
       dataIndex: 'sort',
+      width: 50,
     },
     {
       title: '标题',
       dataIndex: 'title',
       className: 'fullClass',
+      width: 120,
     },
     {
       title: '图标',
       dataIndex: 'icon',
       hideInSearch: true,
+      width: 120,
       render: (_, record) => {
         return (
           <Image src={record.icon} width={100} height={80} style={{ objectFit: 'contain' }} />
@@ -110,6 +113,7 @@ const TableList: React.FC = () => {
     {
       title: '展示位置',
       hideInSearch: true,
+      width: 120,
       render: (_, record) => {
         return <Tag color={record.type ? 'red' : 'green'}>{record.type == 1 ? '首页' : '产品'}</Tag>
         },
@@ -120,7 +124,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       className: 'fullClass',
       fixed: 'right',
-      width: 120,
+      width: 100,
       hideInDescriptions: true,
       render: (_, record) => [
         <a

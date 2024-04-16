@@ -536,7 +536,7 @@ const TableList: React.FC = () => {
               placeholder="请输入库存"
             />
           </Form.Item>
-          <Form.Item label="抽成(0.01 => 1%)">
+          <Form.Item label="抽成(0.01 == 1%)">
             <Input
               type="number"
               value={currentRow?.award}

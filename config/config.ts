@@ -214,6 +214,13 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
+          name: 'datamanage-shopdetail',
+          path: '/datamanage/shopdetail',
+          component: './datamanage/shopdetail',
+          access: 'adminRouteFilter',
+          hideInMenu: true,
+        },
+        {
           name: 'datamanage-codelist',
           path: '/datamanage/codelist',
           component: './datamanage/codelist',

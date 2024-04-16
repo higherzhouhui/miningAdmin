@@ -2,6 +2,7 @@ export type TableListItem = {
   id: number;
   auditStatus: number; //0.审核中 1审核通过 2.审核未通过
   amount: number;
+  stock: number;
   bankCode: string;
   bankName: string;
   createTime: string;
@@ -10,8 +11,7 @@ export type TableListItem = {
   serviceCharge: string;
   type: string;
   reason?: string;
-  title: string;
-  state: number;
+  putaway?: boolean;
 };
 
 export type TableListPagination = {
