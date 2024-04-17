@@ -1,7 +1,7 @@
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal,Drawer, Popconfirm } from 'antd';
+import { Button, Form, Input, message, Modal,Drawer, Popconfirm, Image } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { getOrderDetail, removeRule, rule, sendGoods, updateRule } from './service';
@@ -261,7 +261,7 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: '商品列表',
+      title: '商品',
       dataIndex: 'receiverName',
       width: 150,
       hideInSearch: true,
@@ -272,11 +272,14 @@ const TableList: React.FC = () => {
             record.orderProductList.map((item: any) => {
               return <div key={item.id} className={styles.list}>
                 <div className={styles.left}>
-                  <img src={item.image} />
+                  <Image src={item.image} className={styles.proImg}/>
                   <div>{item.title}</div>
                 </div>
-                <div className={styles.price}>单价{item.price}</div>
-                <div>数量{item.num}</div>
+                <div className={styles.price}>
+                  <div>价格:<b>{item.price}</b></div>
+                  <div>会员价:<b>{item.memberPrice}</b></div>
+                  </div>
+                <div style={{color: '#fff', background: 'red'}}>X{item.num}</div>
               </div>
             })
           }
@@ -386,6 +389,10 @@ const TableList: React.FC = () => {
           //隐藏展开、收起
           collapsed: false,
           collapseRender: () => false,
+        }}
+        scroll={{
+          x: 1300,
+          y: 450,
         }}
         id="transactionIndex"
         toolBarRender={() => [

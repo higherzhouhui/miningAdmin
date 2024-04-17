@@ -207,7 +207,7 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 150,
+      width: 120,
       fixed: 'right',
       hideInDescriptions: true,
       render: (_, record: any) => [
@@ -348,8 +348,7 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         scroll={{
-          x: 1400,
-          y: Math.max(400, document?.body?.clientHeight - 490),
+          y: Math.min(500, document?.body?.clientHeight - 430),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });

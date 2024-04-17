@@ -125,7 +125,7 @@ const TableList: React.FC = () => {
     {
       title: '学校',
       dataIndex: 'title',
-      width: 120,
+      width: 200,
     },
     {
       title: '省份',

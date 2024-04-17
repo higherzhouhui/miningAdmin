@@ -113,6 +113,9 @@ const TableList: React.FC = () => {
           collapsed: false,
           collapseRender: () => false,
         }}
+        scroll={{
+          y: 450
+        }}
         id="transactionIndex"
         toolBarRender={() => [
           <Button

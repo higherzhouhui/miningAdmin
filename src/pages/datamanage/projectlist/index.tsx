@@ -352,7 +352,7 @@ const TableList: React.FC = () => {
         }}
         size='small'
         scroll={{
-          y: document?.body?.clientHeight - 420,
+          y: Math.min(document?.body?.clientHeight - 420, 450),
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => addNewNotice()}>

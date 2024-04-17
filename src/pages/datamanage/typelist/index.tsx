@@ -89,7 +89,7 @@ const TableList: React.FC = () => {
       hideInTable: true,
     },
     {
-      title: '排序',
+      title: '序号',
       dataIndex: 'sort',
       width: 50,
     },
@@ -97,13 +97,13 @@ const TableList: React.FC = () => {
       title: '标题',
       dataIndex: 'title',
       className: 'fullClass',
-      width: 120,
+      width: 150,
     },
     {
       title: '图标',
       dataIndex: 'icon',
       hideInSearch: true,
-      width: 120,
+      width: 100,
       render: (_, record) => {
         return (
           <Image src={record.icon} width={100} height={80} style={{ objectFit: 'contain' }} />
@@ -124,7 +124,7 @@ const TableList: React.FC = () => {
       valueType: 'option',
       className: 'fullClass',
       fixed: 'right',
-      width: 100,
+      width: 120,
       hideInDescriptions: true,
       render: (_, record) => [
         <a
@@ -221,6 +221,7 @@ const TableList: React.FC = () => {
         pagination={{
           pageSize: 10,
         }}
+        size='small'
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => addNewNotice()}>
             <PlusOutlined />
@@ -238,6 +239,9 @@ const TableList: React.FC = () => {
             success: true,
             total: res?.data?.totalSize,
           };
+        }}
+        scroll={{
+          y: 520
         }}
         columns={columns}
         rowSelection={{

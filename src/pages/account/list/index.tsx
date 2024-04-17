@@ -121,6 +121,7 @@ const TableList: React.FC = () => {
       dataIndex: 'openid',
       width: 160,
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '推荐人ID',
@@ -309,8 +310,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1100,
-          y: Math.max(400, document?.body?.clientHeight - 490),
+          y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });

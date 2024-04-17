@@ -225,14 +225,14 @@ const TableList: React.FC = () => {
           y: Math.max(400, document?.body?.clientHeight - 390),
         }}
         request={async (params: TableListPagination) => {
-          const res: any = await rule({ pageSize: 10, pageNum: params.current, merchantId: myParams.merchantId });
+          const res: any = await rule({ pageSize: 20, pageNum: params.current, merchantId: myParams.merchantId });
           let data: any = [];
           data = res?.data?.list;
           return {
             data: data,
             page: res?.data?.pageNum,
             success: true,
-            total: res?.data?.totalSize,
+            total: res?.data?.total,
           };
         }}
         columns={columns}
