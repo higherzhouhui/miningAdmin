@@ -1,10 +1,10 @@
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Switch, Tag } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm, Image } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule, getConfig, updateConfig } from './service';
+import { updateRule, removeRule, rule, updateConfig } from './service';
 import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
 import { request } from 'umi';
 import * as XLSX from 'xlsx';
@@ -60,9 +60,9 @@ const TableList: React.FC = () => {
     }
     const hide = message.loading('正在操作中...', 50);
     setLoading(true);
-    removeRule({
-      ids: [record.id],
-      auditStatus: ctype,
+    updateRule({
+      id: record.id,
+      auditState: ctype,
     })
       .then((res: any) => {
         hide();
@@ -114,7 +114,7 @@ const TableList: React.FC = () => {
     },
     {
       title: '金额',
-      dataIndex: 'amount',
+      dataIndex: 'balance',
       width: 100,
       hideInSearch: true,
     },
@@ -124,20 +124,35 @@ const TableList: React.FC = () => {
       width: 150,
     },
     {
-      title: '银行名称',
-      dataIndex: 'bankName',
+      title: '提现方式',
+      dataIndex: 'type',
+      valueEnum: {
+        1: {
+          text: '微信',
+        },
+        2: {
+          text: '支付宝',
+        },
+        3: {
+          text: '银行卡',
+        },
+      },
+    },
+    {
+      title: '账号',
+      dataIndex: 'account',
       width: 200,
       hideInSearch: true,
     },
     {
-      title: '银行卡号',
-      dataIndex: 'bankCode',
+      title: '开户行',
+      dataIndex: 'bankName',
       width: 180,
       hideInSearch: true,
     },
     {
       title: '状态',
-      dataIndex: 'auditStatus',
+      dataIndex: 'auditState',
       width: 120,
       valueEnum: {
         0: {
@@ -155,36 +170,11 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '资金来源',
-      dataIndex: 'type',
-      hideInTable: true,
-      valueEnum: {
-        gold: {
-          text: '黄金',
-        },
-        referrer: {
-          text: '推荐金',
-        },
-        subsidy: {
-          text: '挖矿金',
-        },
-        annuity: {
-          text: '养老金',
-        },
-        asset: {
-          text: '总资产',
-        },
-        balance: {
-          text: '余额',
-        },
-      },
-    },
-    {
-      title: '资金来源',
+      title: '二维码',
       width: 150,
       hideInSearch: true,
-      render: (_, record) => {
-        return <Tag color={getTagType(record.type)}>{record.type}</Tag>;
+      render: (_, record: any) => {
+        return <Image src={record.qrcode} />;
       },
     },
     {
@@ -200,14 +190,14 @@ const TableList: React.FC = () => {
       width: 120,
       fixed: 'right',
       hideInDescriptions: true,
-      render: (_, record) => [
-        record.auditStatus == 0 ? (
+      render: (_, record: any) => [
+        record.auditState == 0 ? (
           <a key="access" onClick={() => showDetailModal(record, 1)}>
             通过
           </a>
         ) : null,
         // eslint-disable-next-line react/jsx-key
-        record.auditStatus == 0 ? (
+        record.auditState == 0 ? (
           <a style={{ color: 'red' }} key="delete" onClick={() => showDetailModal(record, 2)}>
             驳回
           </a>
@@ -282,13 +272,6 @@ const TableList: React.FC = () => {
     });
   };
 
-  const getBaseConfig = () => {
-    getConfig().then((res) => {
-      if (res.code === 200) {
-        setBaseConfig({ id: res?.data?.id, payPrice: res?.data?.payPrice });
-      }
-    });
-  };
 
   const handleShowConfig = () => {
     handleModalVisible(true)
@@ -299,10 +282,6 @@ const TableList: React.FC = () => {
     newRow[attar] = value;
     setBaseConfig(newRow);
   }
-
-  useEffect(() => {
-    getBaseConfig();
-  }, []);
 
   return (
     <PageContainer>

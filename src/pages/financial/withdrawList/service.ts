@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/withdraw/getPageList', {
+  }>('/userWithdraw/getUserWithdrawList', {
     method: 'GET',
     params: {
       ...params,
@@ -30,7 +30,7 @@ export async function rule(
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/admin/withdraw/withdrawAudit', {
+  return request<TableListItem>('/userWithdraw/audit', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -47,7 +47,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 }
 
 /** 删除规则 POST /api/rule */
-export async function removeRule(data: { ids: number[], auditStatus: number }, options?: { [key: string]: any }) {
+export async function removeRule(data: { ids: number[], auditState: number }, options?: { [key: string]: any }) {
   return request<Record<string, any>>(`/admin/withdraw/withdrawAudit`, {
     data,
     method: 'POST',

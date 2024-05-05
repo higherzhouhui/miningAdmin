@@ -256,12 +256,12 @@ export default defineConfig({
           redirect: '/financial/partnerRecord',
           access: 'adminRouteFilter',
         },
-        // {
-        //   name: 'withdrawList',
-        //   path: '/financial/withdrawList',
-        //   component: './financial/withdrawList',
-        //   access: 'adminRouteFilter',
-        // },
+        {
+          name: 'withdrawList',
+          path: '/financial/withdrawList',
+          component: './financial/withdrawList',
+          access: 'adminRouteFilter',
+        },
         // {
         //   name: 'transaction',
         //   path: '/financial/transaction',
