@@ -1,14 +1,12 @@
-import { AccountBookOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Image, Input, message, Modal, Popconfirm, Radio, Select } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
+import { Button, Form, Input, message, Modal, Popconfirm, Radio, Select } from 'antd';
+import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, getProductDetail, getSelectCatList, removeRule, rule, sendMoney } from './service';
-import ProForm, { ProFormUploadButton } from '@ant-design/pro-form';
-import { request } from 'umi';
-import styles from './style.less';
+import { addRule, removeRule, rule } from './service';
+import ProForm from '@ant-design/pro-form';
 /**
  * 删除节点
  *
@@ -24,7 +22,7 @@ const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
         id: row.id,
       });
       hide();
-      if (res.code === 200) {
+      if (res.code === 0) {
         message.success('删除成功，即将刷新');
         if (actionRef) {
           actionRef.current?.reloadAndRest?.();
@@ -48,23 +46,10 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const formRef = useRef<any>();
-  const [type, setType] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [shiftLoading, setShiftLoading] = useState(true);
-  const [typeList, setTypeList] = useState([])
   const handleUpdateRecord = (record: TableListItem) => {
-    const hide = message.loading('')
-    getSelectCatList().then(res => {
-      setTypeList(res.data)
-    })
-    getProductDetail(record.id).then(res => {
-      hide()
-      if (res.code === 200) {
-      setCurrentRow(res.data);
-      handleModalVisible(true);
-      formRef?.current?.resetFields();
-      }
-    })
+    setCurrentRow(record);
+    handleModalVisible(true);
+    formRef?.current?.resetFields();
   };
   const columns: ProColumns<TableListItem>[] = [
     {
@@ -76,30 +61,37 @@ const TableList: React.FC = () => {
     },
     {
       title: '标题',
-      dataIndex: 'title',
+      dataIndex: 'name',
       width: 120,
     },
     {
-      title: '图片',
-      dataIndex: 'image',
+      title: '描述',
+      dataIndex: 'desc',
       hideInSearch: true,
       width: 120,
-      render: (_, record) => {
-        return (
-          <Image src={record.image} width={80} style={{ objectFit: 'contain' }} />
-        );
-      },
     },
     {
-      title: '价格',
+      title: '价格(U)',
+      dataIndex: 'usdt',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: 'FFP',
       dataIndex: 'price',
-      width: 120,
+      width: 100,
       hideInSearch: true,
     },
     {
-      title: '会员价',
-      dataIndex: 'memberPrice',
-      width: 120,
+      title: '经验值',
+      dataIndex: 'exp',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+      width: 100,
       hideInSearch: true,
     },
     {
@@ -109,62 +101,30 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '类型',
-      dataIndex: 'catTitle',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
       title: '是否上架',
-      dataIndex: 'putaway',
+      dataIndex: 'visible',
       width: 120,
       valueEnum: {
-        1: {
+        '1': {
           text: '已上架',
           status: 'Success',
         },
-        0: {
+        '0': {
           text: '未上架',
           status: 'Error',
         },
       },
-      render: (_, record) => {
-        return (
-            <span>
-              {
-                record.putaway ? '已上架' : '未上架'
-              }
-            </span>
-        )
-      }
     },
     {
-      title: '分类',
-      dataIndex: 'type',
-      width: 120,
-      valueEnum: {
-        0: {
-          text: '普通商品',
-          status: 'Warn',
-        },
-        1: {
-          text: '热门',
-          status: 'Error',
-        },
-        2: {
-          text: '新品',
-          status: 'Success',
-        },
-        3: {
-          text: '推荐',
-          status: 'Danger',
-        },
-      },
+      title: '创建时间',
+      dataIndex: 'createdAt',
+      width: 150,
+      hideInSearch: true,
     },
     {
-      title: '抽成',
-      dataIndex: 'award',
-      width: 100,
+      title: '更新时间',
+      dataIndex: 'updatedAt',
+      width: 150,
       hideInSearch: true,
     },
     {
@@ -199,14 +159,9 @@ const TableList: React.FC = () => {
     },
   ];
   const addNewNotice = () => {
-    const hide = message.loading('')
-    getSelectCatList().then(res => {
-      hide()
-      setTypeList(res.data)
-      setCurrentRow(Object.assign({}, {}));
-      handleModalVisible(true);
-      formRef?.current?.resetFields();
-    })
+    setCurrentRow(Object.assign({}, {}));
+    handleModalVisible(true);
+    formRef?.current?.resetFields();
   };
 
   const handleOk = async () => {
@@ -215,7 +170,7 @@ const TableList: React.FC = () => {
       const res = await addRule({ ...currentRow });
       handleModalVisible(false);
       hide();
-      if (res.code === 200) {
+      if (res.code === 0) {
         message.success('操作成功，即将刷新');
         if (actionRef) {
           actionRef.current?.reloadAndRest?.();
@@ -230,106 +185,13 @@ const TableList: React.FC = () => {
       return false;
     }
   };
-  const handleSendMoney = () => {
-    const hide = message.loading('正在发放工资', 50);
-    setLoading(true);
-    sendMoney().then((res) => {
-      setLoading(false);
-      hide();
-      if (res.code === 200) {
-        message.success('发放成功!');
-      } else {
-        message.error(res.message || res.msg);
-      }
-    });
-  };
+
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
     setCurrentRow(newRow);
   };
-  const Upload = {
-    //数量
-    maxCount: 1,
-    accept: 'image/*',
-    customRequest: (options: any) => {
-      const { onSuccess, onError, file } = options;
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'images');
-      formData.append('path', 'admin-project');
-      // /upload为图片上传的地址，后台只需要一个图片的path
-      // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
-        .then((data: any) => {
-          const _response = {
-            name: file.name,
-            status: 'done',
-            path: data.data.fileUrl,
-          };
-          handleChange(data.data.fileUrl, 'image');
-          //请求成功后把file赋值上去
-          onSuccess(_response, file);
-        })
-        .catch(onError);
-    },
-  };
-  const UploaddetailImageList = {
-    //数量
-    maxCount: 1,
-    accept: 'image/*',
-    customRequest: (options: any) => {
-      const { onSuccess, onError, file } = options;
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'images');
-      formData.append('path', 'admin-project');
-      // /upload为图片上传的地址，后台只需要一个图片的path
-      // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
-        .then((data: any) => {
-          const _response = {
-            name: file.name,
-            status: 'done',
-            path: data.data.fileUrl,
-          };
-          const murl = currentRow?.detailImageList || []
-          murl.push(data.data.fileUrl)
-          handleChange(murl, 'detailImageList');
-          //请求成功后把file赋值上去
-          onSuccess(_response, file);
-        })
-        .catch(onError);
-    },
-  };
-  const UploadmasterImageList = {
-    //数量
-    maxCount: 1,
-    accept: 'image/*',
-    customRequest: (options: any) => {
-      const { onSuccess, onError, file } = options;
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('type', 'images');
-      formData.append('path', 'admin-project');
-      // /upload为图片上传的地址，后台只需要一个图片的path
-      // name，path，status是组件上传需要的格式需要自己去拼接
-      request('/api/v1/common/uploadImage', { method: 'POST', data: formData })
-        .then((data: any) => {
-          const _response = {
-            name: file.name,
-            status: 'done',
-            path: data.data.fileUrl,
-          };
-          const murl = currentRow?.masterImageList || []
-          murl.push(data.data.fileUrl)
-          handleChange(murl, 'masterImageList');
-          //请求成功后把file赋值上去
-          onSuccess(_response, file);
-        })
-        .catch(onError);
-    },
-  };
+
   return (
     <PageContainer>
       {/* <Radio.Group value={type} size="middle" onChange={(e) => onchangeType(e)} buttonStyle="solid">
@@ -350,7 +212,7 @@ const TableList: React.FC = () => {
         pagination={{
           pageSize: 20,
         }}
-        size='small'
+        size="small"
         scroll={{
           y: Math.min(document?.body?.clientHeight - 420, 450),
         }}
@@ -361,15 +223,12 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params: TableListPagination) => {
-          setShiftLoading(true);
           const res: any = await rule({ ...params, pageNum: params.current });
-          setShiftLoading(false);
-          const list = res?.data?.list || [];
+          const list = res?.data?.rows || [];
           return {
             data: list,
-            page: res?.data?.pageNum,
             success: true,
-            total: res?.data?.total,
+            total: res?.data?.count,
           };
         }}
         columns={columns}
@@ -416,7 +275,7 @@ const TableList: React.FC = () => {
       <Modal
         title={currentRow?.id ? '修改' : '新增'}
         visible={createModalVisible}
-        width={type == 1 ? 600 : '80%'}
+        width={600}
         onOk={() => handleOk()}
         onCancel={() => handleModalVisible(false)}
       >
@@ -427,105 +286,44 @@ const TableList: React.FC = () => {
         >
           <Form.Item label="标题">
             <Input
-              value={currentRow?.title}
-              placeholder='请输入标题'
-              onChange={(e) => handleChange(e.target.value, 'title')}
+              value={currentRow?.name}
+              placeholder="请输入标题"
+              onChange={(e) => handleChange(e.target.value, 'name')}
+            />
+          </Form.Item>
+          <Form.Item label="描述">
+            <Input
+              value={currentRow?.desc}
+              placeholder="请输入标题"
+              onChange={(e) => handleChange(e.target.value, 'desc')}
             />
           </Form.Item>
           <Form.Item label="分类">
             <Select
               value={currentRow?.type}
-              placeholder='请选择商品分类'
+              placeholder="请选择商品分类"
               onChange={(e) => handleChange(e, 'type')}
             >
-              <Select.Option value={0}>普通商品</Select.Option>
-              <Select.Option value={1}>热门</Select.Option>
-              <Select.Option value={2}>新品</Select.Option>
-              <Select.Option value={3}>推荐</Select.Option>
+              <Select.Option value={'asset'}>资产</Select.Option>
+              <Select.Option value={'tools'}>工具</Select.Option>
+              <Select.Option value={'food'}>食物</Select.Option>
             </Select>
-          </Form.Item>
-          <Form.Item label="类型">
-            <Select
-              value={currentRow?.catId}
-              placeholder='请选择商品分类'
-              onChange={(e) => handleChange(e, 'catId')}
-            >
-              {
-                typeList.map((item: any) => {
-                  return <Select.Option value={item.id} key={item.id}>{item.title}</Select.Option>
-                })
-              }
-            </Select>
-          </Form.Item>
-          <ProFormUploadButton
-            label="选择封面"
-            max={1}
-            name="image"
-            fieldProps={{
-              ...Upload,
-            }}
-          />
-          {currentRow?.image ? <Image src={currentRow?.image} className={styles.cover} /> : null}
-          <Form.Item label="">
-            <Input
-              value={currentRow?.image}
-              onChange={(e) => handleChange(e.target.value, 'image')}
-              placeholder="请选择图片"
-            />
           </Form.Item>
 
-          <ProFormUploadButton
-            label="选择产品主图"
-            max={1}
-            name="masterImageList"
-            fieldProps={{
-              ...UploadmasterImageList,
-            }}
-          />
-          {currentRow?.masterImageList ? currentRow?.masterImageList.map((item: any) => {
-            return <Image key={item} src={item} className={styles.cover} />
-          }) : null}
-          <Form.Item label="">
-            <Input.TextArea
-              autoSize={{ minRows: 2, maxRows: 6 }}
-              value={currentRow?.masterImageList}
-              onChange={(e) => handleChange(e.target.value, 'masterImageList')}
-              placeholder="请选择选择产品主图"
-            />
-          </Form.Item>
-          <ProFormUploadButton
-            label="产品详情图"
-            max={1}
-            name="detailImageList"
-            fieldProps={{
-              ...UploaddetailImageList,
-            }}
-          />
-          {currentRow?.detailImageList ? currentRow?.detailImageList.map((item: any) => {
-            return <Image key={item} src={item} className={styles.cover} />
-          }) : null}
-          <Form.Item label="">
-            <Input.TextArea
-              autoSize={{ minRows: 2, maxRows: 6 }}
-              value={currentRow?.detailImageList}
-              onChange={(e) => handleChange(e.target.value, 'detailImageList')}
-              placeholder="请选择产品详情图"
-            />
-          </Form.Item>
-          <Form.Item label="价格">
+          <Form.Item label="价格（USDT）根据比例计算出FFP，FFP不能手动设置">
             <Input
               type="number"
-              value={currentRow?.price}
-              onChange={(e) => handleChange(e.target.value, 'price')}
-              placeholder="请输入价格"
-            />
-          </Form.Item>
-          <Form.Item label="会员价">
-            <Input
-              type="number"
-              value={currentRow?.memberPrice}
-              onChange={(e) => handleChange(e.target.value, 'memberPrice')}
+              value={currentRow?.usdt}
+              onChange={(e) => handleChange(e.target.value, 'usdt')}
               placeholder="请输入会员价格"
+            />
+          </Form.Item>
+          <Form.Item label="经验值">
+            <Input
+              type="number"
+              value={currentRow?.exp}
+              onChange={(e) => handleChange(e.target.value, 'exp')}
+              placeholder="请输入库存"
             />
           </Form.Item>
           <Form.Item label="库存">
@@ -536,23 +334,15 @@ const TableList: React.FC = () => {
               placeholder="请输入库存"
             />
           </Form.Item>
-          <Form.Item label="抽成(0.01 == 1%)">
-            <Input
-              type="number"
-              value={currentRow?.award}
-              onChange={(e) => handleChange(e.target.value, 'award')}
-              placeholder="请输入抽成"
-            />
-          </Form.Item>
           <Form.Item label="是否上架">
             <Radio.Group
-              value={currentRow?.putaway}
+              value={currentRow?.visible}
               size="middle"
-              onChange={(e) => handleChange(e.target.value, 'putaway')}
+              onChange={(e) => handleChange(e.target.value, 'visible')}
               buttonStyle="solid"
             >
-              <Radio value={true}>上架</Radio>
-              <Radio value={false}>下架</Radio>
+              <Radio value={1}>上架</Radio>
+              <Radio value={0}>下架</Radio>
             </Radio.Group>
           </Form.Item>
         </ProForm>

@@ -4,30 +4,13 @@
 declare namespace API {
   type CurrentUser = {
     mobilePhone?: string;
-    // avatar?: string;
-    // userid?: string;
-    // email?: string;
-    // signature?: string;
-    // title?: string;
-    // group?: string;
-    // tags?: { key?: string; label?: string }[];
-    // notifyCount?: number;
-    // unreadCount?: number;
-    // country?: string;
-    // access?: string;
-    // geographic?: {
-    //   province?: { label?: string; key?: string };
-    //   city?: { label?: string; key?: string };
-    // };
-    // address?: string;
-    // phone?: string;
     id: number;
     avatar: string;
     nick_name: string;
     role: string;
     token: string;
     username?: string;
-    comment?: string;
+    account?: string;
     type?: number;
     comments?: string;
     tokenValue?: string;

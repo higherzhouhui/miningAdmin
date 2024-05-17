@@ -125,27 +125,27 @@ export default defineConfig({
       routes: [
         {
           path: '/datamanage',
-          redirect: '/datamanage/bannerlist',
+          redirect: '/datamanage/eventlist',
           access: 'adminRouteFilter',
         },
         {
-          name: 'datamanage-bannerlist',
-          path: '/datamanage/bannerlist',
-          component: './datamanage/bannerlist',
+          name: 'datamanage-eventlist',
+          path: '/datamanage/eventlist',
+          component: './datamanage/eventlist',
           access: 'adminRouteFilter',
         },
-        {
-          name: 'datamanage-scholllist',
-          path: '/datamanage/scholllist',
-          component: './datamanage/scholllist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-typelist',
-          path: '/datamanage/typelist',
-          component: './datamanage/typelist',
-          access: 'adminRouteFilter',
-        },
+        // {
+        //   name: 'datamanage-scholllist',
+        //   path: '/datamanage/scholllist',
+        //   component: './datamanage/scholllist',
+        //   access: 'adminRouteFilter',
+        // },
+        // {
+        //   name: 'datamanage-typelist',
+        //   path: '/datamanage/typelist',
+        //   component: './datamanage/typelist',
+        //   access: 'adminRouteFilter',
+        // },
         {
           name: 'datamanage-projectlist',
           path: '/datamanage/projectlist',
@@ -207,25 +207,25 @@ export default defineConfig({
         //   component: './datamanage/guanfangqun',
         //   access: 'adminRouteFilter',
         // },
-        {
-          name: 'datamanage-shoplist',
-          path: '/datamanage/shoplist',
-          component: './datamanage/shoplist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-shopdetail',
-          path: '/datamanage/shopdetail',
-          component: './datamanage/shopdetail',
-          access: 'adminRouteFilter',
-          hideInMenu: true,
-        },
-        {
-          name: 'datamanage-codelist',
-          path: '/datamanage/codelist',
-          component: './datamanage/codelist',
-          access: 'adminRouteFilter',
-        },
+        // {
+        //   name: 'datamanage-shoplist',
+        //   path: '/datamanage/shoplist',
+        //   component: './datamanage/shoplist',
+        //   access: 'adminRouteFilter',
+        // },
+        // {
+        //   name: 'datamanage-shopdetail',
+        //   path: '/datamanage/shopdetail',
+        //   component: './datamanage/shopdetail',
+        //   access: 'adminRouteFilter',
+        //   hideInMenu: true,
+        // },
+        // {
+        //   name: 'datamanage-codelist',
+        //   path: '/datamanage/codelist',
+        //   component: './datamanage/codelist',
+        //   access: 'adminRouteFilter',
+        // },
         {
           name: 'datamanage-baseinfo',
           path: '/datamanage/baseinfo',

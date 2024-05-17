@@ -30,12 +30,8 @@ export async function getInitialState(): Promise<{
     try {
       const msg: any = await queryCurrentUser();
       let data;
-      if (msg.code === 200) {
-        (msg?.data?.list || []).forEach((item: any) => {
-          if (item.username === localStorage.getItem('username')) {
-            data = item;
-          }
-        });
+      if (msg.code === 0) {
+        data = msg.data;
       }
       return data as any;
     } catch (error) {

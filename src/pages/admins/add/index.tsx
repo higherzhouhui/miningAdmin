@@ -65,8 +65,8 @@ const AddAccount: FC = () => {
     console.log(values);
     const param = {
       password: values.password,
-      username: values.username,
-      comments: values.comments
+      account: values.username,
+      roles: values.roles,
     };
     const hide = message.loading('正在创建新用户...', 50);
     setsubmitting(true);
@@ -74,11 +74,11 @@ const AddAccount: FC = () => {
       .then((res: any) => {
         hide();
         setsubmitting(false);
-        if (res.code === 200) {
+        if (res.code === 0) {
           history.push({
             pathname: '/admins/addaccount-result',
             state: {
-              username: param.username,
+              username: param.account,
             },
           });
         }

@@ -12,7 +12,7 @@ export interface UserRegisterData {
 }
 
 export async function fakeChangePwd(params: UserRegisterData) {
-  return request('/admin/saveOrUpdate', {
+  return request('/forkAdmin/admin/update', {
     method: 'POST',
     data: params,
   });

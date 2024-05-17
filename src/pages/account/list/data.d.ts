@@ -5,21 +5,20 @@ export type TableListItem = {
   bankCode: string;
   bankName: string;
   createTime: string;
-  name: string;
+  nick_name: string;
   phone: string;
   serviceCharge: string;
   type: string;
   mobilePhone: string;
   totalChildren?: number;
   userId?: string;
-  inviteNum: number;
+  invite_amount: number;
 };
 
-
-export interface TableListPagination extends TableListItem{
+export interface TableListPagination extends TableListItem {
   pageSize: number;
   current: number;
-};
+}
 
 export type TableListData = {
   list: TableListItem[];

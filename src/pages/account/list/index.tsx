@@ -3,21 +3,16 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, Tag, message } from 'antd';
+import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, rule, removeRule, getPartnerProject, createOrderRequest } from './service';
+import { addRule, rule, removeRule, createOrderRequest } from './service';
 import ProForm from '@ant-design/pro-form';
 import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  FormOutlined,
-  PlusOutlined,
-  TableOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, TableOutlined } from '@ant-design/icons';
+import moment from 'moment';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -27,7 +22,7 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
   const [operationType, setOperationType] = useState('baseInfo');
-  const [partnerList, setPartnerList] = useState([]);
+  const partnerList = [];
   const [projectId, setprojectId] = useState('');
   const titleMap = {
     baseInfo: '修改基本资料',
@@ -41,47 +36,37 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
   const routeToChildren = (record: TableListItem) => {
-    if (!record.inviteNum) {
+    if (!record.invite_amount) {
       return;
     }
-    localStorage.setItem(
-      'childrenObj',
-      JSON.stringify({ userId: record.userId, name: record.name }),
-    );
-    history.push(`/account/children?userId=${record.userId}&name=${record.name}`);
+    localStorage.setItem('childrenObj', JSON.stringify({ id: record.id, name: record.nick_name }));
+    history.push(`/account/children?id=${record.id}&name=${record.nick_name}`);
   };
 
   const handleRemove = async (userId: number) => {
     const hide = message.loading('正在删除...');
     const res = await removeRule({ id: userId });
     hide();
-    if (res.code === 200) {
+    if (res.code === 0) {
       message.success('删除成功,正在刷新!');
       actionRef?.current?.reloadAndRest?.();
     }
   };
 
-  useEffect(() => {
-  }, []);
+  useEffect(() => {}, []);
 
   const columns: ProColumns<any>[] = [
     {
       title: 'ID',
       dataIndex: 'id',
-      width: 180,
-      hideInSearch: true,
-      hideInTable: true,
+      width: 90,
       render: (_, record) => {
-        return (
-          <div>
-            {record.id}
-          </div>
-        );
+        return <div>{record.id}</div>;
       },
     },
     {
-      title: '手机号',
-      dataIndex: 'phone',
+      title: '昵称',
+      dataIndex: 'nick_name',
       width: 100,
       fixed: 'left',
       tooltip: '点击可查看该用户详情',
@@ -108,7 +93,7 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return (
           <Image
-            src={record.photo || '/logo.png'}
+            src={record.head || '/logo.png'}
             width={90}
             height={90}
             style={{ objectFit: 'contain' }}
@@ -117,70 +102,131 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '微信openId',
-      dataIndex: 'openid',
-      width: 160,
+      title: '推特ID',
+      dataIndex: 'twitter_id',
+      width: 100,
       hideInSearch: true,
-      hideInTable: true,
+    },
+    {
+      title: '当前积分(pts)',
+      dataIndex: 'pts',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '宠物数量',
+      dataIndex: 'pets',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '可领取奖励(FFP)',
+      dataIndex: 'invite_reward_coins',
+      width: 130,
+      hideInSearch: true,
+    },
+    {
+      title: '邀请奖励(FFP)',
+      dataIndex: 'coins',
+      width: 100,
+      hideInSearch: true,
     },
     {
       title: '推荐人ID',
-      dataIndex: 'referrerId',
+      dataIndex: 'invite_id',
       width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '邀请码',
+      dataIndex: 'code',
+      width: 110,
+      hideInSearch: true,
+    },
+    {
+      title: '下级会员',
+      dataIndex: 'invite_amount',
+      width: 110,
+      hideInSearch: true,
+      render: (_, record: any) => {
+        return (
+          <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => routeToChildren(record)}>
+            {record.invite_amount}
+          </div>
+        );
+      },
+    },
+    {
+      title: '使用盾牌次数',
+      dataIndex: 'shield_protect_count',
+      width: 110,
       hideInSearch: true,
       hideInTable: true,
     },
     {
-      title: '邀请码',
-      dataIndex: 'invitCode',
+      title: '可以攻击时间',
+      dataIndex: 'bonk_freeze_time',
       width: 110,
       hideInSearch: true,
-    },
- 
-    {
-      title: '角色',
-      dataIndex: 'role',
-      width: 100,
-      hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <>
-            {record.role == 1 ? (
-              <Tag color="success">普通用户</Tag>
-            ) : record.role == 2 ? (
-              <Tag color="volcano">商铺</Tag>
-            ) : 
-            <Tag color="orange">加盟商</Tag>}
-          </>
-        );
+      hideInTable: true,
+      render: (_, record: any) => {
+        return <span>{moment(record.bonk_freeze_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
       },
     },
     {
-      title: '会员有效期',
-      dataIndex: 'memberIndate',
-      width: 100,
+      title: '盾牌结束时间',
+      dataIndex: 'shield_protect_time',
+      width: 110,
       hideInSearch: true,
+      hideInTable: true,
+      render: (_, record: any) => {
+        return <span>{moment(record.shield_protect_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
+      },
     },
     {
-      title: '会员状态',
-      dataIndex: 'memberState',
-      width: 100,
+      title: '战斗次数',
+      dataIndex: 'bonk_count',
+      width: 110,
       hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <>
-            {record.memberState ? (
-              <Tag color="#87d068">可用</Tag>
-            ) : (
-              <Tag color="#f50">非会员</Tag>
-            )}
-          </>
-        );
-      },
+      hideInTable: true,
+    },
+    {
+      title: '赢的pts',
+      dataIndex: 'bonk_win_pts',
+      width: 110,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '输的次数',
+      dataIndex: 'bonk_loss_count',
+      width: 110,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '输的pts',
+      dataIndex: 'bonk_loss_pts',
+      width: 110,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: '赢的次数',
+      dataIndex: 'bonk_win_count',
+      width: 110,
+      hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '注册时间',
-      dataIndex: 'createTime',
+      dataIndex: 'createdAt',
+      width: 150,
+      hideInSearch: true,
+    },
+    {
+      title: '更新时间',
+      dataIndex: 'updatedAt',
       width: 150,
       hideInSearch: true,
     },
@@ -188,15 +234,18 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 100,
+      width: 120,
       hideInDescriptions: true,
       fixed: 'right',
-      render: (_, record) => [
-       
+      render: (_, record: any) => [
+        <a key={'modify'} onClick={() => handleUpdateRecord(record, 'baseInfo')}>
+          <EditOutlined />
+          修改
+        </a>,
         <Popconfirm
           title="确认删除该会员?"
           onConfirm={async () => {
-            handleRemove(record.userId);
+            handleRemove(record.id);
           }}
           key="access"
         >
@@ -210,37 +259,23 @@ const TableList: React.FC = () => {
   ];
 
   const handleOk = async () => {
-    let param: any = {
-      id: currentRow?.userId,
-    };
     if (operationType === 'baseInfo') {
-      if (!currentRow?.name || !currentRow?.idCard || !currentRow?.mobilePhone) {
+      if (!currentRow?.pts || !currentRow?.invite_reward_coins || !currentRow?.coins) {
         message.warning('请输入完整信息!');
         return;
       }
-      param = {
-        ...param,
-        name: currentRow?.name,
-        idCard: currentRow?.idCard,
-        mobilePhone: currentRow?.mobilePhone,
-        referrerInviteCode: currentRow?.referrerInviteCode,
-      };
     }
     if (operationType === 'resetPassword') {
       if (!currentRow?.newPassword) {
         message.warning('请输入新密码!');
         return;
       }
-      param = {
-        ...param,
-        newPassword: currentRow?.newPassword,
-      };
     }
     if (operationType === 'addNewProject') {
       const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
       createOrderRequest({ id: projectId, phone: currentRow?.mobilePhone }).then((res: any) => {
         hide();
-        if (res.code === 200) {
+        if (res.code === 0) {
           handleModalVisible(false);
           message.success(`给用户${currentRow?.mobilePhone}用户添加项目成功`);
           actionRef.current?.reloadAndRest?.();
@@ -250,10 +285,10 @@ const TableList: React.FC = () => {
     }
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
-      const res = await addRule(param);
+      const res = await addRule(currentRow);
       handleModalVisible(false);
       hide();
-      if (res.code === 200) {
+      if (res.code === 0) {
         message.success('操作成功，即将刷新');
         if (actionRef) {
           actionRef.current?.reloadAndRest?.();
@@ -310,6 +345,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
+          x: 1500,
           y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
@@ -322,13 +358,12 @@ const TableList: React.FC = () => {
           //   item.registerType = registerType;
           // });
           let data: any = [];
-          data = res?.data?.list;
+          data = res?.data?.rows;
           setTotal(res?.data?.total);
           return {
             data: data,
-            page: res?.data?.pageNum,
             success: true,
-            total: res?.data?.total,
+            total: res?.data?.count,
           };
         }}
         columns={columns}
@@ -343,29 +378,29 @@ const TableList: React.FC = () => {
         <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
-              <Form.Item label="手机号码">
+              <Form.Item label="积分pts">
                 <Input
-                  value={currentRow?.mobilePhone}
-                  onChange={(e) => handleChange(e.target.value, 'mobilePhone')}
+                  value={currentRow?.pts}
+                  onChange={(e) => handleChange(e.target.value, 'pts')}
                 />
               </Form.Item>
-              <Form.Item label="姓名">
+              <Form.Item label="可领取FFP">
                 <Input
-                  value={currentRow?.name}
-                  onChange={(e) => handleChange(e.target.value, 'name')}
+                  value={currentRow?.invite_reward_coins}
+                  onChange={(e) => handleChange(e.target.value, 'invite_reward_coins')}
                 />
               </Form.Item>
-              <Form.Item label="身份证号">
+              <Form.Item label="邀请奖励">
                 <Input
-                  value={currentRow?.idCard}
-                  onChange={(e) => handleChange(e.target.value, 'idCard')}
+                  value={currentRow?.coins}
+                  onChange={(e) => handleChange(e.target.value, 'coins')}
                 />
               </Form.Item>
-              <Form.Item label="上级推荐码">
+              <Form.Item label="推荐人ID">
                 <Input
-                  value={currentRow?.referrerInviteCode}
-                  onChange={(e) => handleChange(e.target.value, 'referrerInviteCode')}
-                  placeholder="请输入上级推荐码"
+                  value={currentRow?.invite_id}
+                  onChange={(e) => handleChange(e.target.value, 'invite_id')}
+                  placeholder="请输入上级推荐人"
                 />
               </Form.Item>
             </>
@@ -404,9 +439,9 @@ const TableList: React.FC = () => {
         }}
         closable={false}
       >
-        {currentRow?.phone && (
+        {currentRow?.id && (
           <ProDescriptions<API.RuleListItem>
-            column={1}
+            column={2}
             title={currentRow?.name}
             request={async () => ({
               data: currentRow || {},

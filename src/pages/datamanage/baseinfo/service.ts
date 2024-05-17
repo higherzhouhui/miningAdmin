@@ -4,14 +4,14 @@ import { request } from 'umi';
 
 /** 获取规则列表 GET /api/rule */
 export async function rule() {
-  return request<any>('/sysConfig/getSysConfig', {
+  return request<any>('/forkAdmin/config/info', {
     method: 'GET',
   });
 }
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>('/sysConfig/saveOrUpdate', {
+  return request<any>('/forkAdmin/config/update', {
     data,
     method: 'POST',
     ...(options || {}),

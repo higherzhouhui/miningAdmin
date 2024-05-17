@@ -13,15 +13,15 @@ request.interceptors.request.use((url, options) => {
   }
   options.headers = {
     ...options.headers,
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   };
   options.timeout = 500000;
   // 本地访问需要做代理，否则会跨域；线上生成由于ng没有反向代理，就直连接口，而且是同一个域下的
   const { NODE_ENV } = process.env;
-  let baseUrl = '/api';
+  let baseUrl = '/api/v2';
   let uploadBaseurl = '/uploadImage';
   if (url.includes('uploadImage')) {
-    baseUrl = uploadBaseurl
+    baseUrl = uploadBaseurl;
   }
 
   return {
@@ -35,13 +35,13 @@ request.interceptors.response.use(async (response, options) => {
   // let result;
   // removePending(response);
   const data = await response.clone().json();
-  if (data.code !== 200) {
+  if (data.code !== 0) {
     message.error(data.message || data.msg);
-    if (data.code === 401) {
-      location.href = '/user/login';
-      localStorage.removeItem('Authorization');
-      localStorage.removeItem('x-user-id');
-    }
+    // if (data.code === 402) {
+    //   location.href = '/user/login';
+    //   localStorage.removeItem('authorization');
+    //   localStorage.removeItem('x-user-id');
+    // }
   }
   return {
     ...data,
@@ -54,7 +54,7 @@ export async function currentUser(options?: { [key: string]: any }) {
   // const { initialState } = useModel('@@initialState');
   return request<{
     data: API.CurrentUser;
-  }>(`/admin/getAdminList?pageNum=1&pageSize=20`, {
+  }>(`/forkAdmin/userInfo`, {
     method: 'GET',
     ...(options || {}),
   });
@@ -73,7 +73,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/admin/login', {
+  return request<API.LoginResult>('/forkAdmin/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

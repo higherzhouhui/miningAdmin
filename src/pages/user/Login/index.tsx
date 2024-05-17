@@ -46,8 +46,8 @@ const Login: React.FC = () => {
         username: userName,
         password,
       });
-      if (msg.code === 200) {
-        localStorage.setItem('Authorization', msg.data?.tokenValue || '');
+      if (msg.code === 0) {
+        localStorage.setItem('Authorization', msg.data?.token || '');
         localStorage.setItem('x-user-id', msg.data?.id + '' || '');
         localStorage.setItem('username', userName || '');
         const defaultLoginSuccessMessage = intl.formatMessage({
@@ -83,7 +83,7 @@ const Login: React.FC = () => {
       <div className={styles.content}>
         <LoginForm
           logo={<img alt="logo" src="/logo.png" />}
-          title="校e达"
+          title="ForkFrenPet"
           subTitle={intl.formatMessage({ id: 'pages.layouts.userLayout.title' })}
           initialValues={{
             autoLogin: true,

@@ -9,14 +9,15 @@ export type TableListItem = {
   phone: string;
   serviceCharge: string;
   type: string;
-  mobilePhone: string;
-  userId: string;
+  nice_name: string;
+  invite_amount: string;
+  modifyStock: string;
 };
 
 export interface TableListPagination extends TableListItem {
   pageSize: number;
   current: number;
-};
+}
 
 export type TableListData = {
   list: TableListItem[];

@@ -4,8 +4,8 @@ import { request } from 'umi';
 import { TableListItem } from './data';
 
 /** 获取规则列表 GET /api/rule */
-export async function rule(params: {day: number}) {
-  return request<{data: TableListItem}>('/admin/home/getCountData', {
+export async function rule(params: { day: number }) {
+  return request<{ data: TableListItem }>('/forkAdmin/home/info', {
     method: 'GET',
     params: {
       ...params,
@@ -23,7 +23,10 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 }
 
 /** 新建规则 PUT /api/rule */
-export async function getDetailRule(params: { [key: string]: any }, options?: { [key: string]: any }) {
+export async function getDetailRule(
+  params: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
   return request<any>('/admin/chat-message/getChatMessageList', {
     params,
     method: 'GET',

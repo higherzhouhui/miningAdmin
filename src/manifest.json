@@ -1,6 +1,6 @@
 {
-  "name": "校e达 Dashboard",
-  "short_name": "校e达 Dashboard",
+  "name": "ForkFrenPet Dashboard",
+  "short_name": "ForkFrenPet Dashboard",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

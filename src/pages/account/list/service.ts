@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/user/getUserList', {
+  }>('/forkAdmin/getUserList', {
     method: 'GET',
     params: {
       ...params,
@@ -39,33 +39,35 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/user/update', {
-    data,
-    method: 'PUT',
-    ...(options || {}),
-  });
-}
-
-/** 删除规则 DELETE /api/rule */
-export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/user/remove/${data.id}`, {
+  return request<Record<string, any>>('/forkAdmin/user/update', {
     data,
     method: 'POST',
     ...(options || {}),
   });
 }
 
+/** 删除规则 DELETE /api/rule */
+export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
+  return request<Record<string, any>>(`/forkAdmin/user/remove`, {
+    data,
+    method: 'POST',
+    ...(options || {}),
+  });
+}
 
 /** 获取规则列表 GET /api/rule */
 export async function getPartnerProject() {
   return request<any>('/admin/user_level/getProjectList', {
     method: 'GET',
-    params: {pageNum: 1, pageSize: 20},
+    params: { pageNum: 1, pageSize: 20 },
   });
 }
 
 /** 创建订单 PUT /api/rule */
-export async function createOrderRequest(data: { [key: string]: any }, options?: { [key: string]: any }) {
+export async function createOrderRequest(
+  data: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
   return request<TableListItem>('/admin/order/createOrder', {
     data,
     method: 'POST',

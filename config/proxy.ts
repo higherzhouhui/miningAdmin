@@ -9,7 +9,7 @@
 export default {
   dev: {
     '/api/': {
-      target: 'https://admin.xiaoeda.cn/api',
+      target: 'http://127.0.0.1:8086/api',
       changeOrigin: true,
       pathRewrite: { '^/api': '' },
     },

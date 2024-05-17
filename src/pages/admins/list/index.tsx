@@ -2,11 +2,11 @@ import { PlusOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Switch, Image } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import { Link } from 'umi';
 import type { TableListItem, TableListPagination } from './data';
-import { rule, updateRule, removeRule, administerUpdate } from './service';
+import { rule, removeRule, administerUpdate } from './service';
 
 /**
  * 更新节点
@@ -42,24 +42,13 @@ const AccountList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem>();
   const FormItem = Form.Item;
   const formRef = useRef<any>();
-  const onchangeSwitch = async (e: any, id: string) => {
-    const hide = message.loading('操作中...', 50);
-    const res = await updateRule({
-      id: id,
-      disable: e
-    })
-    hide()
-    if (res.code === 200) {
-        message.success('操作成功!');
-        actionRef?.current?.reload();
-    }
-  }
+
   const handleRemove = async (id: string) => {
     const hide = message.loading('正在删除...', 50);
     try {
-      const res = await removeRule({id: id});
+      const res = await removeRule({ id: id });
       hide();
-      if (res.code === 200) {
+      if (res.code === 0) {
         message.success('修改成功!');
         actionRef?.current?.reload();
       }
@@ -69,7 +58,7 @@ const AccountList: React.FC = () => {
       message.error('修改失败请重试！');
       return false;
     }
-  }
+  };
   const columns: ProColumns<TableListItem>[] = [
     {
       title: 'ID',
@@ -79,22 +68,16 @@ const AccountList: React.FC = () => {
     },
     {
       title: '账号',
-      dataIndex: 'username',
+      dataIndex: 'account',
     },
     {
-      title: '昵称',
-      dataIndex: 'name',
+      title: '创建时间',
+      dataIndex: 'createdAt',
     },
     {
-      title: '状态',
-      dataIndex: 'disable',
-      render: (_, record) => {
-        return (
-          <Switch checked={record.disable} onChange={(e) => {onchangeSwitch(e, record.id)}} />
-        );
-      },
+      title: '更新时间',
+      dataIndex: 'updatedAt',
     },
-
     {
       title: '操作',
       dataIndex: 'option',
@@ -150,18 +133,10 @@ const AccountList: React.FC = () => {
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ pageNum: params.current, pageSize: params.pageSize });
-          (res?.data?.list || []).map((item: any) => {
-            let disable = '启用'
-            if (!item.state) {
-              disable = '禁用'
-            }
-            item.disable = disable
-          })
           return {
-            data: res?.data?.list || [],
-            page: res?.data?.pageNum,
+            data: res?.data?.rows || [],
             success: true,
-            total: res?.data?.totalSize,
+            total: res?.data?.count,
           };
         }}
         columns={columns}
@@ -196,13 +171,9 @@ const AccountList: React.FC = () => {
         }}
         getContainer={false}
       >
-        <Form
-          ref={formRef}
-          name="updateuserinfo"
-          initialValues={{ ...currentRow  }}
-        >
+        <Form ref={formRef} name="updateuserinfo" initialValues={{ ...currentRow }}>
           <FormItem
-            name="username"
+            name="account"
             label="账号"
             labelCol={{ span: 4 }}
             rules={[

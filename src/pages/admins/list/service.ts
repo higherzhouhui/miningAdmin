@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/getAdminList', {
+  }>('/forkAdmin/admin/list', {
     method: 'GET',
     params: {
       ...params,
@@ -30,9 +30,9 @@ export async function rule(
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>(`/admin/administer/${data.id}/${data.disable}`, {
+  return request<any>(`/forkAdmin/admin/update`, {
     data,
-    method: 'PUT',
+    method: 'POST',
     ...(options || {}),
   });
 }
@@ -46,8 +46,11 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
   });
 }
 /** 新建规则 POST /api/rule */
-export async function administerUpdate(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>('/admin/saveOrUpdate', {
+export async function administerUpdate(
+  data: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
+  return request<any>('/forkAdmin/admin/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -56,7 +59,7 @@ export async function administerUpdate(data: { [key: string]: any }, options?: {
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: string }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/remove/${data.id}`, {
+  return request<Record<string, any>>(`/forkAdmin/admin/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
