@@ -72,12 +72,12 @@ export default defineConfig({
           component: './account/list',
           access: 'adminRouteFilter',
         },
-        // {
-        //   name: 'account-treeList',
-        //   path: '/account/treeList',
-        //   component: './account/treelist',
-        //   access: 'adminRouteFilter',
-        // },
+        {
+          name: 'account-petlist',
+          path: '/account/petlist',
+          component: './account/petlist',
+          access: 'adminRouteFilter',
+        },
         {
           name: 'account-children',
           path: '/account/children',

@@ -214,6 +214,7 @@ const TableList: React.FC = () => {
         }}
         size="small"
         scroll={{
+          x: 1200,
           y: Math.min(document?.body?.clientHeight - 420, 450),
         }}
         toolBarRender={() => [
