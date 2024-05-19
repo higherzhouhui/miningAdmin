@@ -5,7 +5,7 @@ import ProTable from '@ant-design/pro-table';
 import { Button, Form, Input, message, Modal, Popconfirm, Radio, Select } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, removeRule, rule } from './service';
+import { addRule, removeRule, rule, getPropsList } from './service';
 import ProForm from '@ant-design/pro-form';
 /**
  * 删除节点
@@ -46,7 +46,12 @@ const TableList: React.FC = () => {
   const [currentRow, setCurrentRow] = useState<TableListItem | any>();
   const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const formRef = useRef<any>();
-  const handleUpdateRecord = (record: TableListItem) => {
+  const [propsList, setPropsList] = useState([]);
+  const handleUpdateRecord = async (record: TableListItem) => {
+    const hide = message.loading('加载中');
+    const res = await getPropsList();
+    hide();
+    setPropsList(res.data.rows);
     setCurrentRow(record);
     handleModalVisible(true);
     formRef?.current?.resetFields();
@@ -63,40 +68,25 @@ const TableList: React.FC = () => {
       title: '标题',
       dataIndex: 'name',
       width: 120,
-    },
-    {
-      title: '描述',
-      dataIndex: 'desc',
       hideInSearch: true,
-      width: 120,
     },
+
     {
-      title: '价格(U)',
-      dataIndex: 'usdt',
+      title: '数量',
+      dataIndex: 'amount',
       width: 100,
       hideInSearch: true,
     },
+
     {
-      title: 'FFP',
-      dataIndex: 'price',
-      width: 100,
+      title: '占比（%）1代表剩下的平均分配',
+      dataIndex: 'weight',
+      width: 200,
       hideInSearch: true,
     },
     {
-      title: '经验值',
-      dataIndex: 'exp',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '类型',
-      dataIndex: 'type',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '库存',
-      dataIndex: 'stock',
+      title: '关联道具ID',
+      dataIndex: 'props_id',
       width: 100,
       hideInSearch: true,
     },
@@ -104,6 +94,7 @@ const TableList: React.FC = () => {
       title: '是否上架',
       dataIndex: 'visible',
       width: 120,
+      hideInSearch: true,
       valueEnum: {
         '1': {
           text: '已上架',
@@ -158,7 +149,11 @@ const TableList: React.FC = () => {
       ],
     },
   ];
-  const addNewNotice = () => {
+  const addNewNotice = async () => {
+    const hide = message.loading('加载中');
+    const res = await getPropsList();
+    hide();
+    setPropsList(res.data.rows);
     setCurrentRow(Object.assign({}, {}));
     handleModalVisible(true);
     formRef?.current?.resetFields();
@@ -202,12 +197,7 @@ const TableList: React.FC = () => {
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 90,
-          //隐藏展开、收起
-          collapsed: false,
-          collapseRender: () => false,
-        }}
+        search={false}
         dateFormatter="string"
         pagination={{
           pageSize: 20,
@@ -283,7 +273,7 @@ const TableList: React.FC = () => {
         <ProForm
           formRef={formRef}
           submitter={false}
-          style={{ height: '500px', overflow: 'auto', padding: '0 20px' }}
+          style={{ height: '400px', overflow: 'auto', padding: '0 20px' }}
         >
           <Form.Item label="标题">
             <Input
@@ -292,46 +282,36 @@ const TableList: React.FC = () => {
               onChange={(e) => handleChange(e.target.value, 'name')}
             />
           </Form.Item>
-          <Form.Item label="描述">
+          <Form.Item label="赠送数量">
             <Input
-              value={currentRow?.desc}
-              placeholder="请输入描述"
-              onChange={(e) => handleChange(e.target.value, 'desc')}
+              value={currentRow?.amount}
+              placeholder="请输入数量"
+              onChange={(e) => handleChange(e.target.value, 'amount')}
             />
           </Form.Item>
-          <Form.Item label="分类">
+
+          <Form.Item label="关联道具">
             <Select
-              value={currentRow?.type}
-              placeholder="请选择商品分类"
-              onChange={(e) => handleChange(e, 'type')}
+              value={currentRow?.props_id}
+              placeholder="请选择"
+              onChange={(e) => handleChange(e, 'props_id')}
             >
-              <Select.Option value={'asset'}>资产</Select.Option>
-              <Select.Option value={'tools'}>工具</Select.Option>
-              <Select.Option value={'food'}>食物</Select.Option>
+              {propsList.map((item: any) => {
+                return (
+                  <Select.Option
+                    value={item.id}
+                    key={item.id}
+                  >{`${item.name}——${item.usdt}U`}</Select.Option>
+                );
+              })}
             </Select>
           </Form.Item>
 
-          <Form.Item label="价格（USDT）根据比例计算出FFP，FFP不能手动设置">
+          <Form.Item label="占比">
             <Input
               type="number"
-              value={currentRow?.usdt}
-              onChange={(e) => handleChange(e.target.value, 'usdt')}
-              placeholder="请输入会员价格"
-            />
-          </Form.Item>
-          <Form.Item label="经验值">
-            <Input
-              type="number"
-              value={currentRow?.exp}
-              onChange={(e) => handleChange(e.target.value, 'exp')}
-              placeholder="请输入经验值"
-            />
-          </Form.Item>
-          <Form.Item label="库存">
-            <Input
-              type="number"
-              value={currentRow?.stock}
-              onChange={(e) => handleChange(e.target.value, 'stock')}
+              value={currentRow?.weight}
+              onChange={(e) => handleChange(e.target.value, 'weight')}
               placeholder="请输入库存"
             />
           </Form.Item>

@@ -1,6 +1,7 @@
 // @ts-ignore
 /* eslint-disable */
 import { message } from 'antd';
+import moment from 'moment';
 import request from 'umi-request';
 // request拦截器, 改变url 或 options.
 request.interceptors.request.use((url, options) => {
@@ -42,6 +43,13 @@ request.interceptors.response.use(async (response, options) => {
     //   localStorage.removeItem('authorization');
     //   localStorage.removeItem('x-user-id');
     // }
+  }
+
+  if (data?.data?.rows?.length) {
+    data.data.rows.map((item: any) => {
+      item.createdAt = moment(item.createdAt).format('YYYY-MM-DD HH:mm');
+      item.updatedAt = moment(item.updatedAt).format('YYYY-MM-DD HH:mm');
+    });
   }
   return {
     ...data,

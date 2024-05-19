@@ -2,7 +2,7 @@ import { PlusOutlined } from '@ant-design/icons';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Radio, Select } from 'antd';
+import { Button, Form, Input, message, Modal, Popconfirm } from 'antd';
 import React, { useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { addRule, removeRule, rule } from './service';
@@ -59,61 +59,18 @@ const TableList: React.FC = () => {
       hideInTable: true,
       hideInSearch: true,
     },
-    {
-      title: '标题',
-      dataIndex: 'name',
-      width: 120,
-    },
-    {
-      title: '描述',
-      dataIndex: 'desc',
-      hideInSearch: true,
-      width: 120,
-    },
-    {
-      title: '价格(U)',
-      dataIndex: 'usdt',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: 'FFP',
-      dataIndex: 'price',
-      width: 100,
-      hideInSearch: true,
-    },
+
     {
       title: '经验值',
       dataIndex: 'exp',
-      width: 100,
+      width: 200,
       hideInSearch: true,
     },
     {
-      title: '类型',
-      dataIndex: 'type',
-      width: 100,
+      title: '等级',
+      dataIndex: 'lv',
+      width: 200,
       hideInSearch: true,
-    },
-    {
-      title: '库存',
-      dataIndex: 'stock',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '是否上架',
-      dataIndex: 'visible',
-      width: 120,
-      valueEnum: {
-        '1': {
-          text: '已上架',
-          status: 'Success',
-        },
-        '0': {
-          text: '未上架',
-          status: 'Error',
-        },
-      },
     },
     {
       title: '创建时间',
@@ -202,12 +159,7 @@ const TableList: React.FC = () => {
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
-        search={{
-          labelWidth: 90,
-          //隐藏展开、收起
-          collapsed: false,
-          collapseRender: () => false,
-        }}
+        search={false}
         dateFormatter="string"
         pagination={{
           pageSize: 20,
@@ -280,71 +232,20 @@ const TableList: React.FC = () => {
         onOk={() => handleOk()}
         onCancel={() => handleModalVisible(false)}
       >
-        <ProForm
-          formRef={formRef}
-          submitter={false}
-          style={{ height: '500px', overflow: 'auto', padding: '0 20px' }}
-        >
-          <Form.Item label="标题">
-            <Input
-              value={currentRow?.name}
-              placeholder="请输入标题"
-              onChange={(e) => handleChange(e.target.value, 'name')}
-            />
-          </Form.Item>
-          <Form.Item label="描述">
-            <Input
-              value={currentRow?.desc}
-              placeholder="请输入描述"
-              onChange={(e) => handleChange(e.target.value, 'desc')}
-            />
-          </Form.Item>
-          <Form.Item label="分类">
-            <Select
-              value={currentRow?.type}
-              placeholder="请选择商品分类"
-              onChange={(e) => handleChange(e, 'type')}
-            >
-              <Select.Option value={'asset'}>资产</Select.Option>
-              <Select.Option value={'tools'}>工具</Select.Option>
-              <Select.Option value={'food'}>食物</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item label="价格（USDT）根据比例计算出FFP，FFP不能手动设置">
-            <Input
-              type="number"
-              value={currentRow?.usdt}
-              onChange={(e) => handleChange(e.target.value, 'usdt')}
-              placeholder="请输入会员价格"
-            />
-          </Form.Item>
+        <ProForm formRef={formRef} submitter={false} style={{ padding: '0 20px' }}>
           <Form.Item label="经验值">
             <Input
-              type="number"
               value={currentRow?.exp}
-              onChange={(e) => handleChange(e.target.value, 'exp')}
               placeholder="请输入经验值"
+              onChange={(e) => handleChange(e.target.value, 'exp')}
             />
           </Form.Item>
-          <Form.Item label="库存">
+          <Form.Item label="等级">
             <Input
-              type="number"
-              value={currentRow?.stock}
-              onChange={(e) => handleChange(e.target.value, 'stock')}
-              placeholder="请输入库存"
+              value={currentRow?.lv}
+              placeholder="请输入等级"
+              onChange={(e) => handleChange(e.target.value, 'lv')}
             />
-          </Form.Item>
-          <Form.Item label="是否上架">
-            <Radio.Group
-              value={currentRow?.visible}
-              size="middle"
-              onChange={(e) => handleChange(e.target.value, 'visible')}
-              buttonStyle="solid"
-            >
-              <Radio value={1}>上架</Radio>
-              <Radio value={0}>下架</Radio>
-            </Radio.Group>
           </Form.Item>
         </ProForm>
       </Modal>

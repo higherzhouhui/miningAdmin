@@ -49,8 +49,6 @@ const TableList: React.FC = () => {
     }
   };
 
-  useEffect(() => {}, []);
-
   const columns: ProColumns<any>[] = [
     {
       title: '昵称',
@@ -83,7 +81,7 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'owner',
+      title: 'ownerID',
       dataIndex: 'uid',
       width: 130,
     },
@@ -298,6 +296,7 @@ const TableList: React.FC = () => {
             pageNum: params.current,
             uid: params.uid ? params.uid : myParams.uid,
           });
+          setMyparams({});
           let data: any = [];
           data = res?.data?.rows;
           setTotal(res?.data?.total);

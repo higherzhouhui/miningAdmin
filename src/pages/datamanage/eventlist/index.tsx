@@ -92,6 +92,7 @@ const TableList: React.FC = () => {
       dataIndex: 'id',
       tip: '唯一的 key',
       hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '操作者ID',
@@ -108,10 +109,12 @@ const TableList: React.FC = () => {
     {
       title: '创建时间',
       dataIndex: 'createdAt',
+      hideInSearch: true,
     },
     {
       title: '更新时间',
       dataIndex: 'updatedAt',
+      hideInSearch: true,
     },
     {
       title: '操作',
@@ -175,10 +178,20 @@ const TableList: React.FC = () => {
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
-        search={false}
+        search={{
+          labelWidth: 90,
+          //隐藏展开、收起
+          collapsed: false,
+          collapseRender: () => false,
+        }}
         dateFormatter="string"
+        size="small"
         pagination={{
-          pageSize: 10,
+          pageSize: 20,
+        }}
+        scroll={{
+          x: 1000,
+          y: 500,
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => addNewNotice()}>
@@ -187,7 +200,11 @@ const TableList: React.FC = () => {
           </Button>,
         ]}
         request={async (params: TableListPagination) => {
-          const res: any = await rule({ pageNum: params.current, pageSize: params.pageSize });
+          const res: any = await rule({
+            ...params,
+            pageNum: params.current,
+            pageSize: params.pageSize,
+          });
           return {
             data: res?.data?.rows || [],
             success: true,
