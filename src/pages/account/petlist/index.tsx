@@ -294,7 +294,6 @@ const TableList: React.FC = () => {
           const res: any = await rule({
             ...params,
             pageNum: params.current,
-            uid: params.uid ? params.uid : myParams.uid,
           });
           setMyparams({});
           let data: any = [];

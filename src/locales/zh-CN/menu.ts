@@ -64,7 +64,7 @@ export default {
   'menu.upload.upload-upload': '上传文件',
   'menu.account': '会员管理',
   'menu.account.account-list': '会员列表',
-  'menu.account.account-banklist': '银行卡管理',
+  'menu.account.account-banklist': '钱包地址',
   'menu.account.account-petlist': '宠物列表',
   'menu.account.account-children': '下级会员列表',
   'menu.progress': 'Mint管理',

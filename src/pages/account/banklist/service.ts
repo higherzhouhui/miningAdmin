@@ -11,6 +11,8 @@ export async function rule(
     pageNum?: number;
     /** 页面的容量 */
     pageSize?: number;
+    id?: any;
+    uid?: any;
   },
   options?: { [key: string]: any },
 ) {
@@ -19,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/admin/user-card/getUserCardList', {
+  }>('/forkAdmin/wallet/list', {
     method: 'GET',
     params: {
       ...params,
@@ -39,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/user-card/updateCard', {
+  return request<Record<string, any>>('/forkAdmin/wallet/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -48,9 +50,29 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/admin/user/delete/${data.id}`, {
+  return request<Record<string, any>>(`/forkAdmin/wallet/remove`, {
     data,
-    method: 'DELETE',
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
+/** 获取规则列表 GET /api/rule */
+export async function getPartnerProject() {
+  return request<any>('/admin/user_level/getProjectList', {
+    method: 'GET',
+    params: { pageNum: 1, pageSize: 20 },
+  });
+}
+
+/** 创建订单 PUT /api/rule */
+export async function createOrderRequest(
+  data: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
+  return request<TableListItem>('/admin/order/createOrder', {
+    data,
+    method: 'POST',
     ...(options || {}),
   });
 }
