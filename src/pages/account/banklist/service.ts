@@ -49,7 +49,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 }
 
 /** 删除规则 DELETE /api/rule */
-export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
+export async function removeRule(data: { address: string }, options?: { [key: string]: any }) {
   return request<Record<string, any>>(`/forkAdmin/wallet/remove`, {
     data,
     method: 'POST',

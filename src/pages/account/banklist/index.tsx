@@ -11,7 +11,7 @@ import ProForm from '@ant-design/pro-form';
 import style from './style.less';
 import { useLocation } from 'umi';
 import * as XLSX from 'xlsx';
-import { DeleteOutlined, EditOutlined, TableOutlined } from '@ant-design/icons';
+import { DeleteOutlined, TableOutlined } from '@ant-design/icons';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -20,8 +20,9 @@ const TableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
-  const [operationType, setOperationType] = useState('baseInfo');
-  const partnerList = [];
+  // const [operationType, setOperationType] = useState('baseInfo');
+  const operationType = 'baseInfo';
+  const partnerList: any = [];
   const [myParams, setMyparams] = useState<any>({});
   const localMy = useLocation();
 
@@ -31,16 +32,16 @@ const TableList: React.FC = () => {
     resetPassword: '修改密码',
     addNewProject: '添加项目',
   };
-  const handleUpdateRecord = (record: TableListItem, type: string) => {
-    setOperationType(type);
-    setCurrentRow(record);
-    handleModalVisible(true);
-    formRef?.current?.resetFields();
-  };
+  // const handleUpdateRecord = (record: TableListItem, type: string) => {
+  //   setOperationType(type);
+  //   setCurrentRow(record);
+  //   handleModalVisible(true);
+  //   formRef?.current?.resetFields();
+  // };
 
-  const handleRemove = async (userId: number) => {
+  const handleRemove = async (address: string) => {
     const hide = message.loading('正在删除...');
-    const res = await removeRule({ id: userId });
+    const res = await removeRule({ address: address });
     hide();
     if (res.code === 0) {
       message.success('删除成功,正在刷新!');
@@ -121,18 +122,14 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 140,
+      width: 120,
       hideInDescriptions: true,
       fixed: 'right',
       render: (_, record: any) => [
-        <a key={'modify'} onClick={() => handleUpdateRecord(record, 'baseInfo')}>
-          <EditOutlined />
-          修改
-        </a>,
         <Popconfirm
           title="确认删除该会员?"
           onConfirm={async () => {
-            handleRemove(record.id);
+            handleRemove(record.address);
           }}
           key="access"
         >
