@@ -89,6 +89,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: 'TOD（小时）',
+      dataIndex: 'tod',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '类型',
       dataIndex: 'type',
       width: 100,
@@ -167,6 +173,7 @@ const TableList: React.FC = () => {
   const handleOk = async () => {
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
+      currentRow.tod = Math.round(currentRow.tod * 3600);
       const res = await addRule({ ...currentRow });
       handleModalVisible(false);
       hide();
@@ -226,6 +233,9 @@ const TableList: React.FC = () => {
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });
           const list = res?.data?.rows || [];
+          list.map((item: any) => {
+            item.tod = Math.round((item.tod / 3600) * 100) / 100;
+          });
           return {
             data: list,
             success: true,
@@ -324,6 +334,14 @@ const TableList: React.FC = () => {
               type="number"
               value={currentRow?.exp}
               onChange={(e) => handleChange(e.target.value, 'exp')}
+              placeholder="请输入经验值"
+            />
+          </Form.Item>
+          <Form.Item label="TOD（小时）">
+            <Input
+              type="number"
+              value={currentRow?.tod}
+              onChange={(e) => handleChange(e.target.value, 'tod')}
               placeholder="请输入经验值"
             />
           </Form.Item>
