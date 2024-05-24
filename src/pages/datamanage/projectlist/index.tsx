@@ -91,7 +91,7 @@ const TableList: React.FC = () => {
     {
       title: 'TOD（小时）',
       dataIndex: 'tod',
-      width: 100,
+      width: 130,
       hideInSearch: true,
     },
     {

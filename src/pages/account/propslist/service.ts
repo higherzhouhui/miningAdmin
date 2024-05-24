@@ -11,6 +11,8 @@ export async function rule(
     pageNum?: number;
     /** 页面的容量 */
     pageSize?: number;
+    id?: any;
+    uid?: any;
   },
   options?: { [key: string]: any },
 ) {
@@ -19,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/getUserList', {
+  }>('/forkAdmin/propsRecord/list', {
     method: 'GET',
     params: {
       ...params,
@@ -39,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/forkAdmin/user/update', {
+  return request<Record<string, any>>('/forkAdmin/propsRecord/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -48,7 +50,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/user/remove`, {
+  return request<Record<string, any>>(`/forkAdmin/propsRecord/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
@@ -68,23 +70,9 @@ export async function createOrderRequest(
   data: { [key: string]: any },
   options?: { [key: string]: any },
 ) {
-  return request<TableListItem>('/forkAdmin/pet/update', {
+  return request<TableListItem>('/admin/order/createOrder', {
     data,
     method: 'POST',
     ...(options || {}),
-  });
-}
-
-/** 创建订单 PUT /api/rule */
-export async function addNewProPS(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/forkAdmin/propsRecord/update', {
-    data,
-    method: 'POST',
-    ...(options || {}),
-  });
-}
-export async function getPropsList() {
-  return request<Record<string, any>>(`/forkAdmin/getPropsList?pageNum=1&pageSize=100`, {
-    method: 'GET',
   });
 }

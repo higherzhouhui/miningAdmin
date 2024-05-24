@@ -91,6 +91,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
           hideInMenu: true,
         },
+        {
+          name: 'account-propslist',
+          path: '/account/propslist',
+          component: './account/propslist',
+          access: 'adminRouteFilter',
+        },
       ],
     },
     {

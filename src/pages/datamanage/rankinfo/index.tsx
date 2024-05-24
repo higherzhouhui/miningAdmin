@@ -7,7 +7,7 @@ import styles from './style.less';
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
     {
-      title: '用户总奖励（以下是根据该比例的占比）',
+      title: '用户总奖励（上一日通过购买道具消耗的FFP;以下是根据该比例的占比）',
       key: 'total',
       value: '',
       type: 'number',

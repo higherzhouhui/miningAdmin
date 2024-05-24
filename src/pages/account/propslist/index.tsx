@@ -3,7 +3,7 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, message } from 'antd';
+import { Button, Drawer, Form, Input, Modal, Popconfirm, Select, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
 import { addRule, rule, removeRule, createOrderRequest } from './service';
@@ -12,7 +12,6 @@ import style from './style.less';
 import { useLocation } from 'umi';
 import * as XLSX from 'xlsx';
 import { DeleteOutlined, EditOutlined, TableOutlined } from '@ant-design/icons';
-import moment from 'moment';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -52,10 +51,9 @@ const TableList: React.FC = () => {
   const columns: ProColumns<any>[] = [
     {
       title: '昵称',
-      dataIndex: 'name',
+      dataIndex: 'nick_name',
       width: 100,
       fixed: 'left',
-      hideInSearch: true,
       tooltip: '点击可查看该用户详情',
       render: (dom, entity) => {
         return (
@@ -72,76 +70,26 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'TokenId',
-      dataIndex: 'claim_nft_id',
-      width: 100,
-      render: (_, record) => {
-        return <div>{record.claim_nft_id ? `#${record.claim_nft_id}` : 'Not Claim'}</div>;
-      },
+      title: '道具ID',
+      dataIndex: 'props_id',
+      width: 80,
     },
     {
-      title: '拥有者',
-      dataIndex: 'nick_name',
-      width: 130,
-    },
-    {
-      title: 'img',
-      dataIndex: 'photo',
-      width: 110,
-      hideInSearch: true,
-      render: (_, record) => {
-        return (
-          <Image
-            src={`https://static.forkfrenpet.com/images/c/${record.img}` || '/logo.png'}
-            width={90}
-            height={90}
-            style={{ objectFit: 'contain' }}
-          />
-        );
-      },
-    },
-    {
-      title: '经验值',
-      dataIndex: 'exp',
-      width: 100,
+      title: '道具名称',
+      dataIndex: 'props_name',
+      width: 80,
       hideInSearch: true,
     },
     {
-      title: '生日',
-      dataIndex: 'birthday',
-      width: 150,
+      title: '数量',
+      dataIndex: 'props_amount',
+      width: 50,
       hideInSearch: true,
     },
     {
-      title: '绑定钱包',
-      dataIndex: 'wallet',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: 'tod',
-      dataIndex: 'tod',
-      width: 150,
-      hideInSearch: true,
-      render: (_, record) => {
-        return <span>{moment(record.tod * 1000).format('YYYY-MM-DD HH:mm')}</span>;
-      },
-    },
-    {
-      title: '是否上链',
-      dataIndex: 'isClaim',
-      width: 120,
-      hideInTable: true,
-      valueEnum: {
-        0: {
-          text: '未上链',
-          status: 'Error',
-        },
-        1: {
-          text: '已上链',
-          status: 'Success',
-        },
-      },
+      title: '来源',
+      dataIndex: 'source',
+      width: 50,
     },
     {
       title: '创建时间',
@@ -185,7 +133,7 @@ const TableList: React.FC = () => {
 
   const handleOk = async () => {
     if (operationType === 'baseInfo') {
-      if (!currentRow?.name || !currentRow?.exp || !currentRow?.tod) {
+      if (!currentRow?.props_id || !currentRow?.props_name || !currentRow?.source) {
         message.warning('请输入完整信息!');
         return;
       }
@@ -262,7 +210,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
-        headerTitle={`总道具数量：${total}`}
+        headerTitle={`总宠物数量：${total}`}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -285,7 +233,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1600,
+          x: 1000,
           y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
@@ -315,22 +263,28 @@ const TableList: React.FC = () => {
         <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
+              <Form.Item label="道具ID">
+                <Input
+                  value={currentRow?.props_id}
+                  onChange={(e) => handleChange(e.target.value, 'props_id')}
+                />
+              </Form.Item>
               <Form.Item label="昵称">
                 <Input
-                  value={currentRow?.name}
-                  onChange={(e) => handleChange(e.target.value, 'name')}
+                  value={currentRow?.props_name}
+                  onChange={(e) => handleChange(e.target.value, 'props_name')}
                 />
               </Form.Item>
-              <Form.Item label="经验值">
+              <Form.Item label="数量">
                 <Input
-                  value={currentRow?.exp}
-                  onChange={(e) => handleChange(e.target.value, 'exp')}
+                  value={currentRow?.props_amount}
+                  onChange={(e) => handleChange(e.target.value, 'props_amount')}
                 />
               </Form.Item>
-              <Form.Item label="TOD">
+              <Form.Item label="来源">
                 <Input
-                  value={currentRow?.tod}
-                  onChange={(e) => handleChange(e.target.value, 'tod')}
+                  value={currentRow?.source}
+                  onChange={(e) => handleChange(e.target.value, 'source')}
                 />
               </Form.Item>
             </>

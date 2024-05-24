@@ -71,8 +71,8 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: 'OwnerId',
-      dataIndex: 'uid',
+      title: '昵称',
+      dataIndex: 'nick_name',
       width: 100,
     },
     {
@@ -91,16 +91,16 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '是否选中',
+      title: '当前使用',
       dataIndex: 'is_select',
       width: 100,
       hideInSearch: true,
       valueEnum: {
-        true: {
+        1: {
           text: '是',
           status: 'Success',
         },
-        false: {
+        0: {
           text: '否',
           status: 'Error',
         },

@@ -3,15 +3,22 @@ import ProDescriptions from '@ant-design/pro-descriptions';
 import { PageContainer } from '@ant-design/pro-layout';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, message } from 'antd';
+import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
 import type { TableListItem, TableListPagination } from './data';
-import { addRule, rule, removeRule, createOrderRequest } from './service';
+import {
+  addRule,
+  rule,
+  removeRule,
+  createOrderRequest,
+  getPropsList,
+  addNewProPS,
+} from './service';
 import ProForm from '@ant-design/pro-form';
 import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
-import { DeleteOutlined, EditOutlined, TableOutlined } from '@ant-design/icons';
+import { TableOutlined } from '@ant-design/icons';
 import moment from 'moment';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
@@ -22,14 +29,22 @@ const TableList: React.FC = () => {
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
   const [operationType, setOperationType] = useState('baseInfo');
+  const [propsList, setPropsList] = useState([]);
   const titleMap = {
     baseInfo: '修改基本资料',
     resetPassword: '修改密码',
     addNewProject: '添加宠物',
+    addNewPropsProject: '添加道具',
   };
-  const handleUpdateRecord = (record: TableListItem, type: string) => {
+  const handleUpdateRecord = async (record: TableListItem, type: string) => {
+    if (type == 'addNewPropsProject') {
+      const hide = message.loading('加载中');
+      const res = await getPropsList();
+      hide();
+      setPropsList(res.data.rows);
+    }
     setOperationType(type);
-    setCurrentRow(record);
+    setCurrentRow({ ...record, amount: 1 });
     handleModalVisible(true);
     formRef?.current?.resetFields();
   };
@@ -56,14 +71,6 @@ const TableList: React.FC = () => {
 
   const columns: ProColumns<any>[] = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 90,
-      render: (_, record) => {
-        return <div>{record.id}</div>;
-      },
-    },
-    {
       title: '昵称',
       dataIndex: 'nick_name',
       width: 100,
@@ -81,6 +88,14 @@ const TableList: React.FC = () => {
             {dom}
           </div>
         );
+      },
+    },
+    {
+      title: 'ID',
+      dataIndex: 'id',
+      width: 90,
+      render: (_, record) => {
+        return <div>{record.id}</div>;
       },
     },
     {
@@ -245,11 +260,16 @@ const TableList: React.FC = () => {
           style={{ color: 'green' }}
           onClick={() => handleUpdateRecord(record, 'addNewProject')}
         >
-          <EditOutlined />
           +宠物
         </a>,
+        <a
+          key={'new'}
+          style={{ color: '#f9c' }}
+          onClick={() => handleUpdateRecord(record, 'addNewPropsProject')}
+        >
+          +道具
+        </a>,
         <a key={'modify'} onClick={() => handleUpdateRecord(record, 'baseInfo')}>
-          <EditOutlined />
           修改
         </a>,
         <Popconfirm
@@ -260,7 +280,6 @@ const TableList: React.FC = () => {
           key="access"
         >
           <a key="access" style={{ color: 'red' }}>
-            <DeleteOutlined />
             删除
           </a>
         </Popconfirm>,
@@ -283,7 +302,33 @@ const TableList: React.FC = () => {
     }
     if (operationType === 'addNewProject') {
       const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
-      createOrderRequest({ uid: currentRow.id }).then((res: any) => {
+      createOrderRequest({ uid: currentRow.id, amount: currentRow.amount }).then((res: any) => {
+        hide();
+        if (res.code === 0) {
+          handleModalVisible(false);
+          message.success(`添加成功`);
+          actionRef.current?.reloadAndRest?.();
+        }
+      });
+      return;
+    }
+    if (operationType === 'addNewPropsProject') {
+      const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
+      const propsInfo: any = propsList.filter((item: any) => {
+        return item.id == currentRow.props_id;
+      });
+      const data = {
+        uid: currentRow.id,
+        props_amount: currentRow.amount,
+        props_id: propsInfo[0].id,
+        props_name: propsInfo[0].name,
+        props_tod: propsInfo[0].tod,
+        props_type: propsInfo[0].type,
+        order_id: new Date().getTime() + Math.random() * 100000000,
+        source: 'buy',
+        props_price: propsInfo[0].usdt,
+      };
+      addNewProPS(data).then((res: any) => {
         hide();
         if (res.code === 0) {
           handleModalVisible(false);
@@ -426,8 +471,44 @@ const TableList: React.FC = () => {
             </>
           ) : operationType === 'addNewProject' ? (
             <>
-              <Form.Item label="ownerId">
-                <Input value={currentRow?.id} readOnly />
+              <Form.Item label="昵称">
+                <Input value={currentRow?.nick_name} readOnly />
+              </Form.Item>
+              <Form.Item label="数量">
+                <Input
+                  value={currentRow?.amount}
+                  type="number"
+                  onChange={(e) => handleChange(e.target.value, 'amount')}
+                />
+              </Form.Item>
+            </>
+          ) : operationType === 'addNewPropsProject' ? (
+            <>
+              <Form.Item label="昵称">
+                <Input value={currentRow?.nick_name} readOnly />
+              </Form.Item>
+              <Form.Item label="关联道具">
+                <Select
+                  value={currentRow?.props_id}
+                  placeholder="请选择"
+                  onChange={(e) => handleChange(e, 'props_id')}
+                >
+                  {propsList.map((item: any) => {
+                    return (
+                      <Select.Option
+                        value={item.id}
+                        key={item.id}
+                      >{`${item.name}——${item.usdt}U`}</Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Form.Item label="数量">
+                <Input
+                  value={currentRow?.amount}
+                  type="number"
+                  onChange={(e) => handleChange(e.target.value, 'amount')}
+                />
               </Form.Item>
             </>
           ) : null}

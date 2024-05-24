@@ -73,6 +73,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '每小时掉落PTS',
+      dataIndex: 'pts',
+      width: 200,
+      hideInSearch: true,
+    },
+    {
       title: '创建时间',
       dataIndex: 'createdAt',
       width: 150,
@@ -167,7 +173,7 @@ const TableList: React.FC = () => {
         size="small"
         scroll={{
           x: 1200,
-          y: Math.min(document?.body?.clientHeight - 420, 450),
+          y: Math.min(document?.body?.clientHeight - 300, 550),
         }}
         toolBarRender={() => [
           <Button type="primary" key="primary" onClick={() => addNewNotice()}>
@@ -245,6 +251,13 @@ const TableList: React.FC = () => {
               value={currentRow?.lv}
               placeholder="请输入等级"
               onChange={(e) => handleChange(e.target.value, 'lv')}
+            />
+          </Form.Item>
+          <Form.Item label="每小时掉落PTS">
+            <Input
+              value={currentRow?.pts}
+              placeholder="请输入每小时掉落PTS"
+              onChange={(e) => handleChange(e.target.value, 'pts')}
             />
           </Form.Item>
         </ProForm>

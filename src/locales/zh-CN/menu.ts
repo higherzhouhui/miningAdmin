@@ -67,6 +67,7 @@ export default {
   'menu.account.account-banklist': '钱包地址',
   'menu.account.account-petlist': '宠物列表',
   'menu.account.account-children': '下级会员列表',
+  'menu.account.account-propslist': '用户道具',
   'menu.progress': 'Mint管理',
   'menu.progress.progress-list': '成功列表',
   'menu.progress.progress-open': '打开宝箱',

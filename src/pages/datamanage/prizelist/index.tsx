@@ -312,7 +312,7 @@ const TableList: React.FC = () => {
               type="number"
               value={currentRow?.weight}
               onChange={(e) => handleChange(e.target.value, 'weight')}
-              placeholder="请输入库存"
+              placeholder="请输入占比"
             />
           </Form.Item>
           <Form.Item label="是否上架">
