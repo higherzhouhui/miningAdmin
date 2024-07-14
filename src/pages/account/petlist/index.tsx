@@ -262,7 +262,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
-        headerTitle={`总道具数量：${total}`}
+        headerTitle={`总宠物数量：${total}`}
         toolBarRender={() => [
           <Button
             type="primary"
