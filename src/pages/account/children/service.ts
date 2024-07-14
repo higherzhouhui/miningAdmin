@@ -20,7 +20,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/getUserInviteList', {
+  }>('/dogAdmin/getUserInviteList', {
     method: 'GET',
     params: {
       ...params,

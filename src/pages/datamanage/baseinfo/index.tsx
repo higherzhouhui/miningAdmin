@@ -6,50 +6,11 @@ import styles from './style.less';
 
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
-    { title: '攻击冻结时间', key: 'bonk_freeze_time', vlaue: '', type: 'number', after: 'H' },
-    { title: '宠物最长存活时间', key: 'pet_max_live', value: '', type: 'number', after: 'H' },
-    { title: '宠物可喂养时间', key: 'pet_feed_time', value: '', type: 'number', after: 'H' },
-    { title: '助力可获奖概率', key: 'invite_reward_rate', value: '', type: 'number', after: '%' },
-    { title: '上级返点', key: 'commission', vlaue: '', type: 'number', after: '%' },
-    {
-      title: '领取积分和FFP手续费',
-      key: 'claim_reward_rate',
-      vlaue: '',
-      type: 'number',
-      after: '%',
-    },
-    { title: '攻击同等级胜率', key: 'bonk_same_level_rate', vlaue: '', type: 'number', after: '%' },
-    {
-      title: '攻击不同等级胜率',
-      key: 'bonk_not_level_rate',
-      vlaue: '',
-      type: 'number',
-      after: '%',
-    },
-    { title: '攻击好友胜率', key: 'bonk_friend_rate', vlaue: '', type: 'number', after: '%' },
-    {
-      title: '攻击获胜奖励（输家的PTS）',
-      key: 'bonk_win_pts',
-      vlaue: '',
-      type: 'number',
-      after: '%',
-    },
-    {
-      title: '攻击失败丢失（输家的PTS）',
-      key: 'bonk_lost_pts',
-      vlaue: '',
-      type: 'number',
-      after: '%',
-    },
-    {
-      title: '平台抽成（赢家的PTS）',
-      key: 'bonk_platform_pts',
-      vlaue: '',
-      type: 'number',
-      after: '%',
-    },
-    { title: '兑换比例（1FFP兑换ETH）', key: 'ffp_eth', value: '', type: 'number' },
-    { title: 'eth价格（USDT）', key: 'eth_price', value: '', type: 'number' },
+    { title: '账号注册不足一年奖励', key: 'not_one_year', value: '', type: 'number'},
+    { title: '账号每年递增奖励', key: 'one_year_add', value: '', type: 'number'},
+    { title: '电报会员额外奖励', key: 'huiYuan_add', value: '', type: 'number' },
+    { title: '邀请单个用户奖励', key: 'invite_add', vlaue: '', type: 'number'},
+    { title: '每邀请三个下级奖励倍数（基于单个邀请奖励）', key: 'every_three_ratio', vlaue: '', type: 'number' },
     { title: 'id', key: 'id', hide: true, value: '' },
   ]);
   const [loading, setLoading] = useState(false);

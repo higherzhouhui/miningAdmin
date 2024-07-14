@@ -1,6 +1,6 @@
 {
-  "name": "ForkFrenPet Dashboard",
-  "short_name": "ForkFrenPet Dashboard",
+  "name": "DogeHome Dashboard",
+  "short_name": "DogeHome Dashboard",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

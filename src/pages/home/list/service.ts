@@ -5,7 +5,7 @@ import { TableListItem } from './data';
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(params: { day: number }) {
-  return request<{ data: TableListItem }>('/forkAdmin/home/info', {
+  return request<{ data: TableListItem }>('/dogAdmin/home/info', {
     method: 'GET',
     params: {
       ...params,

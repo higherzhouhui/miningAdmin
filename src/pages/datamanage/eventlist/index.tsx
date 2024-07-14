@@ -96,15 +96,22 @@ const TableList: React.FC = () => {
     },
     {
       title: '操作者ID',
-      dataIndex: 'uid',
+      dataIndex: 'from_user',
     },
     {
-      title: '描述',
-      dataIndex: 'text',
+      title: '用户名',
+      dataIndex: 'from_username',
     },
     {
       title: '类型',
       dataIndex: 'type',
+    },
+    {
+      title: '积分',
+      dataIndex: 'score',
+      render: (dom, e: any) => {
+        return <Button danger={e.score < 0} type='primary'>{e.score}</Button>
+      }
     },
     {
       title: '创建时间',
@@ -193,12 +200,12 @@ const TableList: React.FC = () => {
           x: 1000,
           y: 500,
         }}
-        toolBarRender={() => [
-          <Button type="primary" key="primary" onClick={() => addNewNotice()}>
-            <PlusOutlined />
-            新增
-          </Button>,
-        ]}
+        // toolBarRender={() => [
+        //   <Button type="primary" key="primary" onClick={() => addNewNotice()}>
+        //     <PlusOutlined />
+        //     新增
+        //   </Button>,
+        // ]}
         request={async (params: TableListPagination) => {
           const res: any = await rule({
             ...params,
@@ -259,11 +266,12 @@ const TableList: React.FC = () => {
         onCancel={() => handleModalVisible(false)}
       >
         <ProForm formRef={formRef} submitter={false}>
-          <Form.Item label="用户ID">
+          <Form.Item label="发起用户ID">
             <Input
-              value={currentRow?.uid}
-              onChange={(e) => handleChangeCurrent(e, 'uid')}
-              placeholder="请输入用户ID"
+              value={currentRow?.from_user}
+              onChange={(e) => handleChangeCurrent(e, 'from_user')}
+              placeholder="请输入formRef"
+              readOnly
             />
           </Form.Item>
           <Form.Item label="类型">
@@ -271,12 +279,21 @@ const TableList: React.FC = () => {
               value={currentRow?.type}
               onChange={(e) => handleChangeCurrent(e, 'type')}
               placeholder="请输入类型"
+              readOnly
+            />
+          </Form.Item>
+          <Form.Item label="积分">
+            <Input
+              value={currentRow?.score}
+              onChange={(e) => handleChangeCurrent(e, 'score')}
+              placeholder="请输入积分"
+              readOnly
             />
           </Form.Item>
           <Form.Item label="描述">
             <Input
-              value={currentRow?.text}
-              onChange={(e) => handleChangeCurrent(e, 'text')}
+              value={currentRow?.desc}
+              onChange={(e) => handleChangeCurrent(e, 'desc')}
               placeholder="请输入描述"
             />
           </Form.Item>

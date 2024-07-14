@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/admin/list', {
+  }>('/dogAdmin/admin/list', {
     method: 'GET',
     params: {
       ...params,
@@ -30,7 +30,7 @@ export async function rule(
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<any>(`/forkAdmin/admin/update`, {
+  return request<any>(`/dogAdmin/admin/update`, {
     data,
     method: 'POST',
     ...(options || {}),
@@ -50,7 +50,7 @@ export async function administerUpdate(
   data: { [key: string]: any },
   options?: { [key: string]: any },
 ) {
-  return request<any>('/forkAdmin/admin/update', {
+  return request<any>('/dogAdmin/admin/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -59,7 +59,7 @@ export async function administerUpdate(
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: string }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/admin/remove`, {
+  return request<Record<string, any>>(`/dogAdmin/admin/remove`, {
     data,
     method: 'POST',
     ...(options || {}),

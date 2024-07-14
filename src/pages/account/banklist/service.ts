@@ -21,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/wallet/list', {
+  }>('/dogAdmin/wallet/list', {
     method: 'GET',
     params: {
       ...params,
@@ -41,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/forkAdmin/wallet/update', {
+  return request<Record<string, any>>('/dogAdmin/wallet/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -50,7 +50,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { address: string }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/wallet/remove`, {
+  return request<Record<string, any>>(`/dogAdmin/wallet/remove`, {
     data,
     method: 'POST',
     ...(options || {}),

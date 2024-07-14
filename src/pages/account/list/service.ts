@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/getUserList', {
+  }>('/dogAdmin/getUserList', {
     method: 'GET',
     params: {
       ...params,
@@ -39,7 +39,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/forkAdmin/user/update', {
+  return request<Record<string, any>>('/dogAdmin/user/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -48,7 +48,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/user/remove`, {
+  return request<Record<string, any>>(`/dogAdmin/user/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
@@ -68,7 +68,7 @@ export async function createOrderRequest(
   data: { [key: string]: any },
   options?: { [key: string]: any },
 ) {
-  return request<TableListItem>('/forkAdmin/pet/update', {
+  return request<TableListItem>('/dogAdmin/pet/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -77,14 +77,14 @@ export async function createOrderRequest(
 
 /** 创建订单 PUT /api/rule */
 export async function addNewProPS(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/forkAdmin/propsRecord/update', {
+  return request<TableListItem>('/dogAdmin/propsRecord/update', {
     data,
     method: 'POST',
     ...(options || {}),
   });
 }
 export async function getPropsList() {
-  return request<Record<string, any>>(`/forkAdmin/getPropsList?pageNum=1&pageSize=100`, {
+  return request<Record<string, any>>(`/dogAdmin/getPropsList?pageNum=1&pageSize=100`, {
     method: 'GET',
   });
 }

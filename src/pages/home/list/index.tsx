@@ -13,11 +13,9 @@ const TableList: React.FC = () => {
   const [dataSource, setDataSource] = useState<TableListItem | any>({});
   const [loading, setLoading] = useState(1);
   const [tongji, setTongji] = useState<ITongji[]>([
-    { title: '今日销售额', num: 0 },
-    { title: '今日消费用户', num: 0 },
-    { title: '消费总用户', num: 0 },
     { title: '总用户', num: 0 },
-    { title: '销售总额', num: 0 },
+    { title: '今日注册用户', num: 0 },
+    { title: '总积分', num: 0 },
 
   ]);
   const [options, setOptions] = useState({})
@@ -122,14 +120,12 @@ const TableList: React.FC = () => {
     setLoading(1);
     rule({ day: day })
       .then((res: any) => {
-        if (res.code === 200) {
+        if (res.code === 0) {
           const data = res.data;
           const arr = [
-            { title: '今日销售额', num: data?.todayOrderPrice || 0 },
-            { title: '今日消费用户', num: data?.todayOrderUserNum },
-            { title: '消费总用户', num: data?.orderUserNum },
-            { title: '总用户', num: data?.sumUserNum || 0 },
-            { title: '销售总额', num: data?.totalOrderPrice },
+            { title: '总用户', num: data?.totalPeople || 0 },
+            { title: '今日注册用户', num: data?.todayPeople },
+            { title: '总积分', num: data?.totalScore },
           ];
           setTongji(arr);
 

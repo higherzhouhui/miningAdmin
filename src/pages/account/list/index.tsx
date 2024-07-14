@@ -72,7 +72,7 @@ const TableList: React.FC = () => {
   const columns: ProColumns<any>[] = [
     {
       title: '昵称',
-      dataIndex: 'nick_name',
+      dataIndex: 'username',
       width: 100,
       fixed: 'left',
       tooltip: '点击可查看该用户详情',
@@ -92,10 +92,10 @@ const TableList: React.FC = () => {
     },
     {
       title: 'ID',
-      dataIndex: 'id',
+      dataIndex: 'user_id',
       width: 90,
       render: (_, record) => {
-        return <div>{record.id}</div>;
+        return <div>{record.user_id}</div>;
       },
     },
     {
@@ -116,124 +116,68 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '推特ID',
-      dataIndex: 'twitter_id',
+      title: '当前积分',
+      dataIndex: 'score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '当前积分(pts)',
-      dataIndex: 'pts',
+      title: '账号奖励',
+      dataIndex: 'account_age_score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '宠物',
-      dataIndex: 'pets',
+      title: '时长(年)',
+      dataIndex: 'year',
       width: 100,
       hideInSearch: true,
-      render: (_, record: any) => {
-        return <a onClick={() => routeToPetList(record)}>查看</a>;
-      },
     },
     {
-      title: '可领取奖励(FFP)',
-      dataIndex: 'invite_reward_coins',
-      width: 130,
+      title: '会员奖励',
+      dataIndex: 'telegram_premium',
+      width: 100,
       hideInSearch: true,
     },
     {
-      title: '邀请奖励(FFP)',
-      dataIndex: 'coins',
+      title: '邀请奖励',
+      dataIndex: 'invite_friends_score',
       width: 100,
       hideInSearch: true,
     },
     {
       title: '推荐人ID',
-      dataIndex: 'invite_id',
+      dataIndex: 'startParam',
       width: 100,
-      hideInSearch: true,
     },
     {
       title: '邀请码',
       dataIndex: 'code',
       width: 110,
       hideInSearch: true,
-    },
-    {
-      title: '下级会员',
-      dataIndex: 'invite_amount',
-      width: 110,
-      hideInSearch: true,
-      render: (_, record: any) => {
-        return (
-          <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => routeToChildren(record)}>
-            查看
-          </div>
-        );
+      render: (_, record) => {
+        return <div>{btoa(record.user_id)}</div>;
       },
     },
+    // {
+    //   title: '下级会员',
+    //   dataIndex: 'invite_amount',
+    //   width: 110,
+    //   hideInSearch: true,
+    //   render: (_, record: any) => {
+    //     return (
+    //       <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => routeToChildren(record)}>
+    //         查看
+    //       </div>
+    //     );
+    //   },
+    // },
     {
-      title: '使用盾牌次数',
-      dataIndex: 'shield_protect_count',
-      width: 110,
-      hideInSearch: true,
+      title: '语言',
+      dataIndex: 'languageCode',
+      width: 100,
       hideInTable: true,
-    },
-    {
-      title: '可以攻击时间',
-      dataIndex: 'bonk_freeze_time',
-      width: 110,
       hideInSearch: true,
-      hideInTable: true,
-      render: (_, record: any) => {
-        return <span>{moment(record.bonk_freeze_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
-      },
-    },
-    {
-      title: '盾牌结束时间',
-      dataIndex: 'shield_protect_time',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-      render: (_, record: any) => {
-        return <span>{moment(record.shield_protect_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
-      },
-    },
-    {
-      title: '战斗次数',
-      dataIndex: 'bonk_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '赢的pts',
-      dataIndex: 'bonk_win_pts',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '输的次数',
-      dataIndex: 'bonk_loss_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '输的pts',
-      dataIndex: 'bonk_loss_pts',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '赢的次数',
-      dataIndex: 'bonk_win_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
     },
     {
       title: '注册时间',
@@ -251,24 +195,10 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 210,
+      width: 120,
       hideInDescriptions: true,
       fixed: 'right',
       render: (_, record: any) => [
-        <a
-          key={'new'}
-          style={{ color: 'green' }}
-          onClick={() => handleUpdateRecord(record, 'addNewProject')}
-        >
-          +宠物
-        </a>,
-        <a
-          key={'new'}
-          style={{ color: '#f9c' }}
-          onClick={() => handleUpdateRecord(record, 'addNewPropsProject')}
-        >
-          +道具
-        </a>,
         <a key={'modify'} onClick={() => handleUpdateRecord(record, 'baseInfo')}>
           修改
         </a>,
@@ -289,7 +219,7 @@ const TableList: React.FC = () => {
 
   const handleOk = async () => {
     if (operationType === 'baseInfo') {
-      if (!currentRow?.pts || !currentRow?.invite_reward_coins || !currentRow?.coins) {
+      if (!currentRow?.score) {
         message.warning('请输入完整信息!');
         return;
       }
@@ -361,6 +291,7 @@ const TableList: React.FC = () => {
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
+    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1
     setCurrentRow(newRow);
   };
 
@@ -433,28 +364,29 @@ const TableList: React.FC = () => {
         <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
-              <Form.Item label="积分pts">
+              <Form.Item label="积分">
                 <Input
-                  value={currentRow?.pts}
-                  onChange={(e) => handleChange(e.target.value, 'pts')}
+                  value={currentRow?.score}
+                  onChange={(e) => handleChange(e.target.value, 'score')}
+                  readOnly
                 />
               </Form.Item>
-              <Form.Item label="可领取FFP">
+              <Form.Item label="账号奖励">
                 <Input
-                  value={currentRow?.invite_reward_coins}
-                  onChange={(e) => handleChange(e.target.value, 'invite_reward_coins')}
+                  value={currentRow?.account_age_score}
+                  onChange={(e) => handleChange(e.target.value, 'account_age_score')}
                 />
               </Form.Item>
-              <Form.Item label="邀请奖励(FFP)">
+              <Form.Item label="会员奖励">
                 <Input
-                  value={currentRow?.coins}
-                  onChange={(e) => handleChange(e.target.value, 'coins')}
+                  value={currentRow?.telegram_premium}
+                  onChange={(e) => handleChange(e.target.value, 'telegram_premium')}
                 />
               </Form.Item>
-              <Form.Item label="推荐人ID">
+              <Form.Item label="邀请奖励">
                 <Input
-                  value={currentRow?.invite_id}
-                  onChange={(e) => handleChange(e.target.value, 'invite_id')}
+                  value={currentRow?.invite_friends_score}
+                  onChange={(e) => handleChange(e.target.value, 'invite_friends_score')}
                   placeholder="请输入上级推荐人"
                 />
               </Form.Item>

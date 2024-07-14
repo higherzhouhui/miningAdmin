@@ -73,29 +73,11 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
-          name: 'account-petlist',
-          path: '/account/petlist',
-          component: './account/petlist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'account-banklist',
-          path: '/account/banklist',
-          component: './account/banklist',
-          access: 'adminRouteFilter',
-        },
-        {
           name: 'account-children',
           path: '/account/children',
           component: './account/children',
           access: 'adminRouteFilter',
           hideInMenu: true,
-        },
-        {
-          name: 'account-propslist',
-          path: '/account/propslist',
-          component: './account/propslist',
-          access: 'adminRouteFilter',
         },
       ],
     },
@@ -147,35 +129,12 @@ export default defineConfig({
           access: 'adminRouteFilter',
         },
         {
-          name: 'datamanage-projectlist',
-          path: '/datamanage/projectlist',
-          component: './datamanage/projectlist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-prizelist',
-          path: '/datamanage/prizelist',
-          component: './datamanage/prizelist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-explist',
-          path: '/datamanage/explist',
-          component: './datamanage/explist',
-          access: 'adminRouteFilter',
-        },
-        {
           name: 'datamanage-baseinfo',
           path: '/datamanage/baseinfo',
           component: './datamanage/baseinfo',
           access: 'adminRouteFilter',
         },
-        {
-          name: 'datamanage-rankinfo',
-          path: '/datamanage/rankinfo',
-          component: './datamanage/rankinfo',
-          access: 'adminRouteFilter',
-        },
+       
       ],
     },
     // {

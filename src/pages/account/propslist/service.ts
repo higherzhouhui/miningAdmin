@@ -21,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/propsRecord/list', {
+  }>('/dogAdmin/propsRecord/list', {
     method: 'GET',
     params: {
       ...params,
@@ -41,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/forkAdmin/propsRecord/update', {
+  return request<Record<string, any>>('/dogAdmin/propsRecord/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -50,7 +50,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/propsRecord/remove`, {
+  return request<Record<string, any>>(`/dogAdmin/propsRecord/remove`, {
     data,
     method: 'POST',
     ...(options || {}),

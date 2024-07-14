@@ -21,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/forkAdmin/pet/list', {
+  }>('/dogAdmin/pet/list', {
     method: 'GET',
     params: {
       ...params,
@@ -41,7 +41,7 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/forkAdmin/pet/update', {
+  return request<Record<string, any>>('/dogAdmin/pet/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -50,7 +50,7 @@ export async function addRule(data: { [key: string]: any }, options?: { [key: st
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/forkAdmin/pet/remove`, {
+  return request<Record<string, any>>(`/dogAdmin/pet/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
