@@ -95,11 +95,11 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '操作者ID',
+      title: '发起者ID',
       dataIndex: 'from_user',
     },
     {
-      title: '用户名',
+      title: '发起者',
       dataIndex: 'from_username',
     },
     {
@@ -112,6 +112,14 @@ const TableList: React.FC = () => {
       render: (dom, e: any) => {
         return <Button danger={e.score < 0} type='primary'>{e.score}</Button>
       }
+    },
+    {
+      title: '被操作者',
+      dataIndex: 'to_user',
+    },
+    {
+      title: '被操作者用户名',
+      dataIndex: 'to_username',
     },
     {
       title: '创建时间',
