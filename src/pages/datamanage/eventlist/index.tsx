@@ -105,21 +105,33 @@ const TableList: React.FC = () => {
     {
       title: '类型',
       dataIndex: 'type',
+      hideInSearch: true,
     },
     {
       title: '积分',
       dataIndex: 'score',
+      hideInSearch: true,
       render: (dom, e: any) => {
         return <Button danger={e.score < 0} type='primary'>{e.score}</Button>
       }
     },
     {
-      title: '被操作者',
+      title: '被操作者ID',
       dataIndex: 'to_user',
     },
     {
-      title: '被操作者用户名',
+      title: '被操作者',
       dataIndex: 'to_username',
+      width: '130'
+    },
+    {
+      title: '描述',
+      dataIndex: 'desc',
+      hideInSearch: true,
+      width: '180',
+      render: (dom, e: any) => {
+        return <span>{e.desc || `${e.to_username} invite ${e.from_username} register`}</span>
+      }
     },
     {
       title: '创建时间',
@@ -205,7 +217,7 @@ const TableList: React.FC = () => {
           pageSize: 20,
         }}
         scroll={{
-          x: 1000,
+          x: 1200,
           y: 500,
         }}
         // toolBarRender={() => [
