@@ -103,6 +103,21 @@ const TableList: React.FC = () => {
       dataIndex: 'from_username',
     },
     {
+      title: '真实记录',
+      width: 80,
+      dataIndex: 'is_really',
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
+    },
+    {
       title: '类型',
       dataIndex: 'type',
       hideInSearch: true,

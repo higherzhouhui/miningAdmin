@@ -19,12 +19,12 @@ import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
 import { TableOutlined } from '@ant-design/icons';
-import moment from 'moment';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
   const [currentRow, setCurrentRow] = useState<any>();
   const [total, setTotal] = useState(0);
+  const [total_really, setTotal_really] = useState(0)
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
@@ -122,6 +122,21 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '真实用户',
+      width: 100,
+      dataIndex: 'is_really',
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
+    },
+    {
       title: '账号奖励',
       dataIndex: 'account_age_score',
       width: 100,
@@ -203,7 +218,7 @@ const TableList: React.FC = () => {
           修改
         </a>,
         <Popconfirm
-          title="确认删除该会员?"
+          title="确认删除该用户?"
           onConfirm={async () => {
             handleRemove(record.id);
           }}
@@ -308,12 +323,12 @@ const TableList: React.FC = () => {
         rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
-        headerTitle={`总会员：${total}`}
+        headerTitle={`真实用户:${total_really}；虚拟用户：${total - total_really}；总用户：${total}`}
         toolBarRender={() => [
           <Button
             type="primary"
             key="primary"
-            onClick={() => export2Excel('accountListIndex', '会员列表')}
+            onClick={() => export2Excel('accountListIndex', '用户列表')}
           >
             <TableOutlined />
             导出Excel
@@ -346,6 +361,7 @@ const TableList: React.FC = () => {
           let data: any = [];
           data = res?.data?.rows;
           setTotal(res?.data?.total);
+          setTotal_really(res?.data?.total_really)
           return {
             data: data,
             success: true,
