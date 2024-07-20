@@ -11,6 +11,8 @@ const TableList: React.FC = () => {
     { title: '电报会员额外奖励', key: 'huiYuan_add', value: '', type: 'number' },
     { title: '邀请单个用户奖励', key: 'invite_add', vlaue: '', type: 'number'},
     { title: '每邀请三个下级奖励倍数（基于单个邀请奖励）', key: 'every_three_ratio', vlaue: '', type: 'number' },
+    { title: '游戏消耗积分', key: 'play_game', vlaue: '', type: 'number'},
+    { title: '关卡奖励', key: 'one_found_game', vlaue: '', type: 'number'},
     { title: 'id', key: 'id', hide: true, value: '' },
   ]);
   const [loading, setLoading] = useState(false);

@@ -161,6 +161,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '游戏得分',
+      dataIndex: 'game_score',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '推荐人ID',
       dataIndex: 'startParam',
       width: 100,
@@ -306,7 +312,7 @@ const TableList: React.FC = () => {
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
-    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1
+    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1
     setCurrentRow(newRow);
   };
 
@@ -380,6 +386,12 @@ const TableList: React.FC = () => {
         <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
+              <Form.Item label="昵称">
+                <Input
+                  value={currentRow?.username}
+                  onChange={(e) => handleChange(e.target.value, 'username')}
+                />
+              </Form.Item>
               <Form.Item label="积分">
                 <Input
                   value={currentRow?.score}
@@ -390,20 +402,31 @@ const TableList: React.FC = () => {
               <Form.Item label="账号奖励">
                 <Input
                   value={currentRow?.account_age_score}
+                  type='number'
                   onChange={(e) => handleChange(e.target.value, 'account_age_score')}
                 />
               </Form.Item>
               <Form.Item label="会员奖励">
                 <Input
                   value={currentRow?.telegram_premium}
+                  type='number'
                   onChange={(e) => handleChange(e.target.value, 'telegram_premium')}
                 />
               </Form.Item>
               <Form.Item label="邀请奖励">
                 <Input
                   value={currentRow?.invite_friends_score}
+                  type='number'
                   onChange={(e) => handleChange(e.target.value, 'invite_friends_score')}
-                  placeholder="请输入上级推荐人"
+                  placeholder="请输入邀请奖励"
+                />
+              </Form.Item>
+              <Form.Item label="游戏得分">
+                <Input
+                  value={currentRow?.game_score}
+                  onChange={(e) => handleChange(e.target.value, 'game_score')}
+                  type='number'
+                  placeholder="请输入游戏得分"
                 />
               </Form.Item>
             </>

@@ -97,10 +97,12 @@ const TableList: React.FC = () => {
     {
       title: '发起者ID',
       dataIndex: 'from_user',
+      width: 100,
     },
     {
       title: '发起者',
       dataIndex: 'from_username',
+      width: 100,
     },
     {
       title: '真实记录',
@@ -120,12 +122,13 @@ const TableList: React.FC = () => {
     {
       title: '类型',
       dataIndex: 'type',
-      hideInSearch: true,
+      width: 100,
     },
     {
       title: '积分',
       dataIndex: 'score',
       hideInSearch: true,
+      width: 100,
       render: (dom, e: any) => {
         return <Button danger={e.score < 0} type='primary'>{e.score}</Button>
       }
@@ -133,17 +136,17 @@ const TableList: React.FC = () => {
     {
       title: '被操作者ID',
       dataIndex: 'to_user',
+      width: 100,
     },
     {
       title: '被操作者',
       dataIndex: 'to_username',
-      width: '130'
+      width: 100
     },
     {
       title: '描述',
       dataIndex: 'desc',
       hideInSearch: true,
-      width: '180',
       render: (dom, e: any) => {
         return <span>{e.desc || `${e.to_username} invite ${e.from_username} register`}</span>
       }
@@ -152,11 +155,13 @@ const TableList: React.FC = () => {
       title: '创建时间',
       dataIndex: 'createdAt',
       hideInSearch: true,
+      width: 150,
     },
     {
       title: '更新时间',
       dataIndex: 'updatedAt',
       hideInSearch: true,
+      width: 150,
     },
     {
       title: '操作',
@@ -232,7 +237,7 @@ const TableList: React.FC = () => {
           pageSize: 20,
         }}
         scroll={{
-          x: 1200,
+          x: 1400,
           y: 500,
         }}
         // toolBarRender={() => [
