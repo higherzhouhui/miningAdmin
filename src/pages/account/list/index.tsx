@@ -19,6 +19,7 @@ import style from './style.less';
 import { history } from 'umi';
 import * as XLSX from 'xlsx';
 import { TableOutlined } from '@ant-design/icons';
+import moment from 'moment';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -163,6 +164,32 @@ const TableList: React.FC = () => {
     {
       title: '游戏得分',
       dataIndex: 'game_score',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '今日签到',
+      dataIndex: 'is_check',
+      width: 100,
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
+    },
+    {
+      title: '钱包地址',
+      dataIndex: 'wallet',
+      width: 120,
+    },
+    {
+      title: '签到得分',
+      dataIndex: 'check_score',
       width: 100,
       hideInSearch: true,
     },
@@ -312,7 +339,7 @@ const TableList: React.FC = () => {
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
-    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1
+    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1 + newRow.check_score * 1
     setCurrentRow(newRow);
   };
 
@@ -352,7 +379,7 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1500,
+          x: 1900,
           y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
@@ -366,6 +393,9 @@ const TableList: React.FC = () => {
           // });
           let data: any = [];
           data = res?.data?.rows;
+          data.map((item: any) => {
+            item.is_check = judgeIsCheckIn(item.check_date)
+          })
           setTotal(res?.data?.total);
           setTotal_really(res?.data?.total_really)
           return {
@@ -427,6 +457,14 @@ const TableList: React.FC = () => {
                   onChange={(e) => handleChange(e.target.value, 'game_score')}
                   type='number'
                   placeholder="请输入游戏得分"
+                />
+              </Form.Item>
+              <Form.Item label="签到得分">
+                <Input
+                  value={currentRow?.check_score}
+                  onChange={(e) => handleChange(e.target.value, 'check_score')}
+                  type='number'
+                  placeholder="请输入签到得分"
                 />
               </Form.Item>
             </>
@@ -511,5 +549,27 @@ const TableList: React.FC = () => {
     </PageContainer>
   );
 };
+
+
+function judgeIsCheckIn(time: any) {
+  let flag = false
+  try {
+    if (time) {
+      const currentDate = new Date()
+      const year = currentDate.getFullYear()
+      const month = currentDate.getMonth() + 1
+      const day = currentDate.getDate()
+      const currentArr = [year, month, day]
+      const timeymd = moment(time).format('YYYY-MM-DD').split('-')
+      flag = timeymd.every((item, index) => {
+        return parseInt(item) == currentArr[index]
+      })
+    }
+  } catch (error) {
+    console.error(error)
+    flag = false
+  }
+  return flag
+}
 
 export default TableList;
