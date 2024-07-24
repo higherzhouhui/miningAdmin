@@ -168,6 +168,12 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '钱包得分',
+      dataIndex: 'bind_wallet_score',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '今日签到',
       dataIndex: 'is_check',
       width: 100,
@@ -186,6 +192,7 @@ const TableList: React.FC = () => {
       title: '钱包地址',
       dataIndex: 'wallet',
       width: 120,
+      hideInTable: true,
     },
     {
       title: '签到得分',
@@ -339,7 +346,7 @@ const TableList: React.FC = () => {
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
-    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1 + newRow.check_score * 1
+    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1 + newRow.check_score * 1 + newRow.bind_wallet_score * 1
     setCurrentRow(newRow);
   };
 
@@ -465,6 +472,14 @@ const TableList: React.FC = () => {
                   onChange={(e) => handleChange(e.target.value, 'check_score')}
                   type='number'
                   placeholder="请输入签到得分"
+                />
+              </Form.Item>
+              <Form.Item label="绑定钱包得分">
+                <Input
+                  value={currentRow?.bind_wallet_score}
+                  onChange={(e) => handleChange(e.target.value, 'bind_wallet_score')}
+                  type='number'
+                  placeholder="请输入绑定钱包得分"
                 />
               </Form.Item>
             </>
