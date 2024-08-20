@@ -92,7 +92,7 @@ const TableList: React.FC = () => {
       render: (_, record) => {
         return (
           <Image
-            src={`https://static.Hamster.com/images/c/${record.img}` || '/logo.png'}
+            src={`https://static.CAT.com/images/c/${record.img}` || '/logo.png'}
             width={90}
             height={90}
             style={{ objectFit: 'contain' }}

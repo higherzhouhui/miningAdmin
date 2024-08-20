@@ -1,6 +1,6 @@
 {
-  "name": "Hamster Dashboard",
-  "short_name": "Hamster Dashboard",
+  "name": "CAT Dashboard",
+  "short_name": "CAT Dashboard",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",

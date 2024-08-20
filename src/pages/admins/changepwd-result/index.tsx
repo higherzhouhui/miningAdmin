@@ -20,7 +20,7 @@ const actions = (
 export type LocationState = Record<string, unknown>;
 
 const ChangePwdResult: React.FC<RouteChildrenProps> = ({ location }) => {
-  const info = location.state ? (location.state as LocationState).username : 'Hamster';
+  const info = location.state ? (location.state as LocationState).username : 'CAT';
   return (
     <PageContainer>
       <Card bordered={false}>
