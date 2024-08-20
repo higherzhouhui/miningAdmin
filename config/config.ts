@@ -134,7 +134,12 @@ export default defineConfig({
           component: './datamanage/baseinfo',
           access: 'adminRouteFilter',
         },
-       
+        {
+          name: 'datamanage-explist',
+          path: '/datamanage/explist',
+          component: './datamanage/explist',
+          access: 'adminRouteFilter',
+        },
       ],
     },
     // {

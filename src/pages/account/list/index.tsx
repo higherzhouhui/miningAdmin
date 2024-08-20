@@ -123,9 +123,17 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '游戏次数',
+      dataIndex: 'ticket',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '真实用户',
       width: 100,
       dataIndex: 'is_really',
+      hideInTable: true,
+      hideInSearch: true,
       valueEnum: {
         true: {
           status: 'success',
@@ -138,22 +146,27 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: '账号奖励',
-      dataIndex: 'account_age_score',
+      title: '会员',
       width: 100,
+      dataIndex: 'isPremium',
       hideInSearch: true,
-    },
-    {
-      title: '时长(年)',
-      dataIndex: 'year',
-      width: 100,
-      hideInSearch: true,
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
     },
     {
       title: '会员奖励',
       dataIndex: 'telegram_premium',
       width: 100,
       hideInSearch: true,
+      hideInTable: true,
     },
     {
       title: '邀请奖励',
@@ -168,13 +181,19 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: 'farming得分',
+      dataIndex: 'farm_score',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
       title: '钱包得分',
       dataIndex: 'bind_wallet_score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '今日签到',
+      title: '签到时间',
       dataIndex: 'is_check',
       width: 100,
       valueEnum: {
@@ -227,6 +246,20 @@ const TableList: React.FC = () => {
     //     );
     //   },
     // },
+    {
+      title: '下级会员游戏得分',
+      dataIndex: 'invite_friends_game_score',
+      width: 100,
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
+      title: '下级会员farming得分',
+      dataIndex: 'invite_friends_farm_score',
+      width: 100,
+      hideInTable: true,
+      hideInSearch: true,
+    },
     {
       title: '语言',
       dataIndex: 'languageCode',
@@ -297,32 +330,6 @@ const TableList: React.FC = () => {
       });
       return;
     }
-    if (operationType === 'addNewPropsProject') {
-      const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
-      const propsInfo: any = propsList.filter((item: any) => {
-        return item.id == currentRow.props_id;
-      });
-      const data = {
-        uid: currentRow.id,
-        props_amount: currentRow.amount,
-        props_id: propsInfo[0].id,
-        props_name: propsInfo[0].name,
-        props_tod: propsInfo[0].tod,
-        props_type: propsInfo[0].type,
-        order_id: new Date().getTime() + Math.random() * 100000000,
-        source: 'buy',
-        props_price: propsInfo[0].usdt,
-      };
-      addNewProPS(data).then((res: any) => {
-        hide();
-        if (res.code === 0) {
-          handleModalVisible(false);
-          message.success(`添加成功`);
-          actionRef.current?.reloadAndRest?.();
-        }
-      });
-      return;
-    }
     const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
     try {
       const res = await addRule(currentRow);
@@ -346,7 +353,6 @@ const TableList: React.FC = () => {
   const handleChange = (value: any, attar: string) => {
     const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
-    newRow.score = newRow.account_age_score * 1 + newRow.invite_friends_score * 1 + newRow.telegram_premium * 1 + newRow.game_score * 1 + newRow.check_score * 1 + newRow.bind_wallet_score * 1
     setCurrentRow(newRow);
   };
 
@@ -433,53 +439,18 @@ const TableList: React.FC = () => {
                 <Input
                   value={currentRow?.score}
                   onChange={(e) => handleChange(e.target.value, 'score')}
-                  readOnly
                 />
               </Form.Item>
-              <Form.Item label="账号奖励">
+              <Form.Item label="游戏次数">
                 <Input
-                  value={currentRow?.account_age_score}
-                  type='number'
-                  onChange={(e) => handleChange(e.target.value, 'account_age_score')}
+                  value={currentRow?.ticket}
+                  onChange={(e) => handleChange(e.target.value, 'ticket')}
                 />
               </Form.Item>
-              <Form.Item label="会员奖励">
+              <Form.Item label="上级用户ID">
                 <Input
-                  value={currentRow?.telegram_premium}
-                  type='number'
-                  onChange={(e) => handleChange(e.target.value, 'telegram_premium')}
-                />
-              </Form.Item>
-              <Form.Item label="邀请奖励">
-                <Input
-                  value={currentRow?.invite_friends_score}
-                  type='number'
-                  onChange={(e) => handleChange(e.target.value, 'invite_friends_score')}
-                  placeholder="请输入邀请奖励"
-                />
-              </Form.Item>
-              <Form.Item label="游戏得分">
-                <Input
-                  value={currentRow?.game_score}
-                  onChange={(e) => handleChange(e.target.value, 'game_score')}
-                  type='number'
-                  placeholder="请输入游戏得分"
-                />
-              </Form.Item>
-              <Form.Item label="签到得分">
-                <Input
-                  value={currentRow?.check_score}
-                  onChange={(e) => handleChange(e.target.value, 'check_score')}
-                  type='number'
-                  placeholder="请输入签到得分"
-                />
-              </Form.Item>
-              <Form.Item label="绑定钱包得分">
-                <Input
-                  value={currentRow?.bind_wallet_score}
-                  onChange={(e) => handleChange(e.target.value, 'bind_wallet_score')}
-                  type='number'
-                  placeholder="请输入绑定钱包得分"
+                  value={currentRow?.startParam}
+                  onChange={(e) => handleChange(e.target.value, 'startParam')}
                 />
               </Form.Item>
             </>
@@ -570,15 +541,9 @@ function judgeIsCheckIn(time: any) {
   let flag = false
   try {
     if (time) {
-      const currentDate = new Date()
-      const year = currentDate.getFullYear()
-      const month = currentDate.getMonth() + 1
-      const day = currentDate.getDate()
-      const currentArr = [year, month, day]
-      const timeymd = moment(time).format('YYYY-MM-DD').split('-')
-      flag = timeymd.every((item, index) => {
-        return parseInt(item) == currentArr[index]
-      })
+      if (time == moment().utc().format('MM-DD')) {
+        return true
+      }
     }
   } catch (error) {
     console.error(error)

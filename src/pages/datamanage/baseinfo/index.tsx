@@ -6,13 +6,13 @@ import styles from './style.less';
 
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
-    { title: '账号注册不足一年奖励', key: 'not_one_year', value: '', type: 'number'},
-    { title: '账号每年递增奖励', key: 'one_year_add', value: '', type: 'number'},
-    { title: '电报会员额外奖励', key: 'huiYuan_add', value: '', type: 'number' },
-    { title: '邀请单个用户奖励', key: 'invite_add', vlaue: '', type: 'number'},
-    { title: '每邀请三个下级奖励倍数（基于单个邀请奖励）', key: 'every_three_ratio', vlaue: '', type: 'number' },
-    { title: '游戏消耗积分', key: 'play_game', vlaue: '', type: 'number'},
-    { title: '关卡奖励', key: 'one_found_game', vlaue: '', type: 'number'},
+    { title: '邀请普通用户奖励积分', key: 'invite_normalAccount_score', value: '', type: 'number'},
+    { title: '邀请普通用户奖励游戏次数', key: 'invite_normalAccount_ticket', value: '', type: 'number'},
+    { title: '邀请会员奖励积分', key: 'invite_premiumAccount_score', value: '', type: 'number' },
+    { title: '邀请会员奖励游戏次数', key: 'invite_premiumAccount_ticket', vlaue: '', type: 'number'},
+    { title: '每日游戏次数', key: 'ticket', vlaue: '', type: 'number' },
+    { title: '下级返利', key: 'invite_friends_ratio', vlaue: '', type: 'number', after: '%'},
+    { title: '游戏时长（秒）', key: 'game_time', vlaue: '', type: 'number'},
     { title: 'id', key: 'id', hide: true, value: '' },
   ]);
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ const TableList: React.FC = () => {
         const newBase = baseInfo;
         newBase.forEach((item) => {
           if (item.after == '%') {
-            item.value = String(data[item.key] * 100);
+            item.value = String(data[item.key]);
           } else if (item.after == 'H') {
             item.value = String(data[item.key] / 60 / 60);
           } else {
@@ -44,7 +44,7 @@ const TableList: React.FC = () => {
     const data: any = {};
     baseInfo.forEach((item) => {
       if (item.after == '%') {
-        data[item.key] = Number(item.value) / 100;
+        data[item.key] = Number(item.value);
       } else if (item.after == 'H') {
         data[item.key] = Number(item.value) * 3600;
       } else if (item.key === attar) {

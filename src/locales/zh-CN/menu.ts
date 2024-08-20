@@ -26,7 +26,7 @@ export default {
   'menu.datamanage.datamanage-noticelist': '公告',
   'menu.datamanage.datamanage-eventlist': '操作记录',
   'menu.datamanage.datamanage-prizelist': '奖品列表',
-  'menu.datamanage.datamanage-explist': '等级列表',
+  'menu.datamanage.datamanage-explist': '签到奖励列表',
   'menu.datamanage.datamanage-projectlist': '道具',
   'menu.datamanage.datamanage-shoplist': '店铺/加盟商',
   'menu.datamanage.datamanage-shopdetail': '商铺详情',

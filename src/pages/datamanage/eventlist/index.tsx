@@ -130,7 +130,16 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       width: 100,
       render: (dom, e: any) => {
-        return <Button danger={e.score < 0} type='primary'>{e.score}</Button>
+        return <Button danger={e.score < 0} type='primary'>{e.score || 0}</Button>
+      }
+    },
+    {
+      title: '游戏次数',
+      dataIndex: 'ticket',
+      hideInSearch: true,
+      width: 100,
+      render: (dom, e: any) => {
+        return <Button danger={e.ticket < 0} type='primary'>{e.ticket || 0}</Button>
       }
     },
     {
@@ -326,6 +335,14 @@ const TableList: React.FC = () => {
             <Input
               value={currentRow?.score}
               onChange={(e) => handleChangeCurrent(e, 'score')}
+              placeholder="请输入积分"
+              readOnly
+            />
+          </Form.Item>
+          <Form.Item label="游戏次数">
+            <Input
+              value={currentRow?.ticket}
+              onChange={(e) => handleChangeCurrent(e, 'ticket')}
               placeholder="请输入积分"
               readOnly
             />

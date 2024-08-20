@@ -61,20 +61,20 @@ const TableList: React.FC = () => {
     },
 
     {
-      title: '经验值',
-      dataIndex: 'exp',
+      title: '天数',
+      dataIndex: 'day',
       width: 200,
       hideInSearch: true,
     },
     {
-      title: '等级',
-      dataIndex: 'lv',
+      title: '奖励积分',
+      dataIndex: 'score',
       width: 200,
       hideInSearch: true,
     },
     {
-      title: '每小时掉落PTS',
-      dataIndex: 'pts',
+      title: '奖励游戏次数',
+      dataIndex: 'ticket',
       width: 200,
       hideInSearch: true,
     },
@@ -239,25 +239,25 @@ const TableList: React.FC = () => {
         onCancel={() => handleModalVisible(false)}
       >
         <ProForm formRef={formRef} submitter={false} style={{ padding: '0 20px' }}>
-          <Form.Item label="经验值">
+          <Form.Item label="天数">
             <Input
-              value={currentRow?.exp}
-              placeholder="请输入经验值"
-              onChange={(e) => handleChange(e.target.value, 'exp')}
+              value={currentRow?.day}
+              placeholder="请输入天数"
+              onChange={(e) => handleChange(e.target.value, 'day')}
             />
           </Form.Item>
-          <Form.Item label="等级">
+          <Form.Item label="积分">
             <Input
-              value={currentRow?.lv}
-              placeholder="请输入等级"
-              onChange={(e) => handleChange(e.target.value, 'lv')}
+              value={currentRow?.score}
+              placeholder="请输入积分"
+              onChange={(e) => handleChange(e.target.value, 'score')}
             />
           </Form.Item>
-          <Form.Item label="每小时掉落PTS">
+          <Form.Item label="游戏次数">
             <Input
-              value={currentRow?.pts}
-              placeholder="请输入每小时掉落PTS"
-              onChange={(e) => handleChange(e.target.value, 'pts')}
+              value={currentRow?.ticket}
+              placeholder="请输入游戏次数"
+              onChange={(e) => handleChange(e.target.value, 'ticket')}
             />
           </Form.Item>
         </ProForm>
