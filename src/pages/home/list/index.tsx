@@ -134,7 +134,7 @@ const TableList: React.FC = () => {
           try {
             const allObj: any = {
               xAxis: [],
-              legendData: ['日签到积分', '日Farm得分', '日游戏得分'],
+              legendData: ['日Farmimg得分', '日游戏得分', '日总积分'],
               yAxis: [[], [], []],
               user: [],
             };
@@ -143,19 +143,18 @@ const TableList: React.FC = () => {
               allObj.xAxis.push(item.date.replace('2024-', ''))
               allObj.user.push(item.num)
             });
-
-            (data?.checkList || []).map((item: any) => {
-              item.num = parseInt(item.num);
-              allObj.yAxis[0].push(item.num)
-
-            });
             (data?.farmList || []).map((item: any) => {
               item.num = parseInt(item.num);
-              allObj.yAxis[1].push(item.num)
+              allObj.yAxis[0].push(item.num)
             });
             (data?.gameList || []).map((item: any) => {
               item.num = parseInt(item.num);
+              allObj.yAxis[1].push(item.num)
+            });
+            (data?.scoreList || []).map((item: any) => {
+              item.num = parseInt(item.num);
               allObj.yAxis[2].push(item.num)
+
             });
             const option2 = {
               tooltip: {
