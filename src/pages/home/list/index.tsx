@@ -12,12 +12,7 @@ const TableList: React.FC = () => {
   const [day, setDay] = useState(7);
   const [dataSource, setDataSource] = useState<TableListItem | any>({});
   const [loading, setLoading] = useState(1);
-  const [tongji, setTongji] = useState<ITongji[]>([
-    { title: '总用户', num: 0 },
-    { title: '今日注册用户', num: 0 },
-    { title: '总积分', num: 0 },
-
-  ]);
+  const [tongji, setTongji] = useState<ITongji[]>([]);
   const [options, setOptions] = useState({})
   const [useroptions, setUserOptions] = useState({})
   const itemRef = useRef<any>();
@@ -123,35 +118,42 @@ const TableList: React.FC = () => {
         if (res.code === 0) {
           const data = res.data;
           const arr = [
-            { title: '总用户', num: data?.totalPeople || 0 },
-            { title: '今日注册用户', num: data?.todayPeople },
-            { title: '总积分', num: data?.totalScore },
+            { title: '用户总数', num: data?.totalUser  },
+            { title: 'TG会员总数', num: data?.totalHuiYuan  },
+            { title: 'Farming奖励总积分', num: data?.totalFarmScore  },
+            { title: '游戏奖励总积分', num: data?.totalGameScore  },
+            { title: '总积分', num: data?.totalScore  },
+            { title: '今日注册用户', num: data?.todayRegister || 0  },
+            { title: '今日签到用户', num: data?.todayCheckIn || 0  },
+            { title: '今日新增总积分', num: data?.todayScore || 0 },
+            { title: '今日游戏总得分', num: data?.todayGameScore || 0 },
+            
           ];
           setTongji(arr);
 
           try {
             const allObj: any = {
               xAxis: [],
-              legendData: ['日销售量', '日销售额', '日出款额'],
+              legendData: ['日签到积分', '日Farm得分', '日游戏得分'],
               yAxis: [[], [], []],
               user: [],
             };
             (data?.userList || []).map((item: any) => {
               item.num = parseInt(item.num);
-              allObj.xAxis.push(item.date.replace('2023-', ''))
+              allObj.xAxis.push(item.date.replace('2024-', ''))
               allObj.user.push(item.num)
             });
 
-            (data?.buyProjectNumList || []).map((item: any) => {
+            (data?.checkList || []).map((item: any) => {
               item.num = parseInt(item.num);
               allObj.yAxis[0].push(item.num)
 
             });
-            (data?.buyProjectPriceList || []).map((item: any) => {
+            (data?.farmList || []).map((item: any) => {
               item.num = parseInt(item.num);
               allObj.yAxis[1].push(item.num)
             });
-            (data?.withdrawPriceList || []).map((item: any) => {
+            (data?.gameList || []).map((item: any) => {
               item.num = parseInt(item.num);
               allObj.yAxis[2].push(item.num)
             });
@@ -300,7 +302,7 @@ const TableList: React.FC = () => {
           );
         })}
       </div>
-      {/* <Radio.Group
+      <Radio.Group
         defaultValue={7}
         onChange={(e) => handleChangeRadio(e)}
         buttonStyle="solid"
@@ -317,7 +319,7 @@ const TableList: React.FC = () => {
       </div>
       <div className={style.moneyChart}>
         <MyChartBox id="homeMoneyChart" loading={loading} options={options} />
-      </div> */}
+      </div>
 
       {/* <div className={style.main}>
         <div className={style.item} ref={itemRef}>
