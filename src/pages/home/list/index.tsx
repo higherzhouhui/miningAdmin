@@ -125,8 +125,8 @@ const TableList: React.FC = () => {
             { title: '总积分', num: data?.totalScore  },
             { title: '今日注册用户', num: data?.todayRegister || 0  },
             { title: '今日签到用户', num: data?.todayCheckIn || 0  },
-            { title: '今日新增总积分', num: data?.todayScore || 0 },
             { title: '今日游戏总得分', num: data?.todayGameScore || 0 },
+            { title: '今日新增总积分', num: data?.todayScore || 0 },
             
           ];
           setTongji(arr);
