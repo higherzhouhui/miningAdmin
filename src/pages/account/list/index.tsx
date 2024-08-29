@@ -181,19 +181,13 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: 'farming得分',
-      dataIndex: 'farm_score',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
       title: '钱包得分',
       dataIndex: 'bind_wallet_score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '签到时间',
+      title: '是否签到',
       dataIndex: 'is_check',
       width: 100,
       valueEnum: {
@@ -249,13 +243,6 @@ const TableList: React.FC = () => {
     {
       title: '下级会员游戏得分',
       dataIndex: 'invite_friends_game_score',
-      width: 100,
-      hideInTable: true,
-      hideInSearch: true,
-    },
-    {
-      title: '下级会员farming得分',
-      dataIndex: 'invite_friends_farm_score',
       width: 100,
       hideInTable: true,
       hideInSearch: true,

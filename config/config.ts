@@ -140,12 +140,12 @@ export default defineConfig({
           component: './datamanage/rewardlist',
           access: 'adminRouteFilter',
         },
-        {
-          name: 'datamanage-tasklist',
-          path: '/datamanage/tasklist',
-          component: './datamanage/tasklist',
-          access: 'adminRouteFilter',
-        },
+        // {
+        //   name: 'datamanage-tasklist',
+        //   path: '/datamanage/tasklist',
+        //   component: './datamanage/tasklist',
+        //   access: 'adminRouteFilter',
+        // },
       ],
     },
     // {

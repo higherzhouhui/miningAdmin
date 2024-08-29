@@ -120,7 +120,6 @@ const TableList: React.FC = () => {
           const arr = [
             { title: '用户总数', num: data?.totalUser  },
             { title: 'TG会员总数', num: data?.totalHuiYuan  },
-            { title: 'Farming奖励总积分', num: data?.totalFarmScore  },
             { title: '游戏奖励总积分', num: data?.totalGameScore  },
             { title: '总积分', num: data?.totalScore  },
             { title: '今日注册用户', num: data?.todayRegister || 0  },
@@ -134,7 +133,7 @@ const TableList: React.FC = () => {
           try {
             const allObj: any = {
               xAxis: [],
-              legendData: ['日Farmimg得分', '日游戏得分', '日总积分'],
+              legendData: ['日游戏得分', '日总积分'],
               yAxis: [[], [], []],
               user: [],
             };
@@ -143,17 +142,14 @@ const TableList: React.FC = () => {
               allObj.xAxis.push(item.date.replace('2024-', ''))
               allObj.user.push(item.num)
             });
-            (data?.farmList || []).map((item: any) => {
+           
+            (data?.gameList || []).map((item: any) => {
               item.num = parseInt(item.num);
               allObj.yAxis[0].push(item.num)
             });
-            (data?.gameList || []).map((item: any) => {
-              item.num = parseInt(item.num);
-              allObj.yAxis[1].push(item.num)
-            });
             (data?.scoreList || []).map((item: any) => {
               item.num = parseInt(item.num);
-              allObj.yAxis[2].push(item.num)
+              allObj.yAxis[1].push(item.num)
 
             });
             const option2 = {
