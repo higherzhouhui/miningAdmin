@@ -132,8 +132,6 @@ const TableList: React.FC = () => {
       title: '真实用户',
       width: 100,
       dataIndex: 'is_really',
-      hideInTable: true,
-      hideInSearch: true,
       valueEnum: {
         true: {
           status: 'success',
