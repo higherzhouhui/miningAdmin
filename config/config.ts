@@ -199,6 +199,12 @@ export default defineConfig({
           component: './financial/consumption',
           access: 'adminRouteFilter',
         },
+        {
+          name: 'product',
+          path: '/financial/product',
+          component: './financial/product',
+          access: 'adminRouteFilter',
+        },
         // {
         //   name: 'withdrawType',
         //   path: '/financial/withdrawType',

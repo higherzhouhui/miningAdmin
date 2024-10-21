@@ -50,6 +50,7 @@ export default {
   'menu.financial.withdrawList': '提现审核',
   'menu.financial.transaction': '挖矿记录',
   'menu.financial.order': '订单',
+  'menu.financial.product': '产品列表',
   'menu.financial.withdrawType': '钱包类型',
   'menu.financial.bankAccount': '收款银行账户',
   'menu.financial.userAccountList': '交易记录',
