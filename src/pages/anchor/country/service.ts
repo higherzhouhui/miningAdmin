@@ -11,6 +11,8 @@ export async function rule(
     pageNum?: number;
     /** 页面的容量 */
     pageSize?: number;
+    id?: any;
+    uid?: any;
   },
   options?: { [key: string]: any },
 ) {
@@ -19,7 +21,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/order/getOrderList', {
+  }>('/dogAdmin/country/list', {
     method: 'GET',
     params: {
       ...params,
@@ -27,46 +29,20 @@ export async function rule(
     ...(options || {}),
   });
 }
-
-/** 获取规则列表 GET /api/rule */
-export async function getOrderCount(
-  params: {
-    // query
-    /** 当前的页码 */
-    pageNum?: number;
-    /** 页面的容量 */
-    pageSize?: number;
-  },
-  options?: { [key: string]: any },
-) {
-  return request<{
-    data: TableListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
-  }>('/order/getOrderList', {
-    method: 'GET',
-    params: {
-      ...params,
-    },
-    ...(options || {}),
-  });
-}
-
 
 /** 新建规则 PUT /api/rule */
 export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/admin/order/auditOrder', {
+  return request<TableListItem>('/api/rule', {
     data,
-    method: 'POST',
+    method: 'PUT',
     ...(options || {}),
   });
 }
 
 /** 新建规则 POST /api/rule */
-export async function sendGoods(orderId: number, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/order/sendOut/${orderId}`, {
-    data: {},
+export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
+  return request<Record<string, any>>('/dogAdmin/country/update', {
+    data,
     method: 'POST',
     ...(options || {}),
   });
@@ -74,17 +50,29 @@ export async function sendGoods(orderId: number, options?: { [key: string]: any 
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/order/remove/${data.id}`, {
+  return request<Record<string, any>>(`/dogAdmin/country/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
   });
 }
 
-/** 删除规则 DELETE /api/rule */
-export async function getOrderDetail(params: any) {
-  return request<Record<string, any>>(`/order/getOrderDetail`, {
-    params,
+/** 获取规则列表 GET /api/rule */
+export async function getPartnerProject() {
+  return request<any>('/admin/user_level/getProjectList', {
     method: 'GET',
+    params: { pageNum: 1, pageSize: 20 },
+  });
+}
+
+/** 创建订单 PUT /api/rule */
+export async function createOrderRequest(
+  data: { [key: string]: any },
+  options?: { [key: string]: any },
+) {
+  return request<TableListItem>('/admin/order/createOrder', {
+    data,
+    method: 'POST',
+    ...(options || {}),
   });
 }

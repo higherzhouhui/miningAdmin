@@ -6,15 +6,14 @@ import styles from './style.less';
 
 const TableList: React.FC = () => {
   const [baseInfo, setBaseInfo] = useState([
-    { title: '邀请普通用户奖励积分', key: 'invite_normalAccount_score', value: '', type: 'number'},
-    { title: '邀请普通用户奖励游戏次数', key: 'invite_normalAccount_ticket', value: '', type: 'number'},
-    { title: '邀请会员奖励积分', key: 'invite_premiumAccount_score', value: '', type: 'number' },
-    { title: '邀请会员奖励游戏次数', key: 'invite_premiumAccount_ticket', vlaue: '', type: 'number'},
-    { title: '每日游戏次数', key: 'ticket', vlaue: '', type: 'number' },
-    { title: 'TG链接', key: 'tg_link', vlaue: '' },
-    { title: '神秘大奖（当日游戏次数用完后点击猫触发）', key: 'special_reward', vlaue: '', type: 'number' },
+    { title: '机器人链接', key: 'bot_link', value: ''},
+    { title: '小程序链接', key: 'tg_link', value: '' },
+    { title: '官方群组', key: 'channel_url', value: ''},
+    { title: '客服', key: 'help_link', value: '' },
+    { title: '群组ID', key: 'channel_id', value: '' },
+    { title: '邀请普通用奖励Coins', key: 'invite_normal', vlaue: '', type: 'number'},
+    { title: '邀请会员奖励Coins', key: 'invite_hy', vlaue: '', type: 'number'},
     { title: '下级返利', key: 'invite_friends_ratio', vlaue: '', type: 'number', after: '%'},
-    { title: '游戏时长（秒）', key: 'game_time', vlaue: '', type: 'number'},
     { title: 'id', key: 'id', hide: true, value: '' },
   ]);
   const [loading, setLoading] = useState(false);

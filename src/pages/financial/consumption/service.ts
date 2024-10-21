@@ -19,7 +19,7 @@ export async function rule(
     /** 列表的内容总数 */
     total?: number;
     success?: boolean;
-  }>('/turnover/getTurnoverList', {
+  }>('/dogAdmin/consumption/list', {
     method: 'GET',
     params: {
       ...params,
@@ -55,8 +55,8 @@ export async function getOrderCount(
 
 
 /** 新建规则 PUT /api/rule */
-export async function updateRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<TableListItem>('/admin/order/auditOrder', {
+export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
+  return request<TableListItem>('/dogAdmin/consumption/update', {
     data,
     method: 'POST',
     ...(options || {}),
@@ -74,7 +74,7 @@ export async function sendGoods(orderId: number, options?: { [key: string]: any 
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/order/remove/${data.id}`, {
+  return request<Record<string, any>>(`/dogAdmin/consumption/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
@@ -84,14 +84,6 @@ export async function removeRule(data: { id: number }, options?: { [key: string]
 /** 删除规则 DELETE /api/rule */
 export async function getOrderDetail(params: any) {
   return request<Record<string, any>>(`/order/getOrderDetail`, {
-    params,
-    method: 'GET',
-  });
-}
-
-/** 删除规则 DELETE /api/rule */
-export async function exportTable(params: any) {
-  return request<Record<string, any>>(`/turnover/excelTurnover`, {
     params,
     method: 'GET',
   });

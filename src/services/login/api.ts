@@ -16,13 +16,10 @@ request.interceptors.request.use((url, options) => {
     ...options.headers,
     Authorization: `Bearer ${token}`,
   };
+  
   options.timeout = 500000;
-  // 本地访问需要做代理，否则会跨域；线上生成由于ng没有反向代理，就直连接口，而且是同一个域下的
-  const { NODE_ENV } = process.env;
   let baseUrl = '/api';
-  let uploadBaseurl = '/uploadImage';
-  if (url.includes('uploadImage')) {
-    baseUrl = uploadBaseurl;
+  if (url.includes('upload')) {
   }
 
   return {

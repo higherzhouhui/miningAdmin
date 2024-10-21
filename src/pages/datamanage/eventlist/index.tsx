@@ -1,4 +1,3 @@
-import { PlusOutlined } from '@ant-design/icons';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
@@ -104,28 +103,28 @@ const TableList: React.FC = () => {
       dataIndex: 'from_username',
       width: 100,
     },
-    {
-      title: '真实记录',
-      width: 80,
-      dataIndex: 'is_really',
-      valueEnum: {
-        true: {
-          status: 'success',
-          text: '是'
-        },
-        false: {
-          status: 'error',
-          text: '否'
-        }
-      }
-    },
+    // {
+    //   title: '真实记录',
+    //   width: 80,
+    //   dataIndex: 'is_really',
+    //   valueEnum: {
+    //     true: {
+    //       status: 'success',
+    //       text: '是'
+    //     },
+    //     false: {
+    //       status: 'error',
+    //       text: '否'
+    //     }
+    //   }
+    // },
     {
       title: '类型',
       dataIndex: 'type',
       width: 100,
     },
     {
-      title: '积分',
+      title: 'Coins',
       dataIndex: 'score',
       hideInSearch: true,
       width: 100,
@@ -134,12 +133,12 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: '游戏次数',
-      dataIndex: 'ticket',
+      title: 'TON',
+      dataIndex: 'price',
       hideInSearch: true,
       width: 100,
       render: (dom, e: any) => {
-        return <Button danger={e.ticket < 0} type='primary'>{e.ticket || 0}</Button>
+        return <Button danger={e.price < 0} type='primary'>{e.price || 0}</Button>
       }
     },
     {

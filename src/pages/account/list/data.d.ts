@@ -13,6 +13,9 @@ export type TableListItem = {
   totalChildren?: number;
   userId?: string;
   invite_amount: number;
+  subUser: number;
+  username: string;
+  user_id: string;
 };
 
 export interface TableListPagination extends TableListItem {

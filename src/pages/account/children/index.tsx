@@ -1,107 +1,94 @@
-import { FooterToolbar, PageContainer } from '@ant-design/pro-layout';
-import type { ActionType, ProColumns } from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import { Button, Form, Input, message, Modal, Popconfirm, Image } from 'antd';
-import React, { useEffect, useRef, useState } from 'react';
-import type { TableListItem, TableListPagination } from './data';
-import { removeRule, rule, updateRule } from './service';
-import * as XLSX from 'xlsx';
-import { DeleteOutlined, TableOutlined } from '@ant-design/icons';
 import type { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import ProDescriptions from '@ant-design/pro-descriptions';
-import { useLocation } from 'umi';
+import { PageContainer } from '@ant-design/pro-layout';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import { Button, Drawer, Form, Image, Input, Modal, Popconfirm, Select, message } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
+import type { TableListItem, TableListPagination } from './data';
+import {
+  addRule,
+  rule,
+  removeRule,
+  createOrderRequest,
+  getPropsList,
+} from './service';
+import ProForm from '@ant-design/pro-form';
 import style from './style.less';
-import { history } from 'umi';
+import { history, useLocation } from 'umi';
+import * as XLSX from 'xlsx';
+import { SearchOutlined, TableOutlined } from '@ant-design/icons';
 import moment from 'moment';
-
-/**
- * 删除节点
- *
- * @param selectedRows
- */
-
-const handleRemove = async (selectedRows: TableListItem[], actionRef?: any) => {
-  const hide = message.loading('正在删除');
-  if (!selectedRows) return true;
-  selectedRows.map(async (item) => {
-    try {
-      const res = await removeRule({ id: item.id });
-      hide();
-      if (res.code === 200) {
-        message.success('删除成功，即将刷新');
-        if (actionRef) {
-          actionRef.current?.reloadAndRest?.();
-        }
-      }
-      return true;
-    } catch (error) {
-      hide();
-      message.error('删除失败，请重试');
-      return false;
-    }
-  });
-  return false;
-};
-
 const TableList: React.FC = () => {
-  /** 新建窗口的弹窗 */
   /** 分布更新窗口的弹窗 */
-  const actionRef = useRef<ActionType>();
-  const [currentRow, setCurrentRow] = useState<TableListItem | any>();
-  const [selectedRowsState, setSelectedRows] = useState<TableListItem[]>([]);
   const [showDetail, setShowDetail] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const type = 1;
-  const [myParams, setMyparams] = useState<any>({});
-  const localMy = useLocation();
-  const handleUpdateRecord = (record: TableListItem) => {
-    if (loading) {
-      return;
+  const [currentRow, setCurrentRow] = useState<any>();
+  const [total, setTotal] = useState(0);
+  const [totalUse, setTotalUse] = useState(0);
+  const actionRef = useRef<ActionType>();
+  const [createModalVisible, handleModalVisible] = useState<boolean>(false);
+  const formRef = useRef<any>();
+  const [operationType, setOperationType] = useState('baseInfo');
+  const [propsList, setPropsList] = useState([]);
+  const [searchId, setSearchId] = useState('')
+  const [searchName, setSearchName] = useState('')
+  const myLocation = useLocation()
+  const titleMap = {
+    baseInfo: '修改基本资料',
+    resetPassword: '修改密码',
+    addNewProject: '添加宠物',
+    addNewPropsProject: '添加道具',
+  };
+  const handleUpdateRecord = async (record: TableListItem, type: string) => {
+    if (type == 'addNewPropsProject') {
+      const hide = message.loading('加载中');
+      const res = await getPropsList();
+      hide();
+      setPropsList(res.data.rows);
     }
-    const hide = message.loading('正在操作中...', 50);
-    setLoading(true);
-    updateRule({
-      id: record.id,
-      stock: record.modifyStock,
-    })
-      .then((res: any) => {
-        hide();
-        setLoading(false);
-        if (res.code === 200) {
-          setCurrentRow({});
-          setShowDetail(false);
-          message.success('操作完成，即将刷新');
-          actionRef.current?.reloadAndRest?.();
-        }
-      })
-      .catch(() => {
-        hide();
-      });
-    // setCurrentRow(record);
-    // handleModalVisible(true);
-    // formRef?.current?.resetFields();
+    setOperationType(type);
+    setCurrentRow({ ...record, amount: 1 });
+    handleModalVisible(true);
+    formRef?.current?.resetFields();
+  };
+  const routeToChildren = (record: TableListItem) => {
+    // if (!record.subUser) {
+    //   return
+    // }
+    localStorage.setItem('childrenObj', JSON.stringify({ id: record.user_id, name: record.username }));
+    setSearchId(record.user_id)
+    setSearchName(record.username)
+    actionRef.current?.reload()
   };
 
-  const routeToChildren = (record: any) => {
-    if (!record.invite_amount) {
-      return;
+  const handleRemove = async (userId: number) => {
+    const hide = message.loading('正在删除...');
+    const res = await removeRule({ id: userId });
+    hide();
+    if (res.code === 0) {
+      message.success('删除成功,正在刷新!');
+      actionRef?.current?.reloadAndRest?.();
     }
-    localStorage.setItem('childrenObj', JSON.stringify({ id: record.id, name: record.nick_name }));
-    history.push(`/account/children?id=${record.id}&name=${record.nick_name}`);
   };
+
+  const handleSearch = () => {
+    actionRef.current?.reload()
+  }
+
+  useEffect(() => {
+    const obj = localStorage.getItem('childrenObj')
+    if (obj) {
+      const _obj = JSON.parse(obj)
+      setSearchId(_obj.id)
+      setSearchName(_obj.name)
+      actionRef.current?.reload()
+    }
+  }, [myLocation]);
 
   const columns: ProColumns<any>[] = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      width: 90,
-      render: (_, record) => {
-        return <div>{record.id}</div>;
-      },
-    },
-    {
       title: '昵称',
-      dataIndex: 'nick_name',
+      dataIndex: 'username',
       width: 100,
       fixed: 'left',
       tooltip: '点击可查看该用户详情',
@@ -118,6 +105,29 @@ const TableList: React.FC = () => {
           </div>
         );
       },
+    },
+    {
+      title: 'ID',
+      dataIndex: 'user_id',
+      width: 90,
+      render: (_, record) => {
+        return <div>{record.user_id}</div>;
+      },
+    },
+    {
+      title: '姓',
+      dataIndex: 'firstName',
+      width: 90,
+      hideInTable: true,
+      hideInSearch: true,
+   
+    },
+    {
+      title: '名',
+      dataIndex: 'lastName',
+      width: 90,
+      hideInTable: true,
+      hideInSearch: true,
     },
     {
       title: '头像',
@@ -137,121 +147,96 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '推特ID',
-      dataIndex: 'twitter_id',
+      title: '当前Coins',
+      dataIndex: 'score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '当前积分(pts)',
-      dataIndex: 'pts',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '宠物数量',
-      dataIndex: 'pets',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '可领取奖励(FFP)',
-      dataIndex: 'invite_reward_coins',
+      title: '累计充值（Ton）',
+      dataIndex: 'use_ton',
       width: 130,
       hideInSearch: true,
     },
     {
-      title: '邀请奖励(FFP)',
-      dataIndex: 'coins',
+      title: '会员',
+      width: 100,
+      dataIndex: 'isPremium',
+      hideInSearch: true,
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
+    },
+    {
+      title: '关注主播数',
+      dataIndex: 'follow_num',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '推荐人ID',
-      dataIndex: 'invite_id',
+      title: '视频主播数',
+      dataIndex: 'chat_num',
       width: 100,
       hideInSearch: true,
+    },
+    // {
+    //   title: '下级会员',
+    //   dataIndex: 'subUser',
+    //   width: 100,
+    //   hideInSearch: true,
+    // },
+    {
+      title: '邀请奖励',
+      dataIndex: 'invite_friends_score',
+      width: 100,
+      hideInSearch: true,
+    },
+    {
+      title: '钱包地址',
+      dataIndex: 'wallet',
+      width: 120,
+      hideInTable: true,
+    },
+    {
+      title: '上级ID',
+      dataIndex: 'startParam',
+      width: 100,
     },
     {
       title: '邀请码',
       dataIndex: 'code',
       width: 110,
       hideInSearch: true,
+      render: (_, record) => {
+        return <div>{btoa(record.user_id)}</div>;
+      },
     },
     {
       title: '下级会员',
-      dataIndex: 'invite_amount',
+      dataIndex: 'subUser',
       width: 110,
       hideInSearch: true,
       render: (_, record: any) => {
         return (
           <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => routeToChildren(record)}>
-            {record.invite_amount}
+            {record.subUser}
           </div>
         );
       },
     },
     {
-      title: '使用盾牌次数',
-      dataIndex: 'shield_protect_count',
-      width: 110,
-      hideInSearch: true,
+      title: '语言',
+      dataIndex: 'languageCode',
+      width: 100,
       hideInTable: true,
-    },
-    {
-      title: '可以攻击时间',
-      dataIndex: 'bonk_freeze_time',
-      width: 110,
       hideInSearch: true,
-      hideInTable: true,
-      render: (_, record: any) => {
-        return <span>{moment(record.bonk_freeze_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
-      },
-    },
-    {
-      title: '盾牌结束时间',
-      dataIndex: 'shield_protect_time',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-      render: (_, record: any) => {
-        return <span>{moment(record.shield_protect_time).format('YYYY-MM-DD HH:mm:ss')}</span>;
-      },
-    },
-    {
-      title: '战斗次数',
-      dataIndex: 'bonk_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '赢的pts',
-      dataIndex: 'bonk_win_pts',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '输的次数',
-      dataIndex: 'bonk_loss_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '输的pts',
-      dataIndex: 'bonk_loss_pts',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
-    },
-    {
-      title: '赢的次数',
-      dataIndex: 'bonk_win_count',
-      width: 110,
-      hideInSearch: true,
-      hideInTable: true,
     },
     {
       title: '注册时间',
@@ -269,20 +254,21 @@ const TableList: React.FC = () => {
       title: '操作',
       dataIndex: 'option',
       valueType: 'option',
-      width: 100,
-      hideInTable: true,
+      width: 120,
       hideInDescriptions: true,
       fixed: 'right',
-      render: (_, record) => [
+      render: (_, record: any) => [
+        <a key={'modify'} onClick={() => handleUpdateRecord(record, 'baseInfo')}>
+          修改
+        </a>,
         <Popconfirm
-          title="确认删除该会员?"
+          title="确认删除该用户?"
           onConfirm={async () => {
-            handleRemove(record.userId);
+            handleRemove(record.id);
           }}
           key="access"
         >
           <a key="access" style={{ color: 'red' }}>
-            <DeleteOutlined />
             删除
           </a>
         </Popconfirm>,
@@ -290,10 +276,55 @@ const TableList: React.FC = () => {
     },
   ];
 
+  const handleOk = async () => {
+    if (operationType === 'baseInfo') {
+      if (!currentRow?.score) {
+        message.warning('请输入完整信息!');
+        return;
+      }
+    }
+    if (operationType === 'resetPassword') {
+      if (!currentRow?.newPassword) {
+        message.warning('请输入新密码!');
+        return;
+      }
+    }
+    if (operationType === 'addNewProject') {
+      const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
+      createOrderRequest({ uid: currentRow.id, amount: currentRow.amount }).then((res: any) => {
+        hide();
+        if (res.code === 0) {
+          handleModalVisible(false);
+          message.success(`添加成功`);
+          actionRef.current?.reloadAndRest?.();
+        }
+      });
+      return;
+    }
+    const hide = message.loading(`正在${currentRow?.id ? '更新' : '新增'}`, 50);
+    try {
+      const res = await addRule(currentRow);
+      handleModalVisible(false);
+      hide();
+      if (res.code === 0) {
+        message.success('操作成功，即将刷新');
+        if (actionRef) {
+          actionRef.current?.reloadAndRest?.();
+        }
+      } else {
+        message.error(res.msg);
+      }
+      return true;
+    } catch (error) {
+      hide();
+      message.error('操作失败，请重试');
+      return false;
+    }
+  };
   const handleChange = (value: any, attar: string) => {
-    const newRow = currentRow;
+    const newRow = Object.assign({}, currentRow);
     newRow[attar] = value;
-    setCurrentRow(Object.assign({}, newRow));
+    setCurrentRow(newRow);
   };
 
   const export2Excel = (id: string, name: string) => {
@@ -302,52 +333,61 @@ const TableList: React.FC = () => {
     XLSX.writeFile(wb, `${name}.xlsx`);
   };
 
-  useEffect(() => {
-    const newObj = localStorage.getItem('childrenObj');
-    if (newObj) {
-      const obj = JSON.parse(newObj);
-      let reFresh = false;
-      if (myParams.id && obj.id && obj.id != myParams.id) {
-        reFresh = true;
-      }
-      setMyparams(obj);
-      if (reFresh) {
-        actionRef.current?.reloadAndRest?.();
-      }
-    }
-  }, [localMy.key]);
-
   return (
     <PageContainer>
+      <div className={style.search}>
+        <Form.Item label='用户ID'>
+          <Input value={searchId} onChange={(e: any) => setSearchId(e.target.value)} allowClear/>
+        </Form.Item>
+        <Button icon={<SearchOutlined />}  type='primary' onClick={() => handleSearch()}>搜索</Button>
+      </div>
       <ProTable<TableListItem, TableListPagination>
         actionRef={actionRef}
         rowKey="id"
-        headerTitle={`上级昵称：${myParams.name}`}
-        id="withdrawListIndex"
-        size="small"
-        search={false}
-        pagination={{
-          current: 1,
-          pageSizeOptions: [100, 500, 1000, 2000],
-        }}
         dateFormatter="string"
+        id="accountListIndex"
+        headerTitle={searchId ? `${searchName} 的下级总用户：${total}，总充值：${totalUse} TON` : ''}
         toolBarRender={() => [
           <Button
             type="primary"
             key="primary"
-            onClick={() => export2Excel('withdrawListIndex', '店铺详情')}
+            onClick={() => export2Excel('accountListIndex', '下级会员列表')}
           >
             <TableOutlined />
             导出Excel
           </Button>,
         ]}
+        size="small"
+        search={false}
+        pagination={{
+          current: 1,
+          pageSizeOptions: [50, 200, 500, 1000, 2000],
+        }}
         scroll={{
-          y: Math.max(400, document?.body?.clientHeight - 390),
+          x: 1800,
+          y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
-          const res: any = await rule({ pageSize: 20, pageNum: params.current, id: myParams.id });
+          const res: any = await rule({ ...params, pageNum: params.current, user_id: searchId, username: searchName });
           let data: any = [];
           data = res?.data?.rows;
+          data.map((item: any) => {
+            // item.is_check = judgeIsCheckIn(item.check_date)
+            if (item.follow_anchor) {
+              const arr = item.follow_anchor.split(',')
+              item.follow_num = arr.length - 1
+            } else {
+              item.follow_num = 0
+            }
+            if (item.chat_anchor) {
+              const arr = item.chat_anchor.split(',')
+              item.chat_num = arr.length - 1
+            } else {
+              item.chat_num = 0
+            }
+          })
+          setTotal(res?.data?.count);
+          setTotalUse(res?.data?.total_use)
           return {
             data: data,
             success: true,
@@ -355,53 +395,101 @@ const TableList: React.FC = () => {
           };
         }}
         columns={columns}
-        rowSelection={{
-          onChange: (_, selectedRows) => {
-            setSelectedRows(selectedRows);
-          },
-        }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              已选择{' '}
-              <a
-                style={{
-                  fontWeight: 600,
-                }}
-              >
-                {selectedRowsState.length}
-              </a>{' '}
-              项 &nbsp;&nbsp;
-            </div>
-          }
-        >
-          <Popconfirm
-            title="确认删除？"
-            onConfirm={async () => {
-              await handleRemove(selectedRowsState);
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-            onCancel={() => {
-              setSelectedRows([]);
-              actionRef.current?.reloadAndRest?.();
-            }}
-          >
-            <Button style={{ width: '100px' }}>
-              {selectedRowsState.length > 1 ? '批量删除' : '删除'}
-            </Button>
-          </Popconfirm>
-        </FooterToolbar>
-      )}
       <Modal
+        title={titleMap[operationType]}
+        visible={createModalVisible}
+        onOk={() => handleOk()}
+        onCancel={() => handleModalVisible(false)}
+        width={500}
+      >
+        <ProForm formRef={formRef} submitter={false}>
+          {operationType === 'baseInfo' ? (
+            <>
+              <Form.Item label="昵称">
+                <Input
+                  value={currentRow?.username}
+                  onChange={(e) => handleChange(e.target.value, 'username')}
+                />
+              </Form.Item>
+              <Form.Item label="Coins">
+                <Input
+                  value={currentRow?.score}
+                  onChange={(e) => handleChange(e.target.value, 'score')}
+                />
+              </Form.Item>
+              <Form.Item label="累计充值（TON）">
+                <Input
+                  value={currentRow?.use_ton}
+                  onChange={(e) => handleChange(e.target.value, 'use_ton')}
+                />
+              </Form.Item>
+              <Form.Item label="上级ID">
+                <Input
+                  value={currentRow?.startParam}
+                  onChange={(e) => handleChange(e.target.value, 'startParam')}
+                />
+              </Form.Item>
+            </>
+          ) : operationType === 'resetPassword' ? (
+            <>
+              <Form.Item label="新密码">
+                <Input
+                  value={currentRow?.newPassword}
+                  onChange={(e) => handleChange(e.target.value, 'newPassword')}
+                  placeholder="请输入新密码"
+                />
+              </Form.Item>
+            </>
+          ) : operationType === 'addNewProject' ? (
+            <>
+              <Form.Item label="昵称">
+                <Input value={currentRow?.nick_name} readOnly />
+              </Form.Item>
+              <Form.Item label="数量">
+                <Input
+                  value={currentRow?.amount}
+                  type="number"
+                  onChange={(e) => handleChange(e.target.value, 'amount')}
+                />
+              </Form.Item>
+            </>
+          ) : operationType === 'addNewPropsProject' ? (
+            <>
+              <Form.Item label="昵称">
+                <Input value={currentRow?.nick_name} readOnly />
+              </Form.Item>
+              <Form.Item label="关联道具">
+                <Select
+                  value={currentRow?.props_id}
+                  placeholder="请选择"
+                  onChange={(e) => handleChange(e, 'props_id')}
+                >
+                  {propsList.map((item: any) => {
+                    return (
+                      <Select.Option
+                        value={item.id}
+                        key={item.id}
+                      >{`${item.name}——${item.usdt}U`}</Select.Option>
+                    );
+                  })}
+                </Select>
+              </Form.Item>
+              <Form.Item label="数量">
+                <Input
+                  value={currentRow?.amount}
+                  type="number"
+                  onChange={(e) => handleChange(e.target.value, 'amount')}
+                />
+              </Form.Item>
+            </>
+          ) : null}
+        </ProForm>
+      </Modal>
+      <Drawer
         width={600}
         visible={showDetail}
-        title={'详情'}
-        onOk={() => handleUpdateRecord(currentRow, type)}
-        okText={type === 1 ? '通过' : '确认'}
-        onCancel={() => {
+        onClose={() => {
           setCurrentRow(undefined);
           setShowDetail(false);
         }}
@@ -420,19 +508,25 @@ const TableList: React.FC = () => {
             columns={columns as ProDescriptionsItemProps<API.RuleListItem>[]}
           />
         )}
-        {type == 2 ? (
-          <Form.Item label="修改库存">
-            <Input
-              value={currentRow?.modifyStock}
-              onChange={(e) => handleChange(e.target.value, 'modifyStock')}
-              placeholder="请输入库存"
-              type="number"
-            />
-          </Form.Item>
-        ) : null}
-      </Modal>
+      </Drawer>
     </PageContainer>
   );
 };
+
+
+function judgeIsCheckIn(time: any) {
+  let flag = false
+  try {
+    if (time) {
+      if (time == moment().utc().format('MM-DD')) {
+        return true
+      }
+    }
+  } catch (error) {
+    console.error(error)
+    flag = false
+  }
+  return flag
+}
 
 export default TableList;

@@ -11,7 +11,8 @@ export async function rule(
     pageNum?: number;
     /** 页面的容量 */
     pageSize?: number;
-    id?: any;
+    user_id?: any;
+    username?: any;
   },
   options?: { [key: string]: any },
 ) {
@@ -40,16 +41,16 @@ export async function updateRule(data: { [key: string]: any }, options?: { [key:
 
 /** 新建规则 POST /api/rule */
 export async function addRule(data: { [key: string]: any }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/admin/user/update', {
+  return request<Record<string, any>>('/dogAdmin/user/update', {
     data,
-    method: 'PUT',
+    method: 'POST',
     ...(options || {}),
   });
 }
 
 /** 删除规则 DELETE /api/rule */
 export async function removeRule(data: { id: number }, options?: { [key: string]: any }) {
-  return request<Record<string, any>>(`/user/remove/${data.id}`, {
+  return request<Record<string, any>>(`/dogAdmin/user/remove`, {
     data,
     method: 'POST',
     ...(options || {}),
@@ -69,9 +70,23 @@ export async function createOrderRequest(
   data: { [key: string]: any },
   options?: { [key: string]: any },
 ) {
-  return request<TableListItem>('/admin/order/createOrder', {
+  return request<TableListItem>('/dogAdmin/pet/update', {
     data,
     method: 'POST',
     ...(options || {}),
+  });
+}
+
+/** 创建订单 PUT /api/rule */
+export async function addNewProPS(data: { [key: string]: any }, options?: { [key: string]: any }) {
+  return request<TableListItem>('/dogAdmin/propsRecord/update', {
+    data,
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+export async function getPropsList() {
+  return request<Record<string, any>>(`/dogAdmin/getPropsList?pageNum=1&pageSize=100`, {
+    method: 'GET',
   });
 }

@@ -83,3 +83,31 @@
 .moneyChart {
   height: 400px;
 }
+.cardList {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+  .card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: 1px 2px 1px #999;
+    .title {
+      font-size: 15px;
+      font-weight: bold;
+    }
+    .label {
+      font-size: 18px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+    }
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #999;
+      margin: 12px 0;
+    }
+  }
+}

@@ -12,7 +12,6 @@ import {
   removeRule,
   createOrderRequest,
   getPropsList,
-  addNewProPS,
 } from './service';
 import ProForm from '@ant-design/pro-form';
 import style from './style.less';
@@ -25,7 +24,7 @@ const TableList: React.FC = () => {
   const [showDetail, setShowDetail] = useState(false);
   const [currentRow, setCurrentRow] = useState<any>();
   const [total, setTotal] = useState(0);
-  const [total_really, setTotal_really] = useState(0)
+  const [totalUse, setTotalUse] = useState(0);
   const actionRef = useRef<ActionType>();
   const [createModalVisible, handleModalVisible] = useState<boolean>(false);
   const formRef = useRef<any>();
@@ -50,14 +49,17 @@ const TableList: React.FC = () => {
     formRef?.current?.resetFields();
   };
   const routeToChildren = (record: TableListItem) => {
-    localStorage.setItem('childrenObj', JSON.stringify({ id: record.id, name: record.nick_name }));
-    history.push(`/account/children?id=${record.id}&name=${record.nick_name}`);
+    localStorage.setItem('childrenObj', JSON.stringify({ id: record.user_id, name: record.username }));
+    history.push(`/account/children?id=${record.user_id}&name=${record.username}`);
   };
-  const routeToPetList = (record: TableListItem) => {
-    localStorage.setItem('petListObj', JSON.stringify({ uid: record.id, name: record.nick_name }));
-    history.push(`/account/petlist?uid=${record.id}&name=${record.nick_name}`);
+  const routeToFollow = (record: TableListItem) => {
+    localStorage.setItem('followObj', JSON.stringify({ id: record.user_id, name: record.username }));
+    history.push(`/account/follow?id=${record.user_id}&name=${record.username}`);
   };
-
+  const routeToChat = (record: TableListItem) => {
+    localStorage.setItem('chatObj', JSON.stringify({ id: record.user_id, name: record.username }));
+    history.push(`/account/chat?id=${record.user_id}&name=${record.username}`);
+  };
   const handleRemove = async (userId: number) => {
     const hide = message.loading('正在删除...');
     const res = await removeRule({ id: userId });
@@ -100,6 +102,21 @@ const TableList: React.FC = () => {
       },
     },
     {
+      title: '姓',
+      dataIndex: 'firstName',
+      width: 90,
+      hideInTable: true,
+      hideInSearch: true,
+   
+    },
+    {
+      title: '名',
+      dataIndex: 'lastName',
+      width: 90,
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
       title: '头像',
       dataIndex: 'photo',
       width: 110,
@@ -117,33 +134,16 @@ const TableList: React.FC = () => {
       },
     },
     {
-      title: '当前积分',
+      title: '当前Coins',
       dataIndex: 'score',
       width: 100,
       hideInSearch: true,
     },
     {
-      title: '游戏次数',
-      dataIndex: 'ticket',
-      width: 100,
+      title: '累计充值（Ton）',
+      dataIndex: 'use_ton',
+      width: 130,
       hideInSearch: true,
-    },
-    {
-      title: '真实用户',
-      width: 100,
-      dataIndex: 'is_really',
-      hideInTable: true,
-      hideInSearch: true,
-      valueEnum: {
-        true: {
-          status: 'success',
-          text: '是'
-        },
-        false: {
-          status: 'error',
-          text: '否'
-        }
-      }
     },
     {
       title: '会员',
@@ -162,65 +162,46 @@ const TableList: React.FC = () => {
       }
     },
     {
-      title: '会员奖励',
-      dataIndex: 'telegram_premium',
-      width: 100,
+      title: '关注主播',
+      dataIndex: 'subUser',
+      width: 110,
       hideInSearch: true,
-      hideInTable: true,
+      render: (_, record: any) => {
+        return (
+          <div className={style.link} onClick={() => routeToFollow(record)}>
+            {record.follow_num}
+          </div>
+        );
+      },
     },
     {
-      title: '邀请奖励',
-      dataIndex: 'invite_friends_score',
-      width: 100,
+      title: '聊天主播',
+      dataIndex: 'subUser',
+      width: 110,
       hideInSearch: true,
+      render: (_, record: any) => {
+        return (
+          <div className={style.link} onClick={() => routeToChat(record)}>
+            {record.chat_num}
+          </div>
+        );
+      },
     },
     {
-      title: '游戏得分',
-      dataIndex: 'game_score',
-      width: 100,
+      title: '下级会员',
+      dataIndex: 'subUser',
+      width: 110,
       hideInSearch: true,
+      render: (_, record: any) => {
+        return (
+          <div className={style.link} onClick={() => routeToChildren(record)}>
+            {record.subUser}
+          </div>
+        );
+      },
     },
     {
-      title: 'farming得分',
-      dataIndex: 'farm_score',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '钱包得分',
-      dataIndex: 'bind_wallet_score',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '签到时间',
-      dataIndex: 'is_check',
-      width: 100,
-      valueEnum: {
-        true: {
-          status: 'success',
-          text: '是'
-        },
-        false: {
-          status: 'error',
-          text: '否'
-        }
-      }
-    },
-    {
-      title: '钱包地址',
-      dataIndex: 'wallet',
-      width: 120,
-      hideInTable: true,
-    },
-    {
-      title: '签到得分',
-      dataIndex: 'check_score',
-      width: 100,
-      hideInSearch: true,
-    },
-    {
-      title: '推荐人ID',
+      title: '上级ID',
       dataIndex: 'startParam',
       width: 100,
     },
@@ -233,32 +214,17 @@ const TableList: React.FC = () => {
         return <div>{btoa(record.user_id)}</div>;
       },
     },
-    // {
-    //   title: '下级会员',
-    //   dataIndex: 'invite_amount',
-    //   width: 110,
-    //   hideInSearch: true,
-    //   render: (_, record: any) => {
-    //     return (
-    //       <div style={{ color: 'blue', cursor: 'pointer' }} onClick={() => routeToChildren(record)}>
-    //         查看
-    //       </div>
-    //     );
-    //   },
-    // },
     {
-      title: '下级会员游戏得分',
-      dataIndex: 'invite_friends_game_score',
+      title: '邀请奖励',
+      dataIndex: 'invite_friends_score',
       width: 100,
-      hideInTable: true,
       hideInSearch: true,
     },
     {
-      title: '下级会员farming得分',
-      dataIndex: 'invite_friends_farm_score',
-      width: 100,
+      title: '钱包地址',
+      dataIndex: 'wallet',
+      width: 120,
       hideInTable: true,
-      hideInSearch: true,
     },
     {
       title: '语言',
@@ -369,7 +335,7 @@ const TableList: React.FC = () => {
         rowKey="id"
         dateFormatter="string"
         id="accountListIndex"
-        headerTitle={`真实用户:${total_really}；虚拟用户：${total - total_really}；总用户：${total}`}
+        headerTitle={`总用户：${total}，总充值：${totalUse} TON`}
         toolBarRender={() => [
           <Button
             type="primary"
@@ -392,25 +358,30 @@ const TableList: React.FC = () => {
           pageSizeOptions: [50, 200, 500, 1000, 2000],
         }}
         scroll={{
-          x: 1900,
+          x: 1800,
           y: Math.max(470, document?.body?.clientHeight - 460),
         }}
         request={async (params: TableListPagination) => {
           const res: any = await rule({ ...params, pageNum: params.current });
-          // (res?.data?.list || []).map((item: any) => {
-          //   let registerType = 'APP注册';
-          //   if (item.registerType == 2) {
-          //     registerType = '链接注册';
-          //   }
-          //   item.registerType = registerType;
-          // });
           let data: any = [];
           data = res?.data?.rows;
           data.map((item: any) => {
-            item.is_check = judgeIsCheckIn(item.check_date)
+            // item.is_check = judgeIsCheckIn(item.check_date)
+            if (item.follow_anchor) {
+              const arr = item.follow_anchor.split(',')
+              item.follow_num = arr.length - 1
+            } else {
+              item.follow_num = 0
+            }
+            if (item.chat_anchor) {
+              const arr = item.chat_anchor.split(',')
+              item.chat_num = arr.length - 1
+            } else {
+              item.chat_num = 0
+            }
           })
-          setTotal(res?.data?.total);
-          setTotal_really(res?.data?.total_really)
+          setTotal(res?.data?.count);
+          setTotalUse(res?.data?.total_use)
           return {
             data: data,
             success: true,
@@ -435,19 +406,19 @@ const TableList: React.FC = () => {
                   onChange={(e) => handleChange(e.target.value, 'username')}
                 />
               </Form.Item>
-              <Form.Item label="积分">
+              <Form.Item label="Coins">
                 <Input
                   value={currentRow?.score}
                   onChange={(e) => handleChange(e.target.value, 'score')}
                 />
               </Form.Item>
-              <Form.Item label="游戏次数">
+              <Form.Item label="累计充值（TON）">
                 <Input
-                  value={currentRow?.ticket}
-                  onChange={(e) => handleChange(e.target.value, 'ticket')}
+                  value={currentRow?.use_ton}
+                  onChange={(e) => handleChange(e.target.value, 'use_ton')}
                 />
               </Form.Item>
-              <Form.Item label="上级用户ID">
+              <Form.Item label="上级ID">
                 <Input
                   value={currentRow?.startParam}
                   onChange={(e) => handleChange(e.target.value, 'startParam')}

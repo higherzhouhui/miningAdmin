@@ -12,6 +12,9 @@ export type TableListItem = {
   nice_name: string;
   invite_amount: string;
   modifyStock: string;
+  subUser: number;
+  username: string;
+  user_id: any;
 };
 
 export interface TableListPagination extends TableListItem {

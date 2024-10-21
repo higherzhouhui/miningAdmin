@@ -1,5 +1,12 @@
 @import '~antd/es/style/themes/default.less';
 
+@font-face {
+  font-family: 'Flag';
+  src: url('../public/font/TwemojiCountryFlags.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html,
 body,
 #root {
@@ -63,6 +70,11 @@ ol {
   overflow: auto;
   display: flex;
 }
+.customTable {
+  height: 600px;
+  overflow: auto;
+  padding-right: 6px;
+}
 .fullClass {
   min-width: 200px;
 }
@@ -106,4 +118,18 @@ html ::-webkit-scrollbar-thumb {
   @media screen and (max-width: 1440px) {
     margin-bottom: 12px!important;
   }
+}
+.ant-modal {
+  top: 60px!important;
+}
+
+.flag {
+  font-family: 'Flag';
+  font-size: 1.5rem;
+}
+
+.border {
+  border: 1px solid #ccc;
+  padding: 2px 6px;
+  margin-bottom: 4px;
 }
