@@ -150,6 +150,21 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
+      title: '推荐',
+      width: 100,
+      dataIndex: 'isCommend',
+      valueEnum: {
+        true: {
+          status: 'success',
+          text: '是'
+        },
+        false: {
+          status: 'error',
+          text: '否'
+        }
+      }
+    },
+    {
       title: '聊天时长',
       dataIndex: 'time',
       width: 100,
@@ -189,22 +204,6 @@ const TableList: React.FC = () => {
       hideInSearch: true,
     },
     {
-      title: '推荐',
-      width: 100,
-      dataIndex: 'isCommend',
-      hideInSearch: true,
-      valueEnum: {
-        true: {
-          status: 'success',
-          text: '是'
-        },
-        false: {
-          status: 'error',
-          text: '否'
-        }
-      }
-    },
-    {
       title: '注册时间',
       dataIndex: 'createdAt',
       width: 150,
@@ -228,7 +227,7 @@ const TableList: React.FC = () => {
           修改
         </a>,
         <Popconfirm
-          title="确认删除该用户?"
+          title="确认删除?"
           onConfirm={async () => {
             handleRemove(record.id);
           }}
@@ -351,7 +350,7 @@ const TableList: React.FC = () => {
     accept: 'image/*',
     customRequest: (options: any) => {
       const { onSuccess, onError, file } = options;
-      const formData = new FormData();
+      const formData = new FormData(); 
       formData.append('file', file);
       formData.append('type', 'image');
       formData.append('path', 'avatar');

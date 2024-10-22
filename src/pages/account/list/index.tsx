@@ -149,7 +149,6 @@ const TableList: React.FC = () => {
       title: '会员',
       width: 100,
       dataIndex: 'isPremium',
-      hideInSearch: true,
       valueEnum: {
         true: {
           status: 'success',
@@ -257,7 +256,7 @@ const TableList: React.FC = () => {
           修改
         </a>,
         <Popconfirm
-          title="确认删除该用户?"
+          title="确认删除?"
           onConfirm={async () => {
             handleRemove(record.id);
           }}

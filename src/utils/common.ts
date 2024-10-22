@@ -7,3 +7,13 @@ export function getFileUrl(file: string) {
   }
   return `${url}${file}`
 }
+
+export const removeHtmlTag = (content?: string) => {
+  if (typeof content === 'string') {
+    const reg = new RegExp('<[^>]*>', 'g');
+    let tStr = content.replace(reg, '');
+    tStr = tStr?.replace('&nbsp;', ''); // 过滤空格
+    return tStr;
+  }
+  return '';
+};

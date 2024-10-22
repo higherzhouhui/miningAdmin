@@ -240,7 +240,7 @@ const TableList: React.FC = () => {
         //   修改
         // </a>,
         <Popconfirm
-          title="确认删除该用户?"
+          title="确认删除?"
           onConfirm={async () => {
             handleRemove(record.id);
           }}
@@ -466,7 +466,7 @@ const TableList: React.FC = () => {
           <Button
             type="primary"
             key="primary"
-            onClick={() => export2Excel('accountListIndex', '关注主播列表')}
+            onClick={() => export2Excel('accountListIndex', '视频过主播列表')}
           >
             <TableOutlined />
             导出Excel

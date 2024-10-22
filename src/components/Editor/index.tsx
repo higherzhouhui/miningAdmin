@@ -5,6 +5,7 @@ import React, { memo, useEffect, useState } from 'react';
 
 import '@wangeditor/editor/dist/css/style.css'; // 引入 css
 import { request } from 'umi';
+import { getFileUrl } from '@/utils/common';
 interface EditorInterface {
   onChange: (str: string) => void;
   description: string;
@@ -27,7 +28,7 @@ const WangEditor: FC<EditorInterface> = memo(({ onChange, description }) => {
 
   const toolbarConfig = {};
   const editorConfig: Partial<IEditorConfig> | any = {
-    placeholder: '请输入内容...',
+    placeholder: '请输入公告...',
     MENU_CONF: {},
   };
   editorConfig.MENU_CONF.uploadImage = {
@@ -38,10 +39,10 @@ const WangEditor: FC<EditorInterface> = memo(({ onChange, description }) => {
       // const url: string = await uploadToAliOss(file);
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'images');
-      formData.append('path', 'admin-richText');
-      request('/api/v1/common/uploadImage', { method: 'POST', data: formData }).then((res) => {
-        insertFn(res.data.url + res.data.path, file.name, res.data.url + res.data.path);
+      formData.append('type', 'image');
+      formData.append('path', 'notice');
+      request('/dogAdmin/upload', { method: 'POST', data: formData }).then((res) => {
+        insertFn(getFileUrl(res.data.fileUrl), file.name, getFileUrl(res.data.fileUrl));
       })
       // 最后插入图片
     },

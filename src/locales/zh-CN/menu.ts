@@ -33,6 +33,7 @@ export default {
   'menu.datamanage.datamanage-shopdetail': '商铺详情',
   'menu.datamanage.datamanage-upload': '上传文件',
   'menu.datamanage.datamanage-baseinfo': '系统参数',
+  'menu.datamanage.datamanage-notice': '公告管理',
   'menu.datamanage.datamanage-rankinfo': '排行榜奖励',
   'menu.datamanage.datamanage-codelist': '会员激活码',
   'menu.datamanage.datamanage-video': '首页视频',

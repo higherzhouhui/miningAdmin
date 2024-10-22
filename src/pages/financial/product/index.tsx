@@ -174,7 +174,7 @@ const TableList: React.FC = () => {
           <Button
             type="primary"
             key="primary"
-            onClick={() => export2Excel('accountListIndex', '风格列表')}
+            onClick={() => export2Excel('accountListIndex', '产品列表')}
           >
             <TableOutlined />
             导出Excel

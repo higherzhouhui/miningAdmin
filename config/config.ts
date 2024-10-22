@@ -238,19 +238,25 @@ export default defineConfig({
       routes: [
         {
           path: '/datamanage',
-          redirect: '/datamanage/eventlist',
-          access: 'adminRouteFilter',
-        },
-        {
-          name: 'datamanage-eventlist',
-          path: '/datamanage/eventlist',
-          component: './datamanage/eventlist',
+          redirect: '/datamanage/baseinfo',
           access: 'adminRouteFilter',
         },
         {
           name: 'datamanage-baseinfo',
           path: '/datamanage/baseinfo',
           component: './datamanage/baseinfo',
+          access: 'adminRouteFilter',
+        },
+        {
+          name: 'datamanage-notice',
+          path: '/datamanage/notice',
+          component: './datamanage/notice',
+          access: 'adminRouteFilter',
+        },
+        {
+          name: 'datamanage-eventlist',
+          path: '/datamanage/eventlist',
+          component: './datamanage/eventlist',
           access: 'adminRouteFilter',
         },
         // {
