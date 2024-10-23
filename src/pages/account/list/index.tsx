@@ -19,6 +19,7 @@ import { history } from 'umi';
 import * as XLSX from 'xlsx';
 import { TableOutlined } from '@ant-design/icons';
 import moment from 'moment';
+import { getFileUrl } from '@/utils/common';
 const TableList: React.FC = () => {
   /** 分布更新窗口的弹窗 */
   const [showDetail, setShowDetail] = useState(false);
@@ -118,17 +119,17 @@ const TableList: React.FC = () => {
     },
     {
       title: '头像',
-      dataIndex: 'photo',
+      dataIndex: 'photoUrl',
       width: 110,
       hideInSearch: true,
       hideInTable: true,
       render: (_, record) => {
         return (
           <Image
-            src={record.head || '/logo.png'}
+            src={getFileUrl(record.photoUrl) || '/logo.png'}
             width={90}
             height={90}
-            style={{ objectFit: 'contain' }}
+            style={{ objectFit: 'contain', borderRadius: '50%' }}
           />
         );
       },
