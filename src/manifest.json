@@ -1,6 +1,6 @@
 {
-  "name": "CAT Dashboard",
-  "short_name": "CAT Dashboard",
+  "name": "FACELIVE Dashboard",
+  "short_name": "FACELIVE Dashboard",
   "display": "standalone",
   "start_url": "./?utm_source=homescreen",
   "theme_color": "#002140",
