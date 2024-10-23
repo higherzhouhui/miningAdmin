@@ -128,7 +128,7 @@ const TableList: React.FC = () => {
       hideInSearch: true,
       width: 60,
       render: (_, record) => {
-        return <div><Image width={60} src={getFileUrl(record.avatar)} /></div>;
+        return <div><Image width={60} src={getFileUrl(record.cover)} /></div>;
       },
     },
     {
