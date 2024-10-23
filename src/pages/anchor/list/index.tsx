@@ -38,15 +38,16 @@ const TableList: React.FC = () => {
   const [title, setTitle] = useState('')
   const [randomData, setRandomData] = useState({})
   const titleMap: any = {
-    baseInfo: '修改基本资料',
+    baseInfo: '修改资料',
     resetPassword: '修改密码',
     addNewProject: '添加宠物',
     addNewPropsProject: '添加道具',
   };
+
   const handleUpdateRecord = async (record: any, type: string) => {
     let data: any = {}
     if (type == 'baseInfo') {
-      setTitle('修改基本资料')
+      setTitle('修改资料')
       data = record
     }
     if (type == 'addNew' || type == 'addNewRandom') {
@@ -109,43 +110,10 @@ const TableList: React.FC = () => {
       title: 'ID',
       dataIndex: 'id',
       width: 90,
-      render: (_, record) => {
-        return <div>{record.id}</div>;
-      },
     },
     {
-      title: '头像',
-      dataIndex: 'avatar',
-      width: 60,
-      hideInSearch: true,
-      render: (_, record) => {
-        return <div><Image width={60} src={getFileUrl(record.avatar)} /></div>;
-      },
-    },
-    {
-      title: '封面',
-      dataIndex: 'cover',
-      hideInSearch: true,
-      width: 60,
-      render: (_, record) => {
-        return <div><Image width={60} src={getFileUrl(record.cover)} /></div>;
-      },
-    },
-    {
-      title: '视频',
-      dataIndex: 'cover',
-      width: 90,
-      hideInTable: true,
-      hideInSearch: true,
-      render: (_, record) => {
-        return <div>
-          <video src={getFileUrl(record.video)} loop controls width={200} style={{ objectFit: 'contain' }} />
-        </div>;
-      },
-    },
-    {
-      title: '评分',
-      dataIndex: 'star',
+      title: '排序',
+      dataIndex: 'sort',
       width: 90,
       hideInSearch: true,
     },
@@ -164,6 +132,47 @@ const TableList: React.FC = () => {
         }
       }
     },
+    {
+      title: '首页封面',
+      dataIndex: 'home_cover',
+      width: 60,
+      hideInSearch: true,
+      render: (_, record) => {
+        return <div><Image width={60} src={getFileUrl(record.home_cover)} /></div>;
+      },
+    },
+    {
+      title: '头像',
+      dataIndex: 'avatar',
+      width: 60,
+      hideInSearch: true,
+      render: (_, record) => {
+        return <div><Image width={60} src={getFileUrl(record.avatar)} /></div>;
+      },
+    },
+    {
+      title: '封面',
+      hideInSearch: true,
+      hideInTable: true,
+      render: (_, record) => {
+        return <video src={getFileUrl(record.cover)} loop controls width={200} style={{ objectFit: 'contain' }} />
+      },
+    },
+    {
+      title: '视频',
+      hideInTable: true,
+      hideInSearch: true,
+      render: (_, record) => {
+        return <video src={getFileUrl(record.video)} loop controls width={200} style={{ objectFit: 'contain' }} />
+      },
+    },
+    {
+      title: '评分',
+      dataIndex: 'star',
+      width: 90,
+      hideInSearch: true,
+    },
+
     {
       title: '聊天时长',
       dataIndex: 'time',
@@ -350,7 +359,7 @@ const TableList: React.FC = () => {
     accept: 'image/*',
     customRequest: (options: any) => {
       const { onSuccess, onError, file } = options;
-      const formData = new FormData(); 
+      const formData = new FormData();
       formData.append('file', file);
       formData.append('type', 'image');
       formData.append('path', 'avatar');
@@ -370,13 +379,13 @@ const TableList: React.FC = () => {
   const coverUpload = {
     //数量
     maxCount: 1,
-    accept: 'image/*',
+    accept: 'video/*',
     customRequest: (options: any) => {
       const { onSuccess, onError, file } = options;
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'image');
-      formData.append('path', 'avatar');
+      formData.append('type', 'video');
+      formData.append('path', 'cover');
       // /upload为图片上传的地址，后台只需要一个图片的path
       // name，path，status是组件上传需要的格式需要自己去拼接
       request('/dogAdmin/upload', { method: 'POST', data: formData })
@@ -406,6 +415,7 @@ const TableList: React.FC = () => {
         .then((data: any) => {
           const _response = { name: file.name, status: 'done', path: data.data.fileUrl };
           handleChange(data.data.fileUrl, 'video')
+          handleChange(data.data.home_cover, 'home_cover')
           //请求成功后把file赋值上去
           onSuccess(_response, file);
         })
@@ -429,14 +439,14 @@ const TableList: React.FC = () => {
             <PlusCircleOutlined />
             新增
           </Button>,
-             <Button
-             type="primary"
-             key="addRandom"
-             onClick={() => handleUpdateRecord({}, 'addNewRandom')}
-           >
-             <PlusCircleOutlined />
-             新增（初始化随机数据）
-           </Button>,
+          <Button
+            type="primary"
+            key="addRandom"
+            onClick={() => handleUpdateRecord({}, 'addNewRandom')}
+          >
+            <PlusCircleOutlined />
+            新增（初始化随机数据）
+          </Button>,
           <Button
             type="primary"
             key="primary"
@@ -487,6 +497,14 @@ const TableList: React.FC = () => {
             <>
               <Form.Item label="是否推荐">
                 <Switch checked={currentRow?.isCommend} onChange={(value) => handleChange(value, 'isCommend')} />
+              </Form.Item>
+              <Form.Item label="排序(从大到小)">
+                <Input
+                  value={currentRow?.sort}
+                  placeholder='请输入昵称'
+                  type='number'
+                  onChange={(e) => handleChange(e.target.value, 'sort')}
+                />
               </Form.Item>
               <Form.Item label="昵称">
                 <Input
@@ -593,7 +611,7 @@ const TableList: React.FC = () => {
                 />
                 <Form.Item label="">
                   {
-                    currentRow?.cover ? <Image src={getFileUrl(currentRow?.cover)} width={100} style={{ objectFit: 'contain' }} /> : null
+                    currentRow?.cover ? <video src={getFileUrl(currentRow?.cover)} width={150} style={{ objectFit: 'contain' }} controls /> : null
                   }
                   <Input
                     value={getFileUrl(currentRow?.cover)}

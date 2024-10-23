@@ -255,7 +255,7 @@ const TableList: React.FC = () => {
         <ProForm formRef={formRef} submitter={false}>
           {operationType === 'baseInfo' ? (
             <>
-              <Form.Item label="排序(从小到大)">
+              <Form.Item label="排序(从大到小)">
                 <Input
                   value={currentRow?.sort}
                   onChange={(e) => handleChange(e.target.value, 'sort')}
@@ -286,7 +286,7 @@ const TableList: React.FC = () => {
             </>
           ) : operationType === 'addNewProject' ? (
             <>
-              <Form.Item label="排序(从小到大)">
+              <Form.Item label="排序(从大到小)">
                 <Input
                   value={currentRow?.sort}
                   onChange={(e) => handleChange(e.target.value, 'sort')}

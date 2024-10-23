@@ -35,6 +35,7 @@ export async function getInitialState(): Promise<{
       }
       return data as any;
     } catch (error) {
+      localStorage.clear()
       history.push(loginPath);
     }
     return undefined;
@@ -74,7 +75,7 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
       return (
         <>
           {initialState?.currentUser && !location.pathname.includes(loginPath) ? (
-            <TagView home="/account/list">{children}</TagView>
+            <TagView home="/home/list">{children}</TagView>
           ) : (
             children
           )}
