@@ -11,6 +11,7 @@ const TableList: React.FC = () => {
     { title: '官方群组', key: 'channel_url', value: ''},
     { title: '客服', key: 'help_link', value: '' },
     { title: '群组ID', key: 'channel_id', value: '' },
+    { title: '注册赠送Coins', key: 'register', vlaue: '', type: 'number'},
     { title: '邀请普通用奖励Coins', key: 'invite_normal', vlaue: '', type: 'number'},
     { title: '邀请会员奖励Coins', key: 'invite_hy', vlaue: '', type: 'number'},
     { title: '下级返利', key: 'invite_friends_ratio', vlaue: '', type: 'number', after: '%'},
